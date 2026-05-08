@@ -107,6 +107,64 @@ code.hidden-code{color:#444;letter-spacing:2px}
 .device-row:last-child{border-bottom:none}
 .online-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 @media(max-width:768px){.two-col{grid-template-columns:1fr}.bottom-grid{grid-template-columns:1fr}}
+
+@media(max-width:768px){
+  .content{padding:10px}
+  .two-col{grid-template-columns:1fr!important}
+  .bottom-grid{grid-template-columns:1fr!important}
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important}
+  header{padding:8px 12px;flex-wrap:wrap;gap:6px}
+  .header-left h1{font-size:13px}
+  .god-badge{display:none}
+  #headerMeta{font-size:10px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .btn-logout{padding:5px 10px;font-size:11px}
+  .tabs{padding:0 8px;gap:0}
+  .tab{padding:9px 10px;font-size:11px}
+  .action-bar{padding:8px 10px;gap:6px}
+  .action-bar .btn{font-size:11px;padding:5px 9px}
+  .search-input{min-width:100px;font-size:11px;padding:5px 9px}
+  table{font-size:11px}
+  th{padding:6px 8px;font-size:9px}
+  td{padding:6px 8px}
+  .stat-card{padding:10px}
+  .stat-card .num{font-size:22px}
+  .stat-card .lbl{font-size:10px}
+  .panel-header{padding:8px 12px;font-size:11px}
+  .device-row{padding:8px 12px}
+  .modal{padding:20px;margin:10px}
+  .modal h2{font-size:14px}
+  code{font-size:10px;padding:1px 4px}
+  .btn-icon{padding:3px 5px}
+  .quick-btn{padding:7px 10px;font-size:11px}
+  .two-col > .panel:last-child{order:-1}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important}
+  .tab{padding:8px 8px;font-size:10px}
+  header{padding:6px 10px}
+  .content{padding:8px}
+  td:nth-child(6){display:none}
+  th:nth-child(6){display:none}
+  .stat-card .num{font-size:20px}
+}
+
+.stats-auto{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))!important}
+
+@media(max-width:480px){
+  .tab-txt{display:none}
+  .tab{padding:10px 12px;font-size:16px}
+}
+
+@media(max-width:600px){
+  .hide-md{display:none}
+  td:has(+ td + td + td + td + td + td){font-size:11px}
+}
+@media(max-width:480px){
+  .hide-sm{display:none}
+}
+@media(max-width:380px){
+  .hide-xs{display:none}
+}
 </style>
 </head>
 <body>
@@ -136,14 +194,14 @@ code.hidden-code{color:#444;letter-spacing:2px}
   </header>
 
   <div class="tabs">
-    <div class="tab" id="tabBtn-overview"  onclick="showTab('overview')">📊 Overview</div>
-    <div class="tab" id="tabBtn-licenses"  onclick="showTab('licenses')">🔑 Licenses</div>
-    <div class="tab" id="tabBtn-devices"   onclick="showTab('devices')">📱 Devices</div>
-    <div class="tab" id="tabBtn-trials"    onclick="showTab('trials')">⏱ Trials</div>
-    <div class="tab" id="tabBtn-blacklist" onclick="showTab('blacklist')">🚫 Blacklist</div>
-    <div class="tab" id="tabBtn-audit"     onclick="showTab('audit')">📋 Audit Log</div>
-    <div class="tab" id="tabBtn-versions"  onclick="showTab('versions')">📦 Updates</div>
-    <div class="tab" id="tabBtn-settings"  onclick="showTab('settings')">⚙️ Settings</div>
+    <div class="tab" id="tabBtn-overview"  onclick="showTab('overview')">📊 <span class="tab-txt">Overview</span></div>
+    <div class="tab" id="tabBtn-licenses"  onclick="showTab('licenses')">🔑 <span class="tab-txt">Licenses</span></div>
+    <div class="tab" id="tabBtn-devices"   onclick="showTab('devices')">📱 <span class="tab-txt">Devices</span></div>
+    <div class="tab" id="tabBtn-trials"    onclick="showTab('trials')">⏱ <span class="tab-txt">Trials</span></div>
+    <div class="tab" id="tabBtn-blacklist" onclick="showTab('blacklist')">🚫 <span class="tab-txt">Blacklist</span></div>
+    <div class="tab" id="tabBtn-audit"     onclick="showTab('audit')">📋 <span class="tab-txt">Logs</span></div>
+    <div class="tab" id="tabBtn-versions"  onclick="showTab('versions')">📦 <span class="tab-txt">Updates</span></div>
+    <div class="tab" id="tabBtn-settings"  onclick="showTab('settings')">⚙️ <span class="tab-txt">Settings</span></div>
   </div>
 
   <div class="content">
@@ -152,7 +210,7 @@ code.hidden-code{color:#444;letter-spacing:2px}
     <div class="tab-pane" id="tab-overview">
 
       <div class="section-label">License overview</div>
-      <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:12px">
+      <div class="stats-grid stats-auto" style="margin-bottom:12px">
         <div class="stat-card"><div class="num" id="ovTotal">-</div><div class="lbl">Total licenses</div><div class="bar"><div class="bar-fill" id="ovTotalBar" style="background:#00e5ff;width:100%"></div></div></div>
         <div class="stat-card green"><div class="num" id="ovActive">-</div><div class="lbl">Active</div><div class="bar"><div class="bar-fill" id="ovActiveBar"></div></div></div>
         <div class="stat-card"><div class="num" id="ovInactive">-</div><div class="lbl">Inactive</div><div class="bar"><div class="bar-fill" style="background:#555;width:0%"></div></div></div>
@@ -161,7 +219,7 @@ code.hidden-code{color:#444;letter-spacing:2px}
       </div>
 
       <div class="section-label">Device connection status</div>
-      <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:12px">
+      <div class="stats-grid stats-auto" style="margin-bottom:12px">
         <div class="stat-card"><div class="num" id="ovTotalDev">-</div><div class="lbl">Total devices</div><div class="bar"><div class="bar-fill" style="background:#00e5ff;width:100%"></div></div></div>
         <div class="stat-card green"><div class="num" id="ovOnline">-</div><div class="lbl">🟢 Online<br><span style="font-size:10px;opacity:0.6">last 20 min</span></div><div class="bar"><div class="bar-fill" id="ovOnlineBar"></div></div></div>
         <div class="stat-card yellow"><div class="num" id="ovIdle">-</div><div class="lbl">🟡 Idle<br><span style="font-size:10px;opacity:0.6">20min–2hrs</span></div><div class="bar"><div class="bar-fill" id="ovIdleBar"></div></div></div>
@@ -170,7 +228,7 @@ code.hidden-code{color:#444;letter-spacing:2px}
       </div>
 
       <div class="section-label">Trial status</div>
-      <div class="stats-grid" style="grid-template-columns:repeat(6,1fr);margin-bottom:12px">
+      <div class="stats-grid stats-auto" style="margin-bottom:12px">
         <div class="stat-card"><div class="num" id="ovTotalTrial">-</div><div class="lbl">Total trials</div><div class="bar"><div class="bar-fill" style="background:#00e5ff;width:100%"></div></div></div>
         <div class="stat-card green"><div class="num" id="ovActiveTrial">-</div><div class="lbl">Active trials</div><div class="bar"><div class="bar-fill" id="ovActiveTrialBar"></div></div></div>
         <div class="stat-card green"><div class="num" id="ovTrialOnline">-</div><div class="lbl">🟢 Trial online</div><div class="bar"><div class="bar-fill" id="ovTrialOnlineBar"></div></div></div>
@@ -255,7 +313,7 @@ code.hidden-code{color:#444;letter-spacing:2px}
           <table id="licenseTable">
             <thead><tr>
               <th>Code</th><th>Status</th><th>Devices</th>
-              <th>Expiry</th><th>Notes</th><th>Created</th><th>Actions</th>
+              <th class="hide-sm">Expiry</th><th class="hide-md">Notes</th><th class="hide-sm">Created</th><th>Actions</th>
             </tr></thead>
             <tbody id="licenseBody"><tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
           </table>
