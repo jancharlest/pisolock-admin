@@ -618,7 +618,7 @@ function startAutoRefresh() {
   autoRefreshInterval = setInterval(() => {
     const devPane = document.getElementById('tab-devices');
     if (devPane && devPane.classList.contains('active')) loadDevices();
-  }, 60000);
+  }, 30000);
 }
 
 function stopAutoRefresh() {
