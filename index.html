@@ -14,8 +14,6 @@
     color: #e0e0e0;
     min-height: 100vh;
   }
-
-  /* ── Login Screen ── */
   #loginScreen {
     display: flex; align-items: center; justify-content: center;
     min-height: 100vh; padding: 20px;
@@ -40,10 +38,7 @@
   }
   .btn-primary:hover { background: #1565c0; }
   #loginError { color: #ff5252; font-size: 13px; margin-top: 8px; min-height: 20px; }
-
-  /* ── Main Dashboard ── */
   #dashboard { display: none; }
-
   header {
     background: #1c1c2a; padding: 16px 24px;
     display: flex; align-items: center; justify-content: space-between;
@@ -56,8 +51,6 @@
     color: #aaa; padding: 8px 16px; cursor: pointer; font-size: 13px;
   }
   .btn-logout:hover { background: #444; color: #fff; }
-
-  /* ── Tabs ── */
   .tabs {
     display: flex; background: #12121e; border-bottom: 1px solid #2a2a3a;
     overflow-x: auto; padding: 0 24px;
@@ -68,30 +61,15 @@
   }
   .tab:hover { color: #fff; }
   .tab.active { color: #00e5ff; border-bottom-color: #00e5ff; }
-
-  /* ── Content ── */
   .content { padding: 24px; max-width: 1200px; margin: 0 auto; }
   .tab-pane { display: none; }
   .tab-pane.active { display: block; }
-
-  /* ── Stats Row ── */
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
-  .stat-card {
-    background: #1c1c2a; border-radius: 12px; padding: 20px;
-    text-align: center;
-  }
+  .stat-card { background: #1c1c2a; border-radius: 12px; padding: 20px; text-align: center; }
   .stat-card .num { font-size: 32px; font-weight: bold; color: #00e5ff; }
   .stat-card .lbl { font-size: 12px; color: #666; margin-top: 4px; }
-
-  /* ── Action Bar ── */
-  .action-bar {
-    display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;
-    align-items: center;
-  }
-  .btn {
-    padding: 8px 16px; border: none; border-radius: 8px;
-    cursor: pointer; font-size: 13px; font-weight: 600;
-  }
+  .action-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .btn { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; }
   .btn-green  { background: #1a5522; color: #44ff88; }
   .btn-green:hover  { background: #226633; }
   .btn-red    { background: #5a1a1a; color: #ff5252; }
@@ -105,26 +83,19 @@
     border-radius: 8px; color: #fff; font-size: 13px; flex: 1; min-width: 200px;
   }
   .search-input:focus { outline: none; border-color: #00e5ff; }
-
-  /* ── Table ── */
   .table-wrap { overflow-x: auto; background: #1c1c2a; border-radius: 12px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th { padding: 12px 16px; text-align: left; color: #666; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #2a2a3a; }
   td { padding: 12px 16px; border-bottom: 1px solid #1a1a28; vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #22223a; }
-  .badge {
-    display: inline-block; padding: 2px 10px; border-radius: 20px;
-    font-size: 11px; font-weight: 600;
-  }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
   .badge-active   { background: #0a3a1a; color: #44ff88; }
   .badge-inactive { background: #2a2a2a; color: #888; }
   .badge-suspended{ background: #3a1a00; color: #ff9944; }
   .badge-expired  { background: #3a1a1a; color: #ff5252; }
   .badge-trial    { background: #1a1a3a; color: #8888ff; }
   .badge-converted{ background: #0a3a2a; color: #44ffaa; }
-
-  /* ── Modal ── */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
     background: rgba(0,0,0,0.8); z-index: 1000;
@@ -147,9 +118,6 @@
   .form-group input:focus, .form-group select:focus { outline: none; border-color: #00e5ff; }
   .modal-actions { display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end; }
   .error-msg { color: #ff5252; font-size: 12px; margin-top: 4px; min-height: 16px; }
-  .success-msg { color: #44ff88; font-size: 12px; margin-top: 4px; min-height: 16px; }
-
-  /* ── Loading ── */
   .loading { text-align: center; padding: 40px; color: #555; }
   .spinner {
     width: 32px; height: 32px; border: 3px solid #333;
@@ -157,8 +125,6 @@
     animation: spin 0.8s linear infinite; margin: 0 auto 12px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── Toast ── */
   #toast {
     position: fixed; bottom: 24px; right: 24px;
     background: #1c1c2a; border: 1px solid #334;
@@ -168,17 +134,15 @@
     animation: slideIn 0.3s ease;
   }
   @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: none; opacity: 1; } }
-
   .empty-state { text-align: center; padding: 60px; color: #444; }
   .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
   code { background: #0d0d15; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 12px; }
   .text-muted { color: #555; }
-  .danger-zone { border: 1px solid #5a1a1a; border-radius: 8px; padding: 16px; margin-top: 12px; }
 </style>
 </head>
 <body>
 
-<!-- ══════════ LOGIN SCREEN ══════════ -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
     <h1>🔐 PisoLock Admin</h1>
@@ -190,7 +154,7 @@
   </div>
 </div>
 
-<!-- ══════════ MAIN DASHBOARD ══════════ -->
+<!-- DASHBOARD -->
 <div id="dashboard">
   <header>
     <h1>🔐 PisoLock Admin</h1>
@@ -199,20 +163,20 @@
   </header>
 
   <div class="tabs">
-    <div class="tab active" onclick="showTab('licenses')">🔑 Licenses</div>
-    <div class="tab" onclick="showTab('devices')">📱 Devices</div>
-    <div class="tab" onclick="showTab('trials')">⏱ Trials</div>
-    <div class="tab" onclick="showTab('blacklist')">🚫 Blacklist</div>
-    <div class="tab" onclick="showTab('audit')">📋 Audit Log</div>
-    <div class="tab" onclick="showTab('versions')">📦 App Versions</div>
-    <div class="tab" onclick="showTab('settings')">⚙️ Settings</div>  
+    <div class="tab" id="tabBtn-licenses" onclick="showTab('licenses')">🔑 Licenses</div>
+    <div class="tab" id="tabBtn-devices"  onclick="showTab('devices')">📱 Devices</div>
+    <div class="tab" id="tabBtn-trials"   onclick="showTab('trials')">⏱ Trials</div>
+    <div class="tab" id="tabBtn-blacklist"onclick="showTab('blacklist')">🚫 Blacklist</div>
+    <div class="tab" id="tabBtn-audit"    onclick="showTab('audit')">📋 Audit Log</div>
+    <div class="tab" id="tabBtn-versions" onclick="showTab('versions')">📦 App Versions</div>
+    <div class="tab" id="tabBtn-settings" onclick="showTab('settings')">⚙️ Settings</div>
   </div>
 
   <div class="content">
 
-    <!-- ── LICENSES TAB ── -->
-    <div class="tab-pane active" id="tab-licenses">
-      <div class="stats" id="licenseStats">
+    <!-- LICENSES TAB -->
+    <div class="tab-pane" id="tab-licenses">
+      <div class="stats">
         <div class="stat-card"><div class="num" id="statTotal">-</div><div class="lbl">Total Licenses</div></div>
         <div class="stat-card"><div class="num" id="statActive">-</div><div class="lbl">Active</div></div>
         <div class="stat-card"><div class="num" id="statInactive">-</div><div class="lbl">Inactive</div></div>
@@ -220,7 +184,7 @@
       </div>
       <div class="action-bar">
         <button class="btn btn-green" onclick="openAddLicense()">+ Add License</button>
-        <button class="btn btn-gray" onclick="loadLicenses()">↻ Refresh</button>
+        <button class="btn btn-gray"  onclick="loadLicenses()">↻ Refresh</button>
         <input class="search-input" placeholder="Search license code..." oninput="filterTable('licenseTable', this.value)" />
       </div>
       <div class="table-wrap">
@@ -234,73 +198,42 @@
       </div>
     </div>
 
-    <!-- ── DEVICES TAB ── -->
+    <!-- DEVICES TAB -->
     <div class="tab-pane" id="tab-devices">
-      <div class="tab-pane" id="tab-devices">
-
-  <!-- Legend -->
-  <div style="background:#1c1c2a;border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px">
-    <div style="color:#888;margin-bottom:10px;font-weight:600">📖 Status Guide:</div>
-    <div style="display:flex;flex-wrap:wrap;gap:16px">
-
-      <div>
-        <div style="color:#aaa;margin-bottom:6px">Device Status:</div>
-        <div style="margin-bottom:4px">
-          <span class="badge badge-active">✅ Active</span>
-          <span style="color:#666;margin-left:8px">Licensed — working normally</span>
-        </div>
-        <div style="margin-bottom:4px">
-          <span class="badge badge-suspended">⛔ Suspended</span>
-          <span style="color:#666;margin-left:8px">Admin blocked — cannot use app</span>
-        </div>
-        <div>
-          <span class="badge badge-expired">🚫 Blocked</span>
-          <span style="color:#666;margin-left:8px">Permanently blacklisted</span>
+      <!-- Legend -->
+      <div style="background:#1c1c2a;border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px">
+        <div style="color:#888;margin-bottom:10px;font-weight:600">📖 Status Guide:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:24px">
+          <div>
+            <div style="color:#aaa;margin-bottom:6px">Device Status:</div>
+            <div style="margin-bottom:4px"><span class="badge badge-active">✅ Active</span> <span style="color:#666;margin-left:6px">Licensed — working normally</span></div>
+            <div style="margin-bottom:4px"><span class="badge badge-suspended">⛔ Suspended</span> <span style="color:#666;margin-left:6px">Admin blocked — cannot use app</span></div>
+            <div><span class="badge badge-expired">🚫 Blocked</span> <span style="color:#666;margin-left:6px">Permanently blacklisted</span></div>
+          </div>
+          <div>
+            <div style="color:#aaa;margin-bottom:6px">Connection:</div>
+            <div style="margin-bottom:4px"><span class="badge" style="background:#0a2a0a;color:#44ff88">🟢 Online</span> <span style="color:#666;margin-left:6px">Active in last 20 minutes</span></div>
+            <div style="margin-bottom:4px"><span class="badge" style="background:#2a2a0a;color:#ffff44">🟡 Idle</span> <span style="color:#666;margin-left:6px">Last seen 20min–2hrs ago</span></div>
+            <div><span class="badge" style="background:#2a0a0a;color:#ff5252">🔴 Offline</span> <span style="color:#666;margin-left:6px">No heartbeat for 2+ hours</span></div>
+          </div>
         </div>
       </div>
-
-      <div>
-        <div style="color:#aaa;margin-bottom:6px">Connection:</div>
-        <div style="margin-bottom:4px">
-          <span class="badge" style="background:#0a2a0a;color:#44ff88">🟢 Online</span>
-          <span style="color:#666;margin-left:8px">Active in last 20 minutes</span>
-        </div>
-        <div style="margin-bottom:4px">
-          <span class="badge" style="background:#2a2a0a;color:#ffff44">🟡 Idle</span>
-          <span style="color:#666;margin-left:8px">Last seen 20min - 2hrs ago</span>
-        </div>
-        <div>
-          <span class="badge" style="background:#2a0a0a;color:#ff5252">🔴 Offline</span>
-          <span style="color:#666;margin-left:8px">No heartbeat for 2+ hours</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-  <!-- End Legend -->
-
-  <div class="action-bar">
+      <div class="action-bar">
         <button class="btn btn-gray" onclick="loadDevices()">↻ Refresh</button>
         <input class="search-input" placeholder="Search device name or hash..." oninput="filterTable('deviceTable', this.value)" />
       </div>
       <div class="table-wrap">
         <table id="deviceTable">
           <thead><tr>
-            <th>Device Name</th>
-	<th>License</th>
-	<th>Device Status</th>
-	<th>Connection</th>
-	<th>Last Seen</th>
-	<th>Hash</th>
-	<th>Actions</th>
-	
+            <th>Device Name</th><th>License</th><th>Device Status</th>
+            <th>Connection</th><th>Last Seen</th><th>Hash</th><th>Actions</th>
           </tr></thead>
-          <tbody id="deviceBody"><tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
+          <tbody id="deviceBody"><tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- ── TRIALS TAB ── -->
+    <!-- TRIALS TAB -->
     <div class="tab-pane" id="tab-trials">
       <div class="action-bar">
         <button class="btn btn-gray" onclick="loadTrials()">↻ Refresh</button>
@@ -316,10 +249,10 @@
       </div>
     </div>
 
-    <!-- ── BLACKLIST TAB ── -->
+    <!-- BLACKLIST TAB -->
     <div class="tab-pane" id="tab-blacklist">
       <div class="action-bar">
-        <button class="btn btn-red" onclick="openAddBlacklist()">+ Add to Blacklist</button>
+        <button class="btn btn-red"  onclick="openAddBlacklist()">+ Add to Blacklist</button>
         <button class="btn btn-gray" onclick="loadBlacklist()">↻ Refresh</button>
       </div>
       <div class="table-wrap">
@@ -330,7 +263,7 @@
       </div>
     </div>
 
-    <!-- ── AUDIT LOG TAB ── -->
+    <!-- AUDIT LOG TAB -->
     <div class="tab-pane" id="tab-audit">
       <div class="action-bar">
         <button class="btn btn-gray" onclick="loadAudit()">↻ Refresh</button>
@@ -344,11 +277,11 @@
       </div>
     </div>
 
-    <!-- ── APP VERSIONS TAB ── -->
+    <!-- APP VERSIONS TAB -->
     <div class="tab-pane" id="tab-versions">
       <div class="action-bar">
         <button class="btn btn-green" onclick="openAddVersion()">+ Add Version</button>
-        <button class="btn btn-gray" onclick="loadVersions()">↻ Refresh</button>
+        <button class="btn btn-gray"  onclick="loadVersions()">↻ Refresh</button>
       </div>
       <div class="table-wrap">
         <table id="versionTable">
@@ -357,72 +290,65 @@
         </table>
       </div>
     </div>
-<!-- ── SETTINGS TAB ── -->
-<div class="tab-pane" id="tab-settings">
-  <div style="max-width:500px">
-    <h2 style="color:#00e5ff;margin-bottom:24px">⚙️ System Settings</h2>
 
-    <div class="stat-card" style="margin-bottom:16px;text-align:left">
-      <h3 style="color:#fff;margin-bottom:16px">⏱ Trial Duration</h3>
-      <p style="color:#888;font-size:13px;margin-bottom:16px">
-        How many days new devices get for free trial.<br>
-        <strong style="color:#ff9944">Note:</strong> 
-        Only affects NEW trials. Existing trials keep their original expiry.
-      </p>
-      <div class="form-group">
-        <label>Trial Duration (days)</label>
-        <select id="trialDays" style="width:100%;padding:10px;background:#0d0d15;border:1px solid #334;border-radius:8px;color:#fff;font-size:16px">
-          <option value="1">1 day (testing)</option>
-          <option value="3">3 days</option>
-          <option value="7" selected>7 days (default)</option>
-          <option value="14">14 days</option>
-          <option value="30">30 days</option>
-        </select>
+    <!-- SETTINGS TAB -->
+    <div class="tab-pane" id="tab-settings">
+      <div style="max-width:500px">
+        <h2 style="color:#00e5ff;margin-bottom:24px">⚙️ System Settings</h2>
+
+        <div class="stat-card" style="margin-bottom:16px;text-align:left">
+          <h3 style="color:#fff;margin-bottom:16px">⏱ Trial Duration</h3>
+          <p style="color:#888;font-size:13px;margin-bottom:16px">
+            How many days new devices get for free trial.<br>
+            <strong style="color:#ff9944">Note:</strong> Only affects NEW trials.
+          </p>
+          <div class="form-group">
+            <label>Trial Duration (days)</label>
+            <select id="trialDays" style="width:100%;padding:10px;background:#0d0d15;border:1px solid #334;border-radius:8px;color:#fff;font-size:16px">
+              <option value="1">1 day (testing)</option>
+              <option value="3">3 days</option>
+              <option value="7" selected>7 days (default)</option>
+              <option value="14">14 days</option>
+              <option value="30">30 days</option>
+            </select>
+          </div>
+          <button class="btn btn-green" onclick="saveTrialDuration()" style="width:100%;padding:12px;font-size:15px">
+            💾 Save Trial Duration
+          </button>
+          <div id="trialSaveMsg" style="margin-top:8px;font-size:13px"></div>
+        </div>
+
+        <div class="stat-card" style="text-align:left">
+          <h3 style="color:#fff;margin-bottom:16px">🔧 Adjust Trial Time</h3>
+          <p style="color:#888;font-size:13px;margin-bottom:16px">Extend, reduce, or set exact trial time for a device.</p>
+          <div class="form-group">
+            <label>Device Hash (from Trials tab)</label>
+            <input id="extendDeviceHash" placeholder="Paste device hash here..." />
+          </div>
+          <div class="form-group">
+            <label>Action</label>
+            <select id="extendAction" style="width:100%;padding:10px;background:#0d0d15;border:1px solid #334;border-radius:8px;color:#fff;font-size:14px">
+              <option value="set">⏰ Set exact time from NOW</option>
+              <option value="add">➕ Add time to current expiry</option>
+              <option value="subtract">➖ Reduce time from current expiry</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Days</label>
+            <input id="extendDays" type="number" value="1" min="1" max="365" />
+          </div>
+          <button class="btn btn-blue" onclick="extendTrial()" style="width:100%;padding:12px;font-size:15px">
+            ✅ Apply Change
+          </button>
+          <div id="extendMsg" style="margin-top:8px;font-size:13px"></div>
+        </div>
       </div>
-      <button class="btn btn-green" onclick="saveTrialDuration()" 
-              style="width:100%;padding:12px;font-size:15px">
-        💾 Save Trial Duration
-      </button>
-      <div id="trialSaveMsg" style="margin-top:8px;font-size:13px"></div>
     </div>
-
-    <div class="stat-card" style="text-align:left">
-      <h3 style="color:#fff;margin-bottom:16px">🔧 Adjust Trial Time</h3>
-<p style="color:#888;font-size:13px;margin-bottom:16px">
-  Extend, reduce, or set exact trial time for a device.
-</p>
-<div class="form-group">
-  <label>Device Hash (from Trials tab)</label>
-  <input id="extendDeviceHash" placeholder="Paste device hash here..." />
-</div>
-<div class="form-group">
-  <label>Action</label>
-  <select id="extendAction" style="width:100%;padding:10px;background:#0d0d15;border:1px solid #334;border-radius:8px;color:#fff;font-size:14px">
-    <option value="set">⏰ Set exact time from NOW</option>
-    <option value="add">➕ Add time to current expiry</option>
-    <option value="subtract">➖ Reduce time from current expiry</option>
-  </select>
-</div>
-<div class="form-group">
-  <label>Days</label>
-  <input id="extendDays" type="number" value="1" min="1" max="365" />
-</div>
-<button class="btn btn-blue" onclick="extendTrial()"
-        style="width:100%;padding:12px;font-size:15px">
-  ✅ Apply Change
-</button>
-      <div id="extendMsg" style="margin-top:8px;font-size:13px"></div>
-    </div>
-
-  </div>
-</div>
 
   </div><!-- /content -->
 </div><!-- /dashboard -->
 
-<!-- ══════════ MODALS ══════════ -->
-
-<!-- Add License Modal -->
+<!-- MODALS -->
 <div class="modal-overlay" id="modalAddLicense">
   <div class="modal">
     <h2>➕ Add License</h2>
@@ -444,13 +370,12 @@
     </div>
     <div class="error-msg" id="addLicenseError"></div>
     <div class="modal-actions">
-      <button class="btn btn-gray" onclick="closeModal('modalAddLicense')">Cancel</button>
+      <button class="btn btn-gray"  onclick="closeModal('modalAddLicense')">Cancel</button>
       <button class="btn btn-green" onclick="saveLicense()">Save License</button>
     </div>
   </div>
 </div>
 
-<!-- Edit License Modal -->
 <div class="modal-overlay" id="modalEditLicense">
   <div class="modal">
     <h2>✏️ Edit License</h2>
@@ -484,7 +409,6 @@
   </div>
 </div>
 
-<!-- Add Blacklist Modal -->
 <div class="modal-overlay" id="modalAddBlacklist">
   <div class="modal">
     <h2>🚫 Add to Blacklist</h2>
@@ -506,12 +430,11 @@
     <div class="error-msg" id="addBlacklistError"></div>
     <div class="modal-actions">
       <button class="btn btn-gray" onclick="closeModal('modalAddBlacklist')">Cancel</button>
-      <button class="btn btn-red" onclick="saveBlacklist()">Add to Blacklist</button>
+      <button class="btn btn-red"  onclick="saveBlacklist()">Add to Blacklist</button>
     </div>
   </div>
 </div>
 
-<!-- Add Version Modal -->
 <div class="modal-overlay" id="modalAddVersion">
   <div class="modal">
     <h2>📦 Add App Version</h2>
@@ -524,7 +447,7 @@
       <input id="newVersionCode" type="number" placeholder="2322" />
     </div>
     <div class="form-group">
-      <label>APK URL (Supabase Storage URL)</label>
+      <label>APK URL</label>
       <input id="newVersionUrl" placeholder="https://xxxx.supabase.co/storage/v1/object/public/apk-releases/pisolock-v23.22.apk" />
     </div>
     <div class="form-group">
@@ -539,49 +462,43 @@
     </div>
     <div class="error-msg" id="addVersionError"></div>
     <div class="modal-actions">
-      <button class="btn btn-gray" onclick="closeModal('modalAddVersion')">Cancel</button>
+      <button class="btn btn-gray"  onclick="closeModal('modalAddVersion')">Cancel</button>
       <button class="btn btn-green" onclick="saveVersion()">Add Version</button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
 <div id="toast"></div>
 
 <script>
-// ════════════════════════════════════════════════
-// CONFIGURATION — Fill in your values!
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
+// CONFIGURATION
+// ════════════════════════════════════════════
 const SUPABASE_URL  = 'https://opfwpwjkembglzthaivv.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wZndwd2prZW1iZ2x6dGhhaXZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwOTc5NjYsImV4cCI6MjA5MzY3Mzk2Nn0.tHkAwe7QOf3H_UgfEP5TvNbjrNssrnFULA3AITSuwIk';
-// ↑ Paste your full eyJ... Legacy Anon Key here
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 // STATE
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 let authToken = localStorage.getItem('pisolock_auth_token') || null;
 let authUser  = JSON.parse(localStorage.getItem('pisolock_auth_user') || 'null');
+let autoRefreshInterval = null;
 
-// ════════════════════════════════════════════════
-// AUTH HELPERS
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
+// AUTH
+// ════════════════════════════════════════════
 async function doLogin() {
   const email    = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   const errEl    = document.getElementById('loginError');
   errEl.textContent = '';
 
-  if (!email || !password) {
-    errEl.textContent = 'Please enter email and password.'; return;
-  }
+  if (!email || !password) { errEl.textContent = 'Please enter email and password.'; return; }
 
   try {
     const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON
-      },
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON },
       body: JSON.stringify({ email, password })
     });
     const data = await res.json();
@@ -589,69 +506,47 @@ async function doLogin() {
 
     authToken = data.access_token;
     authUser  = data.user;
-
-    // Save to localStorage para dili ma-logout sa reload
     localStorage.setItem('pisolock_auth_token', authToken);
     localStorage.setItem('pisolock_auth_user', JSON.stringify(authUser));
 
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('dashboard').style.display   = 'block';
-    document.getElementById('headerMeta').textContent    = `Logged in as ${email}`;
-    loadLicenses();
-	startAutoRefresh(); // ← ADD THIS
+    showDashboard(email);
   } catch (e) {
     errEl.textContent = '❌ ' + e.message;
   }
 }
-// ── Auto-refresh devices every 1 minute ──
-let autoRefreshInterval = null;
 
-function startAutoRefresh() {
-  stopAutoRefresh();
-  autoRefreshInterval = setInterval(() => {
-    // Only refresh if Devices tab is active
-    const devTab = document.getElementById('tab-devices');
-    if (devTab && devTab.classList.contains('active')) {
-      loadDevices();
-    }
-  }, 60000); // every 60 seconds
+function showDashboard(email) {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('dashboard').style.display   = 'block';
+  document.getElementById('headerMeta').textContent    = `Logged in as ${email}`;
+
+  // Restore last active tab (or default to licenses)
+  const savedTab = localStorage.getItem('pisolock_active_tab') || 'licenses';
+  showTab(savedTab, true); // true = restore mode (no event needed)
+  startAutoRefresh();
 }
 
-function stopAutoRefresh() {
-  if (autoRefreshInterval) {
-    clearInterval(autoRefreshInterval);
-    autoRefreshInterval = null;
-  }
-}
 function doLogout() {
   authToken = null;
   authUser  = null;
-
-  // Clear localStorage
   localStorage.removeItem('pisolock_auth_token');
   localStorage.removeItem('pisolock_auth_user');
-
+  localStorage.removeItem('pisolock_active_tab');
   document.getElementById('dashboard').style.display   = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginPassword').value = '';
   stopAutoRefresh();
 }
 
-// ════════════════════════════════════════════════
-// API HELPER — calls Supabase REST API
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
+// API HELPER
+// ════════════════════════════════════════════
 async function api(table, options = {}) {
-  const {
-    method = 'GET',
-    filter = '',
-    body   = null,
-    select = '*',
-    order  = 'created_at.desc',
-    limit  = 500
-  } = options;
+  const { method = 'GET', filter = '', body = null,
+          select = '*', order = 'created_at.desc', limit = 500 } = options;
 
   let url = `${SUPABASE_URL}/rest/v1/${table}?select=${select}&limit=${limit}`;
-  if (order) url += `&order=${order}`;
+  if (order)  url += `&order=${order}`;
   if (filter) url += `&${filter}`;
 
   const headers = {
@@ -661,22 +556,15 @@ async function api(table, options = {}) {
     'Prefer':        method === 'POST' ? 'return=representation' : 'return=minimal'
   };
 
-  const res = await fetch(url, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : null
-  });
-
+  const res = await fetch(url, { method, headers, body: body ? JSON.stringify(body) : null });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.message || `HTTP ${res.status}`);
   }
-
   if (res.status === 204) return null;
   return res.json();
 }
 
-// For PATCH/DELETE with filter in URL
 async function apiWithFilter(table, filter, method, body = null) {
   const url = `${SUPABASE_URL}/rest/v1/${table}?${filter}`;
   const headers = {
@@ -685,11 +573,7 @@ async function apiWithFilter(table, filter, method, body = null) {
     'Authorization': `Bearer ${authToken}`,
     'Prefer':        'return=minimal'
   };
-  const res = await fetch(url, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : null
-  });
+  const res = await fetch(url, { method, headers, body: body ? JSON.stringify(body) : null });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.message || `HTTP ${res.status}`);
@@ -697,55 +581,67 @@ async function apiWithFilter(table, filter, method, body = null) {
   return true;
 }
 
-// ════════════════════════════════════════════════
-// TAB NAVIGATION
-// ════════════════════════════════════════════════
-function showTab(name) {
+// ════════════════════════════════════════════
+// TAB NAVIGATION — saves active tab to localStorage
+// ════════════════════════════════════════════
+function showTab(name, restoreMode = false) {
+  // Update tab buttons
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
+  const activeBtn = document.getElementById('tabBtn-' + name);
+  if (activeBtn) activeBtn.classList.add('active');
 
-  // Load data for the tab
+  // Update tab panes
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  const activePane = document.getElementById('tab-' + name);
+  if (activePane) activePane.classList.add('active');
+
+  // Save current tab
+  localStorage.setItem('pisolock_active_tab', name);
+
+  // Load data
   const loaders = {
     licenses: loadLicenses,
     devices:  loadDevices,
     trials:   loadTrials,
-    blacklist:loadBlacklist,
+    blacklist: loadBlacklist,
     audit:    loadAudit,
     versions: loadVersions
   };
   if (loaders[name]) loaders[name]();
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
+// AUTO REFRESH
+// ════════════════════════════════════════════
+function startAutoRefresh() {
+  stopAutoRefresh();
+  autoRefreshInterval = setInterval(() => {
+    const devPane = document.getElementById('tab-devices');
+    if (devPane && devPane.classList.contains('active')) loadDevices();
+  }, 60000);
+}
+
+function stopAutoRefresh() {
+  if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+}
+
+// ════════════════════════════════════════════
 // LICENSES
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 async function loadLicenses() {
   const tbody = document.getElementById('licenseBody');
   tbody.innerHTML = '<tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr>';
   try {
-    // Load licenses with device counts
-    const licenses = await api('licenses', {
-      select: 'id,code,status,max_devices,expiry_date,notes,created_at',
-      order: 'created_at.desc'
-    });
+    const licenses = await api('licenses', { select: 'id,code,status,max_devices,expiry_date,notes,created_at', order: 'created_at.desc' });
+    const devices  = await api('devices', { select: 'license_id', filter: 'status=eq.active' });
 
-    // Count devices per license
-    const devices = await api('devices', {
-      select: 'license_id',
-      filter: 'status=eq.active'
-    });
     const devCount = {};
-    devices.forEach(d => {
-      devCount[d.license_id] = (devCount[d.license_id] || 0) + 1;
-    });
+    devices.forEach(d => { devCount[d.license_id] = (devCount[d.license_id] || 0) + 1; });
 
-    // Update stats
-    document.getElementById('statTotal').textContent   = licenses.length;
-    document.getElementById('statActive').textContent  = licenses.filter(l => l.status === 'active').length;
-    document.getElementById('statInactive').textContent= licenses.filter(l => l.status === 'inactive').length;
-    document.getElementById('statExpired').textContent = licenses.filter(l => l.status === 'expired').length;
+    document.getElementById('statTotal').textContent    = licenses.length;
+    document.getElementById('statActive').textContent   = licenses.filter(l => l.status === 'active').length;
+    document.getElementById('statInactive').textContent = licenses.filter(l => l.status === 'inactive').length;
+    document.getElementById('statExpired').textContent  = licenses.filter(l => l.status === 'expired').length;
 
     if (licenses.length === 0) {
       tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon">🔑</div>No licenses yet. Add one!</div></td></tr>';
@@ -765,7 +661,7 @@ async function loadLicenses() {
         <td class="text-muted">${created}</td>
         <td>
           <button class="btn btn-blue" onclick='openEditLicense(${JSON.stringify(l)})'>Edit</button>
-          <button class="btn btn-red" onclick="deleteLicense('${l.id}','${l.code}')" style="margin-left:4px">Delete</button>
+          <button class="btn btn-red"  onclick="deleteLicense('${l.id}','${l.code}')" style="margin-left:4px">Delete</button>
         </td>
       </tr>`;
     }).join('');
@@ -775,10 +671,10 @@ async function loadLicenses() {
 }
 
 function openAddLicense() {
-  document.getElementById('newLicenseCode').value   = '';
-  document.getElementById('newLicenseMax').value    = '1';
-  document.getElementById('newLicenseExpiry').value = '';
-  document.getElementById('newLicenseNotes').value  = '';
+  document.getElementById('newLicenseCode').value  = '';
+  document.getElementById('newLicenseMax').value   = '1';
+  document.getElementById('newLicenseExpiry').value= '';
+  document.getElementById('newLicenseNotes').value = '';
   document.getElementById('addLicenseError').textContent = '';
   openModal('modalAddLicense');
 }
@@ -796,18 +692,12 @@ async function saveLicense() {
   const notes  = document.getElementById('newLicenseNotes').value.trim();
   const errEl  = document.getElementById('addLicenseError');
   errEl.textContent = '';
-
   try {
-    await api('licenses', {
-      method: 'POST',
-      body: { code, status: 'active', max_devices: max, expiry_date: expiry || null, notes }
-    });
+    await api('licenses', { method: 'POST', body: { code, status: 'active', max_devices: max, expiry_date: expiry || null, notes } });
     closeModal('modalAddLicense');
     toast(`✅ License ${code} created!`);
     loadLicenses();
-  } catch (e) {
-    errEl.textContent = '❌ ' + e.message;
-  }
+  } catch (e) { errEl.textContent = '❌ ' + e.message; }
 }
 
 function openEditLicense(l) {
@@ -827,16 +717,12 @@ async function updateLicense() {
   const expiry = document.getElementById('editLicenseExpiry').value || null;
   const notes  = document.getElementById('editLicenseNotes').value.trim();
   const errEl  = document.getElementById('editLicenseError');
-
   try {
-    await apiWithFilter('licenses', `id=eq.${id}`, 'PATCH',
-      { status, max_devices: max, expiry_date: expiry, notes });
+    await apiWithFilter('licenses', `id=eq.${id}`, 'PATCH', { status, max_devices: max, expiry_date: expiry, notes });
     closeModal('modalEditLicense');
     toast('✅ License updated!');
     loadLicenses();
-  } catch (e) {
-    errEl.textContent = '❌ ' + e.message;
-  }
+  } catch (e) { errEl.textContent = '❌ ' + e.message; }
 }
 
 async function deleteLicense(id, code) {
@@ -845,14 +731,41 @@ async function deleteLicense(id, code) {
     await apiWithFilter('licenses', `id=eq.${id}`, 'DELETE');
     toast(`🗑️ License ${code} deleted`);
     loadLicenses();
-  } catch (e) {
-    toast('❌ ' + e.message);
-  }
+  } catch (e) { toast('❌ ' + e.message); }
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 // DEVICES
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
+function getOnlineStatus(lastSeenStr) {
+  if (!lastSeenStr) return {
+    dot: '⚫',
+    badge: '<span class="badge" style="background:#1a1a2a;color:#555">Never seen</span>'
+  };
+  const mins = Math.floor((Date.now() - new Date(lastSeenStr).getTime()) / 60000);
+  if (mins < 20) return {
+    dot: '🟢',
+    badge: '<span class="badge" style="background:#0a2a0a;color:#44ff88;border:1px solid #44ff8844">🟢 Online</span>'
+  };
+  if (mins < 120) return {
+    dot: '🟡',
+    badge: '<span class="badge" style="background:#2a2a0a;color:#ffff44;border:1px solid #ffff4444">🟡 Idle</span>'
+  };
+  return {
+    dot: '🔴',
+    badge: '<span class="badge" style="background:#2a0a0a;color:#ff5252;border:1px solid #ff525244">🔴 Offline</span>'
+  };
+}
+
+function getDeviceStatusBadge(status) {
+  const badges = {
+    'active':    '<span class="badge badge-active"    title="Licensed and working normally">✅ Active</span>',
+    'suspended': '<span class="badge badge-suspended" title="Admin blocked — cannot use app">⛔ Suspended</span>',
+    'blocked':   '<span class="badge badge-expired"   title="Permanently blacklisted">🚫 Blocked</span>'
+  };
+  return badges[status] || `<span class="badge badge-inactive">${status}</span>`;
+}
+
 async function loadDevices() {
   const tbody = document.getElementById('deviceBody');
   tbody.innerHTML = '<tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr>';
@@ -868,20 +781,13 @@ async function loadDevices() {
     }
 
     tbody.innerHTML = devices.map(d => {
-      const lastSeen   = d.last_seen ? timeAgo(d.last_seen) : 'Never';
-      const hash       = d.device_hash ? d.device_hash.substring(0, 12) + '...' : '—';
-      const license    = d.licenses ? d.licenses.code : '—';
-
-      // ── Online/Offline Status ──
-      const onlineStatus = getOnlineStatus(d.last_seen);
-
-      // ── Device Status Badge ──
+      const lastSeen        = d.last_seen ? timeAgo(d.last_seen) : 'Never';
+      const hash            = d.device_hash ? d.device_hash.substring(0, 12) + '...' : '—';
+      const license         = d.licenses ? d.licenses.code : '—';
+      const onlineStatus    = getOnlineStatus(d.last_seen);
       const deviceStatusBadge = getDeviceStatusBadge(d.status);
-
       return `<tr>
-        <td>
-          ${onlineStatus.dot} ${d.device_name || 'Unknown'}
-        </td>
+        <td>${onlineStatus.dot} ${d.device_name || 'Unknown'}</td>
         <td><code>${license}</code></td>
         <td>${deviceStatusBadge}</td>
         <td>${onlineStatus.badge}</td>
@@ -889,69 +795,49 @@ async function loadDevices() {
         <td><code title="${d.device_hash}">${hash}</code></td>
         <td>
           ${d.status === 'active'
-            ? `<button class="btn btn-red" onclick="suspendDevice('${d.id}')">Suspend</button>`
-            : `<button class="btn btn-green" onclick="unsuspendDevice('${d.id}')">Restore</button>`
-          }
+            ? `<button class="btn btn-red"   onclick="suspendDevice('${d.id}')">Suspend</button>`
+            : `<button class="btn btn-green" onclick="unsuspendDevice('${d.id}')">Restore</button>`}
           <button class="btn btn-gray" onclick="deleteDevice('${d.id}')" style="margin-left:4px">Remove</button>
         </td>
       </tr>`;
     }).join('');
-
   } catch (e) {
     tbody.innerHTML = `<tr><td colspan="7" style="color:#ff5252;padding:24px">❌ ${e.message}</td></tr>`;
   }
 }
-    }).join('');
-  } catch (e) {
-    tbody.innerHTML = `<tr><td colspan="6" style="color:#ff5252;padding:24px">❌ ${e.message}</td></tr>`;
-  }
-}
 
 async function suspendDevice(id) {
-  if (!confirm('Suspend this device? It will be blocked on next verify.')) return;
-  try {
-    await apiWithFilter('devices', `id=eq.${id}`, 'PATCH', { status: 'suspended' });
-    toast('⛔ Device suspended');
-    loadDevices();
-  } catch (e) { toast('❌ ' + e.message); }
+  if (!confirm('Suspend this device?')) return;
+  try { await apiWithFilter('devices', `id=eq.${id}`, 'PATCH', { status: 'suspended' }); toast('⛔ Device suspended'); loadDevices(); }
+  catch (e) { toast('❌ ' + e.message); }
 }
-
 async function unsuspendDevice(id) {
-  try {
-    await apiWithFilter('devices', `id=eq.${id}`, 'PATCH', { status: 'active' });
-    toast('✅ Device restored');
-    loadDevices();
-  } catch (e) { toast('❌ ' + e.message); }
+  try { await apiWithFilter('devices', `id=eq.${id}`, 'PATCH', { status: 'active' }); toast('✅ Device restored'); loadDevices(); }
+  catch (e) { toast('❌ ' + e.message); }
 }
-
 async function deleteDevice(id) {
-  if (!confirm('Remove this device record? The device will need to re-activate.')) return;
-  try {
-    await apiWithFilter('devices', `id=eq.${id}`, 'DELETE');
-    toast('🗑️ Device removed');
-    loadDevices();
-  } catch (e) { toast('❌ ' + e.message); }
+  if (!confirm('Remove this device record?')) return;
+  try { await apiWithFilter('devices', `id=eq.${id}`, 'DELETE'); toast('🗑️ Device removed'); loadDevices(); }
+  catch (e) { toast('❌ ' + e.message); }
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 // TRIALS
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 async function loadTrials() {
   const tbody = document.getElementById('trialBody');
   tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="spinner"></div>Loading...</td></tr>';
   try {
     const trials = await api('trials', { order: 'created_at.desc' });
-
     if (trials.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon">⏱</div>No trials yet.</div></td></tr>';
       return;
     }
-
     tbody.innerHTML = trials.map(t => {
-      const now        = new Date();
-      const expiry     = new Date(t.expiry_time);
-      const hoursLeft  = Math.max(0, Math.floor((expiry - now) / 3600000));
-      const hash       = t.device_hash.substring(0, 16) + '...';
+      const now      = new Date();
+      const expiry   = new Date(t.expiry_time);
+      const hoursLeft= Math.max(0, Math.floor((expiry - now) / 3600000));
+      const hash     = t.device_hash.substring(0, 16) + '...';
       return `<tr>
         <td><code title="${t.device_hash}">${hash}</code></td>
         <td><span class="badge badge-${t.status}">${t.status}</span></td>
@@ -965,20 +851,18 @@ async function loadTrials() {
   }
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 // BLACKLIST
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 async function loadBlacklist() {
   const tbody = document.getElementById('blacklistBody');
   tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="spinner"></div>Loading...</td></tr>';
   try {
     const rows = await api('blacklist', { order: 'created_at.desc' });
-
     if (rows.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon">🚫</div>Blacklist is empty. Good!</div></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon">🚫</div>Blacklist is empty.</div></td></tr>';
       return;
     }
-
     tbody.innerHTML = rows.map(r => `<tr>
       <td><span class="badge badge-${r.type === 'device' ? 'inactive' : 'expired'}">${r.type}</span></td>
       <td><code>${r.identifier}</code></td>
@@ -997,52 +881,37 @@ function openAddBlacklist() {
   document.getElementById('addBlacklistError').textContent = '';
   openModal('modalAddBlacklist');
 }
-
 async function saveBlacklist() {
   const type       = document.getElementById('newBlacklistType').value;
   const identifier = document.getElementById('newBlacklistId').value.trim();
   const reason     = document.getElementById('newBlacklistReason').value.trim();
   const errEl      = document.getElementById('addBlacklistError');
-
   if (!identifier) { errEl.textContent = 'Identifier is required.'; return; }
-
   try {
     await api('blacklist', { method: 'POST', body: { type, identifier, reason } });
     closeModal('modalAddBlacklist');
     toast('🚫 Added to blacklist');
     loadBlacklist();
-  } catch (e) {
-    errEl.textContent = '❌ ' + e.message;
-  }
+  } catch (e) { errEl.textContent = '❌ ' + e.message; }
 }
-
 async function removeBlacklist(id) {
   if (!confirm('Remove from blacklist?')) return;
-  try {
-    await apiWithFilter('blacklist', `id=eq.${id}`, 'DELETE');
-    toast('✅ Removed from blacklist');
-    loadBlacklist();
-  } catch (e) { toast('❌ ' + e.message); }
+  try { await apiWithFilter('blacklist', `id=eq.${id}`, 'DELETE'); toast('✅ Removed from blacklist'); loadBlacklist(); }
+  catch (e) { toast('❌ ' + e.message); }
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 // AUDIT LOG
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 async function loadAudit() {
   const tbody = document.getElementById('auditBody');
   tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="spinner"></div>Loading...</td></tr>';
   try {
-    const rows = await api('audit_log', {
-      select: 'action,device_hash,license_code,ip_address,created_at',
-      order:  'created_at.desc',
-      limit:  200
-    });
-
+    const rows = await api('audit_log', { select: 'action,device_hash,license_code,ip_address,created_at', order: 'created_at.desc', limit: 200 });
     if (rows.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div>No audit logs yet.</div></td></tr>';
       return;
     }
-
     tbody.innerHTML = rows.map(r => {
       const hash = r.device_hash ? r.device_hash.substring(0, 10) + '...' : '—';
       return `<tr>
@@ -1058,20 +927,18 @@ async function loadAudit() {
   }
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 // APP VERSIONS
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 async function loadVersions() {
   const tbody = document.getElementById('versionBody');
   tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr>';
   try {
     const rows = await api('app_versions', { order: 'version_code.desc' });
-
     if (rows.length === 0) {
       tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div>No versions yet.</div></td></tr>';
       return;
     }
-
     tbody.innerHTML = rows.map(r => `<tr>
       <td><strong>v${r.version_name}</strong></td>
       <td>${r.version_code}</td>
@@ -1080,9 +947,7 @@ async function loadVersions() {
       </td>
       <td>${r.is_forced ? '<span class="badge badge-suspended">FORCED</span>' : '<span class="badge badge-inactive">Optional</span>'}</td>
       <td class="text-muted">${new Date(r.created_at).toLocaleDateString()}</td>
-      <td>
-        <button class="btn btn-red" onclick="deleteVersion('${r.id}')">Delete</button>
-      </td>
+      <td><button class="btn btn-red" onclick="deleteVersion('${r.id}')">Delete</button></td>
     </tr>`).join('');
   } catch (e) {
     tbody.innerHTML = `<tr><td colspan="6" style="color:#ff5252;padding:24px">❌ ${e.message}</td></tr>`;
@@ -1092,106 +957,88 @@ async function loadVersions() {
 function openAddVersion() {
   document.getElementById('newVersionName').value  = '';
   document.getElementById('newVersionCode').value  = '';
-  document.getElementById('newVersionUrl').value   = `https://opfwpwjkembglzthaivv.supabase.co/storage/v1/object/public/apk-releases/pisolock-v.apk`;
+  document.getElementById('newVersionUrl').value   = 'https://opfwpwjkembglzthaivv.supabase.co/storage/v1/object/public/apk-releases/pisolock-v.apk';
   document.getElementById('newVersionNotes').value = '';
   document.getElementById('newVersionForced').checked = false;
   document.getElementById('addVersionError').textContent = '';
   openModal('modalAddVersion');
 }
-
 async function saveVersion() {
-  const name    = document.getElementById('newVersionName').value.trim();
-  const code    = parseInt(document.getElementById('newVersionCode').value);
-  const url     = document.getElementById('newVersionUrl').value.trim();
-  const notes   = document.getElementById('newVersionNotes').value.trim();
-  const forced  = document.getElementById('newVersionForced').checked;
-  const errEl   = document.getElementById('addVersionError');
-
-  if (!name || !code || !url) {
-    errEl.textContent = 'Name, code and URL are required.'; return;
-  }
-
+  const name   = document.getElementById('newVersionName').value.trim();
+  const code   = parseInt(document.getElementById('newVersionCode').value);
+  const url    = document.getElementById('newVersionUrl').value.trim();
+  const notes  = document.getElementById('newVersionNotes').value.trim();
+  const forced = document.getElementById('newVersionForced').checked;
+  const errEl  = document.getElementById('addVersionError');
+  if (!name || !code || !url) { errEl.textContent = 'Name, code and URL are required.'; return; }
   try {
-    await api('app_versions', {
-      method: 'POST',
-      body: { version_name: name, version_code: code, apk_url: url, release_notes: notes, is_forced: forced }
-    });
+    await api('app_versions', { method: 'POST', body: { version_name: name, version_code: code, apk_url: url, release_notes: notes, is_forced: forced } });
     closeModal('modalAddVersion');
     toast(`✅ Version v${name} added!`);
     loadVersions();
-  } catch (e) {
-    errEl.textContent = '❌ ' + e.message;
-  }
+  } catch (e) { errEl.textContent = '❌ ' + e.message; }
 }
-
 async function deleteVersion(id) {
   if (!confirm('Delete this version record?')) return;
-  try {
-    await apiWithFilter('app_versions', `id=eq.${id}`, 'DELETE');
-    toast('🗑️ Version deleted');
-    loadVersions();
-  } catch (e) { toast('❌ ' + e.message); }
+  try { await apiWithFilter('app_versions', `id=eq.${id}`, 'DELETE'); toast('🗑️ Version deleted'); loadVersions(); }
+  catch (e) { toast('❌ ' + e.message); }
 }
 
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
+// SETTINGS
+// ════════════════════════════════════════════
+async function saveTrialDuration() {
+  const days  = parseInt(document.getElementById('trialDays').value);
+  const msgEl = document.getElementById('trialSaveMsg');
+  localStorage.setItem('trial_days_setting', days);
+  msgEl.style.color   = '#ffaa00';
+  msgEl.textContent   = `⚠️ To apply: Update trial/index.ts — change to "+ ${days} * 24 * 60 * 60 * 1000" then redeploy.`;
+  toast(`✅ Trial duration set to ${days} days — update Edge Function to apply!`);
+}
+
+async function extendTrial() {
+  const deviceHash = document.getElementById('extendDeviceHash').value.trim();
+  const days       = parseInt(document.getElementById('extendDays').value) || 1;
+  const action     = document.getElementById('extendAction').value;
+  const msgEl      = document.getElementById('extendMsg');
+  msgEl.textContent = '';
+
+  if (!deviceHash) { msgEl.style.color = '#ff5252'; msgEl.textContent = '❌ Please enter a device hash'; return; }
+
+  try {
+    const trials = await api('trials', { filter: `device_hash=eq.${deviceHash}` });
+    if (!trials || trials.length === 0) { msgEl.style.color = '#ff5252'; msgEl.textContent = '❌ No trial found for this device hash'; return; }
+
+    let newExpiry;
+    if (action === 'set') {
+      newExpiry = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+    } else if (action === 'add') {
+      newExpiry = new Date(new Date(trials[0].expiry_time).getTime() + days * 24 * 60 * 60 * 1000);
+    } else {
+      newExpiry = new Date(new Date(trials[0].expiry_time).getTime() - days * 24 * 60 * 60 * 1000);
+      const minExpiry = new Date(Date.now() + 60 * 1000);
+      if (newExpiry < minExpiry) newExpiry = minExpiry;
+    }
+
+    await apiWithFilter('trials', `device_hash=eq.${deviceHash}`, 'PATCH', {
+      expiry_time: newExpiry.toISOString(),
+      status: newExpiry > new Date() ? 'active' : 'expired'
+    });
+
+    msgEl.style.color = '#44ff88';
+    msgEl.textContent = `✅ Done! New expiry: ${newExpiry.toLocaleString()}`;
+    toast('✅ Trial updated!');
+  } catch (e) { msgEl.style.color = '#ff5252'; msgEl.textContent = '❌ ' + e.message; }
+}
+
+// ════════════════════════════════════════════
 // UTILITIES
-// ════════════════════════════════════════════════
+// ════════════════════════════════════════════
 function filterTable(tableId, query) {
-  const q    = query.toLowerCase();
-  const rows = document.querySelectorAll(`#${tableId} tbody tr`);
-  rows.forEach(row => {
+  const q = query.toLowerCase();
+  document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => {
     row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
   });
-}
-// ── Online/Offline Status Helper ──────────────────────
-function getOnlineStatus(lastSeenStr) {
-  if (!lastSeenStr) return {
-    dot: '⚫',
-    badge: '<span class="badge" style="background:#1a1a2a;color:#555">Never seen</span>',
-    label: 'never'
-  };
-
-  const diff = Date.now() - new Date(lastSeenStr).getTime();
-  const mins = Math.floor(diff / 60000);
-
-  if (mins < 20) {
-    return {
-      dot: '🟢',
-      badge: '<span class="badge" style="background:#0a2a0a;color:#44ff88;border:1px solid #44ff8844">🟢 Online</span>',
-      label: 'online'
-    };
-  } else if (mins < 120) {
-    return {
-      dot: '🟡',
-      badge: '<span class="badge" style="background:#2a2a0a;color:#ffff44;border:1px solid #ffff4444">🟡 Idle</span>',
-      label: 'idle'
-    };
-  } else {
-    return {
-      dot: '🔴',
-      badge: '<span class="badge" style="background:#2a0a0a;color:#ff5252;border:1px solid #ff525244">🔴 Offline</span>',
-      label: 'offline'
-    };
-  }
-}
-
-// ── Device Status Badge Helper ─────────────────────────
-function getDeviceStatusBadge(status) {
-  const badges = {
-    'active': `
-      <span class="badge badge-active" title="Device is licensed and working normally">
-        ✅ Active
-      </span>`,
-    'suspended': `
-      <span class="badge badge-suspended" title="Admin manually blocked this device — cannot use the app">
-        ⛔ Suspended
-      </span>`,
-    'blocked': `
-      <span class="badge badge-expired" title="Device is permanently blacklisted">
-        🚫 Blocked
-      </span>`
-  };
-  return badges[status] || `<span class="badge badge-inactive">${status}</span>`;
 }
 
 function timeAgo(dateStr) {
@@ -1208,51 +1055,8 @@ function timeAgo(dateStr) {
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-// Close modal on overlay click
 document.querySelectorAll('.modal-overlay').forEach(el => {
   el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
-});
-
-// ── Auto-restore session on page load ──────────
-(function restoreSession() {
-  if (authToken && authUser) {
-    // Token exists — verify if still valid then show dashboard
-    const email = authUser.email || 'Admin';
-    
-    // Show dashboard immediately (optimistic)
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('dashboard').style.display   = 'block';
-    document.getElementById('headerMeta').textContent    = `Logged in as ${email}`;
-    loadLicenses();
-    startAutoRefresh();
-
-    // Verify token is still valid in background
-    fetch(`${SUPABASE_URL}/auth/v1/user`, {
-      headers: {
-        'apikey': SUPABASE_ANON,
-        'Authorization': `Bearer ${authToken}`
-      }
-    }).then(res => {
-      if (!res.ok) {
-        // Token expired — force logout
-        console.log('Session expired — logging out');
-        doLogout();
-      }
-    }).catch(() => {
-      // Network error — keep session (offline mode)
-      console.log('Network error — keeping existing session');
-    });
-  }
-})();
-
-// Enter key on login
-document.getElementById('loginPassword').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
-
-// Enter key on login
-document.getElementById('loginPassword').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
 });
 
 let toastTimer;
@@ -1264,96 +1068,43 @@ function toast(msg) {
   toastTimer = setTimeout(() => el.style.display = 'none', 3000);
 }
 
-// ════════════════════════════════════════════════
-// SETTINGS
-// ════════════════════════════════════════════════
-
-async function saveTrialDuration() {
-  const days = parseInt(document.getElementById('trialDays').value);
-  const msgEl = document.getElementById('trialSaveMsg');
-
-  try {
-    // Save to app_versions table as a config entry
-    // Or use a simple settings table
-    // For now — show instruction to update Edge Function
-    msgEl.style.color = '#ffaa00';
-    msgEl.textContent = `⚠️ To apply: Update trial/index.ts line with "+ ${days} * 24 * 60 * 60 * 1000" then redeploy.`;
-    
-    // Save preference locally for display
-    localStorage.setItem('trial_days_setting', days);
-    toast(`✅ Trial duration set to ${days} days — update Edge Function to apply!`);
-  } catch (e) {
-    msgEl.style.color = '#ff5252';
-    msgEl.textContent = '❌ ' + e.message;
-  }
-}
-
-async function extendTrial() {
-  const deviceHash = document.getElementById('extendDeviceHash').value.trim();
-  const days       = parseInt(document.getElementById('extendDays').value) || 1;
-  const action     = document.getElementById('extendAction').value; // add or set
-  const msgEl      = document.getElementById('extendMsg');
-  msgEl.textContent = '';
-
-  if (!deviceHash) {
-    msgEl.style.color = '#ff5252';
-    msgEl.textContent = '❌ Please enter a device hash';
-    return;
-  }
-
-  try {
-    const trials = await api('trials', {
-      filter: `device_hash=eq.${deviceHash}`
-    });
-
-    if (!trials || trials.length === 0) {
-      msgEl.style.color = '#ff5252';
-      msgEl.textContent = '❌ No trial found for this device hash';
-      return;
-    }
-
-    let newExpiry;
-
-    if (action === 'set') {
-      // Set exact days from NOW
-      newExpiry = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
-    } else if (action === 'add') {
-      // Add days to current expiry
-      const currentExpiry = new Date(trials[0].expiry_time);
-      newExpiry = new Date(currentExpiry.getTime() + days * 24 * 60 * 60 * 1000);
-    } else {
-      // Subtract days from current expiry
-      const currentExpiry = new Date(trials[0].expiry_time);
-      newExpiry = new Date(currentExpiry.getTime() - days * 24 * 60 * 60 * 1000);
-      // Don't go below 1 minute from now
-      const minExpiry = new Date(Date.now() + 60 * 1000);
-      if (newExpiry < minExpiry) newExpiry = minExpiry;
-    }
-
-    await apiWithFilter('trials', `device_hash=eq.${deviceHash}`, 'PATCH', {
-      expiry_time: newExpiry.toISOString(),
-      status: newExpiry > new Date() ? 'active' : 'expired'
-    });
-
-    msgEl.style.color = '#44ff88';
-    msgEl.textContent = `✅ Done! New expiry: ${newExpiry.toLocaleString()}`;
-    toast(`✅ Trial updated!`);
-
-  } catch (e) {
-    msgEl.style.color = '#ff5252';
-    msgEl.textContent = '❌ ' + e.message;
-  }
-}
-
-// Load saved setting on dashboard open
+// ════════════════════════════════════════════
+// INIT — runs on page load
+// ════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('trial_days_setting');
-  if (saved) {
+  // Restore trial days setting
+  const savedDays = localStorage.getItem('trial_days_setting');
+  if (savedDays) {
     const sel = document.getElementById('trialDays');
-    if (sel) sel.value = saved;
+    if (sel) sel.value = savedDays;
+  }
+
+  // Enter key on login
+  document.getElementById('loginPassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  // Auto-restore session
+  if (authToken && authUser) {
+    const email = authUser.email || 'Admin';
+
+    // Verify token in background
+    fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${authToken}` }
+    }).then(res => {
+      if (!res.ok) {
+        // Token expired
+        doLogout();
+      } else {
+        // Token valid — show dashboard
+        showDashboard(email);
+      }
+    }).catch(() => {
+      // Network error — show dashboard anyway (offline mode)
+      showDashboard(email);
+    });
   }
 });
-
 </script>
 </body>
 </html>
