@@ -236,15 +236,64 @@
 
     <!-- ── DEVICES TAB ── -->
     <div class="tab-pane" id="tab-devices">
-      <div class="action-bar">
+      <div class="tab-pane" id="tab-devices">
+
+  <!-- Legend -->
+  <div style="background:#1c1c2a;border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px">
+    <div style="color:#888;margin-bottom:10px;font-weight:600">📖 Status Guide:</div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px">
+
+      <div>
+        <div style="color:#aaa;margin-bottom:6px">Device Status:</div>
+        <div style="margin-bottom:4px">
+          <span class="badge badge-active">✅ Active</span>
+          <span style="color:#666;margin-left:8px">Licensed — working normally</span>
+        </div>
+        <div style="margin-bottom:4px">
+          <span class="badge badge-suspended">⛔ Suspended</span>
+          <span style="color:#666;margin-left:8px">Admin blocked — cannot use app</span>
+        </div>
+        <div>
+          <span class="badge badge-expired">🚫 Blocked</span>
+          <span style="color:#666;margin-left:8px">Permanently blacklisted</span>
+        </div>
+      </div>
+
+      <div>
+        <div style="color:#aaa;margin-bottom:6px">Connection:</div>
+        <div style="margin-bottom:4px">
+          <span class="badge" style="background:#0a2a0a;color:#44ff88">🟢 Online</span>
+          <span style="color:#666;margin-left:8px">Active in last 20 minutes</span>
+        </div>
+        <div style="margin-bottom:4px">
+          <span class="badge" style="background:#2a2a0a;color:#ffff44">🟡 Idle</span>
+          <span style="color:#666;margin-left:8px">Last seen 20min - 2hrs ago</span>
+        </div>
+        <div>
+          <span class="badge" style="background:#2a0a0a;color:#ff5252">🔴 Offline</span>
+          <span style="color:#666;margin-left:8px">No heartbeat for 2+ hours</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- End Legend -->
+
+  <div class="action-bar">
         <button class="btn btn-gray" onclick="loadDevices()">↻ Refresh</button>
         <input class="search-input" placeholder="Search device name or hash..." oninput="filterTable('deviceTable', this.value)" />
       </div>
       <div class="table-wrap">
         <table id="deviceTable">
           <thead><tr>
-            <th>Device Name</th><th>License</th><th>Status</th>
-            <th>Last Seen</th><th>Hash</th><th>Actions</th>
+            <th>Device Name</th>
+	<th>License</th>
+	<th>Device Status</th>
+	<th>Connection</th>
+	<th>Last Seen</th>
+	<th>Hash</th>
+	<th>Actions</th>
+	
           </tr></thead>
           <tbody id="deviceBody"><tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
         </table>
@@ -544,11 +593,31 @@ async function doLogin() {
     document.getElementById('dashboard').style.display   = 'block';
     document.getElementById('headerMeta').textContent    = `Logged in as ${email}`;
     loadLicenses();
+	startAutoRefresh(); // ← ADD THIS
   } catch (e) {
     errEl.textContent = '❌ ' + e.message;
   }
 }
+// ── Auto-refresh devices every 1 minute ──
+let autoRefreshInterval = null;
 
+function startAutoRefresh() {
+  stopAutoRefresh();
+  autoRefreshInterval = setInterval(() => {
+    // Only refresh if Devices tab is active
+    const devTab = document.getElementById('tab-devices');
+    if (devTab && devTab.classList.contains('active')) {
+      loadDevices();
+    }
+  }, 60000); // every 60 seconds
+}
+
+function stopAutoRefresh() {
+  if (autoRefreshInterval) {
+    clearInterval(autoRefreshInterval);
+    autoRefreshInterval = null;
+  }
+}
 function doLogout() {
   authToken = null; authUser = null;
   document.getElementById('dashboard').style.display    = 'none';
@@ -774,7 +843,7 @@ async function deleteLicense(id, code) {
 // ════════════════════════════════════════════════
 async function loadDevices() {
   const tbody = document.getElementById('deviceBody');
-  tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr>';
   try {
     const devices = await api('devices', {
       select: 'id,device_hash,device_name,status,last_seen,activated_at,license_id,licenses(code)',
@@ -782,18 +851,28 @@ async function loadDevices() {
     });
 
     if (devices.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="icon">📱</div>No devices activated yet.</div></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon">📱</div>No devices activated yet.</div></td></tr>';
       return;
     }
 
     tbody.innerHTML = devices.map(d => {
-      const lastSeen = d.last_seen ? timeAgo(d.last_seen) : 'Never';
-      const hash     = d.device_hash ? d.device_hash.substring(0, 12) + '...' : '—';
-      const license  = d.licenses ? d.licenses.code : '—';
+      const lastSeen   = d.last_seen ? timeAgo(d.last_seen) : 'Never';
+      const hash       = d.device_hash ? d.device_hash.substring(0, 12) + '...' : '—';
+      const license    = d.licenses ? d.licenses.code : '—';
+
+      // ── Online/Offline Status ──
+      const onlineStatus = getOnlineStatus(d.last_seen);
+
+      // ── Device Status Badge ──
+      const deviceStatusBadge = getDeviceStatusBadge(d.status);
+
       return `<tr>
-        <td>${d.device_name || 'Unknown'}</td>
+        <td>
+          ${onlineStatus.dot} ${d.device_name || 'Unknown'}
+        </td>
         <td><code>${license}</code></td>
-        <td><span class="badge badge-${d.status}">${d.status}</span></td>
+        <td>${deviceStatusBadge}</td>
+        <td>${onlineStatus.badge}</td>
         <td>${lastSeen}</td>
         <td><code title="${d.device_hash}">${hash}</code></td>
         <td>
@@ -804,6 +883,12 @@ async function loadDevices() {
           <button class="btn btn-gray" onclick="deleteDevice('${d.id}')" style="margin-left:4px">Remove</button>
         </td>
       </tr>`;
+    }).join('');
+
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="7" style="color:#ff5252;padding:24px">❌ ${e.message}</td></tr>`;
+  }
+}
     }).join('');
   } catch (e) {
     tbody.innerHTML = `<tr><td colspan="6" style="color:#ff5252;padding:24px">❌ ${e.message}</td></tr>`;
@@ -1045,6 +1130,56 @@ function filterTable(tableId, query) {
   rows.forEach(row => {
     row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
   });
+}
+// ── Online/Offline Status Helper ──────────────────────
+function getOnlineStatus(lastSeenStr) {
+  if (!lastSeenStr) return {
+    dot: '⚫',
+    badge: '<span class="badge" style="background:#1a1a2a;color:#555">Never seen</span>',
+    label: 'never'
+  };
+
+  const diff = Date.now() - new Date(lastSeenStr).getTime();
+  const mins = Math.floor(diff / 60000);
+
+  if (mins < 20) {
+    return {
+      dot: '🟢',
+      badge: '<span class="badge" style="background:#0a2a0a;color:#44ff88;border:1px solid #44ff8844">🟢 Online</span>',
+      label: 'online'
+    };
+  } else if (mins < 120) {
+    return {
+      dot: '🟡',
+      badge: '<span class="badge" style="background:#2a2a0a;color:#ffff44;border:1px solid #ffff4444">🟡 Idle</span>',
+      label: 'idle'
+    };
+  } else {
+    return {
+      dot: '🔴',
+      badge: '<span class="badge" style="background:#2a0a0a;color:#ff5252;border:1px solid #ff525244">🔴 Offline</span>',
+      label: 'offline'
+    };
+  }
+}
+
+// ── Device Status Badge Helper ─────────────────────────
+function getDeviceStatusBadge(status) {
+  const badges = {
+    'active': `
+      <span class="badge badge-active" title="Device is licensed and working normally">
+        ✅ Active
+      </span>`,
+    'suspended': `
+      <span class="badge badge-suspended" title="Admin manually blocked this device — cannot use the app">
+        ⛔ Suspended
+      </span>`,
+    'blocked': `
+      <span class="badge badge-expired" title="Device is permanently blacklisted">
+        🚫 Blocked
+      </span>`
+  };
+  return badges[status] || `<span class="badge badge-inactive">${status}</span>`;
 }
 
 function timeAgo(dateStr) {
