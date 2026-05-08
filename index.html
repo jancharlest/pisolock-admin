@@ -559,8 +559,8 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 // ════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════
-let authToken = null;   // Supabase JWT after login
-let authUser  = null;
+let authToken = localStorage.getItem('pisolock_auth_token') || null;
+let authUser  = JSON.parse(localStorage.getItem('pisolock_auth_user') || 'null');
 
 // ════════════════════════════════════════════════
 // AUTH HELPERS
@@ -589,6 +589,11 @@ async function doLogin() {
 
     authToken = data.access_token;
     authUser  = data.user;
+
+    // Save to localStorage para dili ma-logout sa reload
+    localStorage.setItem('pisolock_auth_token', authToken);
+    localStorage.setItem('pisolock_auth_user', JSON.stringify(authUser));
+
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboard').style.display   = 'block';
     document.getElementById('headerMeta').textContent    = `Logged in as ${email}`;
@@ -619,10 +624,17 @@ function stopAutoRefresh() {
   }
 }
 function doLogout() {
-  authToken = null; authUser = null;
-  document.getElementById('dashboard').style.display    = 'none';
-  document.getElementById('loginScreen').style.display  = 'flex';
+  authToken = null;
+  authUser  = null;
+
+  // Clear localStorage
+  localStorage.removeItem('pisolock_auth_token');
+  localStorage.removeItem('pisolock_auth_user');
+
+  document.getElementById('dashboard').style.display   = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginPassword').value = '';
+  stopAutoRefresh();
 }
 
 // ════════════════════════════════════════════════
@@ -1199,6 +1211,43 @@ function closeModal(id) { document.getElementById(id).classList.remove('open'); 
 // Close modal on overlay click
 document.querySelectorAll('.modal-overlay').forEach(el => {
   el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+// ── Auto-restore session on page load ──────────
+(function restoreSession() {
+  if (authToken && authUser) {
+    // Token exists — verify if still valid then show dashboard
+    const email = authUser.email || 'Admin';
+    
+    // Show dashboard immediately (optimistic)
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display   = 'block';
+    document.getElementById('headerMeta').textContent    = `Logged in as ${email}`;
+    loadLicenses();
+    startAutoRefresh();
+
+    // Verify token is still valid in background
+    fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': `Bearer ${authToken}`
+      }
+    }).then(res => {
+      if (!res.ok) {
+        // Token expired — force logout
+        console.log('Session expired — logging out');
+        doLogout();
+      }
+    }).catch(() => {
+      // Network error — keep session (offline mode)
+      console.log('Network error — keeping existing session');
+    });
+  }
+})();
+
+// Enter key on login
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
 });
 
 // Enter key on login
