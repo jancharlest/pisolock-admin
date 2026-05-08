@@ -1,119 +1,120 @@
 <!DOCTYPE html>
-<!-- admin-dashboard/index.html -->
-<!-- PisoLock Admin Dashboard — Supabase Edition -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PisoLock Admin</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: #0a0a14; color: #e0e0e0; min-height: 100vh; }
-  #loginScreen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-  .login-card { background: #1c1c2a; border-radius: 16px; padding: 40px; width: 100%; max-width: 400px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-  .login-card h1 { color: #00e5ff; margin-bottom: 8px; font-size: 24px; }
-  .login-card p  { color: #888; margin-bottom: 24px; font-size: 14px; }
-  .login-card input { width: 100%; padding: 12px 16px; margin-bottom: 12px; background: #0d0d15; border: 1px solid #334455; border-radius: 8px; color: #fff; font-size: 15px; }
-  .login-card input:focus { outline: none; border-color: #00e5ff; }
-  .btn-primary { width: 100%; padding: 12px; background: #1976d2; border: none; border-radius: 8px; color: #fff; font-size: 16px; font-weight: bold; cursor: pointer; }
-  .btn-primary:hover { background: #1565c0; }
-  #loginError { color: #ff5252; font-size: 13px; margin-top: 8px; min-height: 20px; }
-  #dashboard { display: none; }
-  header { background: #1c1c2a; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2a2a3a; position: sticky; top: 0; z-index: 100; }
-  header h1 { color: #00e5ff; font-size: 20px; }
-  header .meta { color: #666; font-size: 13px; }
-  .btn-logout { background: #333; border: none; border-radius: 6px; color: #aaa; padding: 8px 16px; cursor: pointer; font-size: 13px; }
-  .btn-logout:hover { background: #444; color: #fff; }
-  .tabs { display: flex; background: #12121e; border-bottom: 1px solid #2a2a3a; overflow-x: auto; padding: 0 24px; }
-  .tab { padding: 14px 20px; cursor: pointer; border-bottom: 3px solid transparent; color: #888; font-size: 14px; white-space: nowrap; transition: all 0.2s; }
-  .tab:hover { color: #fff; }
-  .tab.active { color: #00e5ff; border-bottom-color: #00e5ff; }
-  .content { padding: 24px; max-width: 1400px; margin: 0 auto; }
-  .tab-pane { display: none; }
-  .tab-pane.active { display: block; }
-
-  /* ── Stats Grid ── */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-  .stat-card {
-    background: #1c1c2a; border-radius: 12px; padding: 16px;
-    text-align: center; border: 1px solid #2a2a3a;
-    transition: border-color 0.2s;
-  }
-  .stat-card:hover { border-color: #444; }
-  .stat-card .num { font-size: 28px; font-weight: bold; color: #00e5ff; line-height: 1.2; }
-  .stat-card .lbl { font-size: 11px; color: #666; margin-top: 4px; line-height: 1.3; }
-  .stat-card.green .num { color: #44ff88; }
-  .stat-card.red   .num { color: #ff5252; }
-  .stat-card.yellow .num { color: #ffff44; }
-  .stat-card.orange .num { color: #ff9944; }
-  .stat-card.blue  .num { color: #5599ff; }
-  .stat-section-label {
-    font-size: 11px; font-weight: 700; color: #555;
-    text-transform: uppercase; letter-spacing: 1px;
-    margin-bottom: 8px; margin-top: 16px;
-    padding-bottom: 4px; border-bottom: 1px solid #2a2a3a;
-  }
-  .stat-section-label:first-child { margin-top: 0; }
-
-  .action-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
-  .btn { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; }
-  .btn-green  { background: #1a5522; color: #44ff88; }
-  .btn-green:hover  { background: #226633; }
-  .btn-red    { background: #5a1a1a; color: #ff5252; }
-  .btn-red:hover    { background: #6a2222; }
-  .btn-blue   { background: #1a2a5a; color: #5599ff; }
-  .btn-blue:hover   { background: #1a3a6a; }
-  .btn-gray   { background: #2a2a3a; color: #aaa; }
-  .btn-gray:hover   { background: #3a3a4a; }
-  .search-input { padding: 8px 14px; background: #1c1c2a; border: 1px solid #334; border-radius: 8px; color: #fff; font-size: 13px; flex: 1; min-width: 200px; }
-  .search-input:focus { outline: none; border-color: #00e5ff; }
-  .table-wrap { overflow-x: auto; background: #1c1c2a; border-radius: 12px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { padding: 12px 16px; text-align: left; color: #666; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #2a2a3a; }
-  td { padding: 12px 16px; border-bottom: 1px solid #1a1a28; vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #22223a; }
-  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-  .badge-active   { background: #0a3a1a; color: #44ff88; }
-  .badge-inactive { background: #2a2a2a; color: #888; }
-  .badge-suspended{ background: #3a1a00; color: #ff9944; }
-  .badge-expired  { background: #3a1a1a; color: #ff5252; }
-  .badge-trial    { background: #1a1a3a; color: #8888ff; }
-  .badge-converted{ background: #0a3a2a; color: #44ffaa; }
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: #1c1c2a; border-radius: 16px; padding: 32px; width: 100%; max-width: 480px; box-shadow: 0 16px 64px rgba(0,0,0,0.6); }
-  .modal h2 { color: #00e5ff; margin-bottom: 20px; font-size: 18px; }
-  .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; color: #888; font-size: 12px; margin-bottom: 6px; text-transform: uppercase; }
-  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; background: #0d0d15; border: 1px solid #334; border-radius: 8px; color: #fff; font-size: 14px; }
-  .form-group textarea { height: 80px; resize: vertical; }
-  .form-group input:focus, .form-group select:focus { outline: none; border-color: #00e5ff; }
-  .modal-actions { display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end; }
-  .error-msg { color: #ff5252; font-size: 12px; margin-top: 4px; min-height: 16px; }
-  .loading { text-align: center; padding: 40px; color: #555; }
-  .spinner { width: 32px; height: 32px; border: 3px solid #333; border-top-color: #00e5ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  #toast { position: fixed; bottom: 24px; right: 24px; background: #1c1c2a; border: 1px solid #334; border-radius: 10px; padding: 12px 20px; font-size: 14px; z-index: 9999; display: none; box-shadow: 0 4px 16px rgba(0,0,0,0.4); animation: slideIn 0.3s ease; }
-  @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: none; opacity: 1; } }
-  .empty-state { text-align: center; padding: 60px; color: #444; }
-  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
-  code { background: #0d0d15; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 12px; }
-  .text-muted { color: #555; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0a0a14;color:#e0e0e0;min-height:100vh}
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-card{background:#1c1c2a;border-radius:16px;padding:40px;width:100%;max-width:400px}
+.login-card h1{color:#00e5ff;margin-bottom:8px;font-size:24px}
+.login-card p{color:#888;margin-bottom:24px;font-size:14px}
+.login-card input{width:100%;padding:12px 16px;margin-bottom:12px;background:#0d0d15;border:1px solid #334455;border-radius:8px;color:#fff;font-size:15px}
+.login-card input:focus{outline:none;border-color:#00e5ff}
+.btn-primary{width:100%;padding:12px;background:#1976d2;border:none;border-radius:8px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer}
+.btn-primary:hover{background:#1565c0}
+#loginError{color:#ff5252;font-size:13px;margin-top:8px;min-height:20px}
+#dashboard{display:none}
+header{background:#0d0d1a;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a1a2a;position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-left h1{color:#fff;font-size:15px;font-weight:500}
+.god-badge{font-size:10px;background:#1a2a3a;color:#00e5ff;padding:2px 8px;border-radius:99px;border:0.5px solid #00e5ff44}
+.live-dot{display:flex;align-items:center;gap:4px;font-size:11px;color:#44ff88}
+.live-dot span{width:6px;height:6px;border-radius:50%;background:#44ff88;display:inline-block}
+.btn-logout{background:#1c1c2a;border:0.5px solid #334;border-radius:6px;color:#888;padding:6px 14px;cursor:pointer;font-size:12px}
+.btn-logout:hover{color:#fff;border-color:#555}
+.tabs{display:flex;background:#0a0a14;border-bottom:0.5px solid #1a1a2a;overflow-x:auto;padding:0 16px;gap:2px}
+.tab{padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;color:#555;font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:5px;transition:all 0.2s}
+.tab:hover{color:#aaa}
+.tab.active{color:#00e5ff;border-bottom-color:#00e5ff}
+.content{padding:16px;max-width:1400px;margin:0 auto}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+.section-label{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;padding-bottom:4px;border-bottom:0.5px solid #1a1a2a}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:16px}
+.stat-card{background:#1c1c2a;border-radius:10px;padding:14px;border:0.5px solid #2a2a3a;transition:border-color 0.2s}
+.stat-card:hover{border-color:#444}
+.stat-card .num{font-size:26px;font-weight:500;line-height:1.1;color:#00e5ff}
+.stat-card .lbl{font-size:11px;color:#555;margin-top:4px;line-height:1.3}
+.stat-card .bar{margin-top:8px;height:2px;background:#2a2a3a;border-radius:2px}
+.stat-card .bar-fill{height:2px;border-radius:2px;transition:width 0.5s}
+.stat-card.green .num{color:#44ff88}
+.stat-card.green .bar-fill{background:#44ff88}
+.stat-card.red .num{color:#ff5252}
+.stat-card.red .bar-fill{background:#ff5252}
+.stat-card.yellow .num{color:#ffff44}
+.stat-card.yellow .bar-fill{background:#ffff44}
+.stat-card.purple .num{color:#8888ff}
+.stat-card.purple .bar-fill{background:#8888ff}
+.stat-card.orange .num{color:#ff9944}
+.stat-card.orange .bar-fill{background:#ff9944}
+.two-col{display:grid;grid-template-columns:1fr 200px;gap:8px;margin-bottom:16px}
+.panel{background:#1c1c2a;border-radius:10px;border:0.5px solid #2a2a3a;overflow:hidden}
+.panel-header{padding:10px 14px;border-bottom:0.5px solid #2a2a3a;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#888}
+.panel-body{padding:0}
+.action-bar{display:flex;gap:8px;padding:10px 14px;border-bottom:0.5px solid #2a2a3a;flex-wrap:wrap;align-items:center}
+.btn{padding:6px 12px;border:none;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:5px}
+.btn-green{background:#1a3a22;color:#44ff88;border:0.5px solid #2a5a32}
+.btn-green:hover{background:#226633}
+.btn-red{background:#3a1a1a;color:#ff5252;border:0.5px solid #5a2a2a}
+.btn-red:hover{background:#4a2222}
+.btn-blue{background:#1a2a4a;color:#5599ff;border:0.5px solid #2a3a6a}
+.btn-blue:hover{background:#1a3a6a}
+.btn-purple{background:#1a1a3a;color:#8888ff;border:0.5px solid #2a2a5a}
+.btn-gray{background:#2a2a3a;color:#aaa;border:0.5px solid #3a3a4a}
+.btn-gray:hover{background:#3a3a4a}
+.btn-icon{padding:4px 7px;border-radius:5px;border:none;cursor:pointer;font-size:13px;line-height:1;display:inline-flex;align-items:center;justify-content:center}
+.search-input{padding:6px 12px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:12px;flex:1;min-width:150px}
+.search-input:focus{outline:none;border-color:#00e5ff}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:8px 12px;text-align:left;color:#444;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:0.5px solid #1a1a28}
+td{padding:8px 12px;border-bottom:0.5px solid #1a1a28;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#22223a}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500}
+.badge-active{background:#0a3a1a;color:#44ff88}
+.badge-inactive{background:#2a2a2a;color:#666}
+.badge-suspended{background:#3a1a00;color:#ff9944}
+.badge-expired{background:#3a1a1a;color:#ff5252}
+.badge-converted{background:#0a2a3a;color:#44aaff}
+code{background:#0d0d15;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:11px;color:#00e5ff;letter-spacing:0.5px}
+code.hidden-code{color:#444;letter-spacing:2px}
+.text-muted{color:#555}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:#1c1c2a;border-radius:14px;padding:28px;width:100%;max-width:460px;border:0.5px solid #2a2a3a}
+.modal h2{color:#00e5ff;margin-bottom:18px;font-size:16px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;color:#666;font-size:11px;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px}
+.form-group textarea{height:70px;resize:vertical}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:#00e5ff}
+.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+.error-msg{color:#ff5252;font-size:11px;margin-top:4px;min-height:14px}
+.loading{text-align:center;padding:32px;color:#444}
+.spinner{width:28px;height:28px;border:2px solid #2a2a3a;border-top-color:#00e5ff;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#toast{position:fixed;bottom:20px;right:20px;background:#1c1c2a;border:0.5px solid #334;border-radius:10px;padding:10px 16px;font-size:13px;z-index:9999;display:none;box-shadow:0 4px 16px rgba(0,0,0,0.5);animation:slideIn 0.3s ease;max-width:280px}
+@keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:none;opacity:1}}
+.empty-state{text-align:center;padding:48px;color:#333}
+.empty-state .icon{font-size:40px;margin-bottom:10px}
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.quick-btn{width:100%;padding:8px 12px;border-radius:8px;border:none;font-size:12px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.device-row{padding:9px 14px;border-bottom:0.5px solid #1a1a28;display:flex;align-items:center;gap:8px}
+.device-row:last-child{border-bottom:none}
+.online-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+@media(max-width:768px){.two-col{grid-template-columns:1fr}.bottom-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
     <h1>🔐 PisoLock Admin</h1>
-    <p>Sign in with your admin account</p>
+    <p>Sign in to your admin account</p>
     <input type="email" id="loginEmail" placeholder="admin@pisolock.com" />
     <input type="password" id="loginPassword" placeholder="Password" />
     <button class="btn-primary" onclick="doLogin()">Sign In</button>
@@ -121,209 +122,290 @@
   </div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard">
   <header>
-    <h1>🔐 PisoLock Admin</h1>
-    <span class="meta" id="headerMeta">Loading...</span>
-    <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    <div class="header-left">
+      <span style="font-size:18px">🔐</span>
+      <h1>PisoLock Admin</h1>
+      <span class="god-badge">GOD MODE</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div class="live-dot"><span></span><span id="headerMeta" style="color:#555;font-size:11px">Loading...</span></div>
+      <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    </div>
   </header>
 
   <div class="tabs">
-    <div class="tab" id="tabBtn-licenses" onclick="showTab('licenses')">🔑 Licenses</div>
-    <div class="tab" id="tabBtn-devices"  onclick="showTab('devices')">📱 Devices</div>
-    <div class="tab" id="tabBtn-trials"   onclick="showTab('trials')">⏱ Trials</div>
-    <div class="tab" id="tabBtn-blacklist"onclick="showTab('blacklist')">🚫 Blacklist</div>
-    <div class="tab" id="tabBtn-audit"    onclick="showTab('audit')">📋 Audit Log</div>
-    <div class="tab" id="tabBtn-versions" onclick="showTab('versions')">📦 App Versions</div>
-    <div class="tab" id="tabBtn-settings" onclick="showTab('settings')">⚙️ Settings</div>
+    <div class="tab" id="tabBtn-overview"  onclick="showTab('overview')">📊 Overview</div>
+    <div class="tab" id="tabBtn-licenses"  onclick="showTab('licenses')">🔑 Licenses</div>
+    <div class="tab" id="tabBtn-devices"   onclick="showTab('devices')">📱 Devices</div>
+    <div class="tab" id="tabBtn-trials"    onclick="showTab('trials')">⏱ Trials</div>
+    <div class="tab" id="tabBtn-blacklist" onclick="showTab('blacklist')">🚫 Blacklist</div>
+    <div class="tab" id="tabBtn-audit"     onclick="showTab('audit')">📋 Audit Log</div>
+    <div class="tab" id="tabBtn-versions"  onclick="showTab('versions')">📦 Updates</div>
+    <div class="tab" id="tabBtn-settings"  onclick="showTab('settings')">⚙️ Settings</div>
   </div>
 
   <div class="content">
 
+    <!-- OVERVIEW TAB -->
+    <div class="tab-pane" id="tab-overview">
+
+      <div class="section-label">License overview</div>
+      <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:12px">
+        <div class="stat-card"><div class="num" id="ovTotal">-</div><div class="lbl">Total licenses</div><div class="bar"><div class="bar-fill" id="ovTotalBar" style="background:#00e5ff;width:100%"></div></div></div>
+        <div class="stat-card green"><div class="num" id="ovActive">-</div><div class="lbl">Active</div><div class="bar"><div class="bar-fill" id="ovActiveBar"></div></div></div>
+        <div class="stat-card"><div class="num" id="ovInactive">-</div><div class="lbl">Inactive</div><div class="bar"><div class="bar-fill" style="background:#555;width:0%"></div></div></div>
+        <div class="stat-card red"><div class="num" id="ovExpired">-</div><div class="lbl">Expired</div><div class="bar"><div class="bar-fill" id="ovExpiredBar"></div></div></div>
+        <div class="stat-card orange"><div class="num" id="ovSuspended">-</div><div class="lbl">Suspended</div><div class="bar"><div class="bar-fill" id="ovSuspBar"></div></div></div>
+      </div>
+
+      <div class="section-label">Device connection status</div>
+      <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:12px">
+        <div class="stat-card"><div class="num" id="ovTotalDev">-</div><div class="lbl">Total devices</div><div class="bar"><div class="bar-fill" style="background:#00e5ff;width:100%"></div></div></div>
+        <div class="stat-card green"><div class="num" id="ovOnline">-</div><div class="lbl">🟢 Online<br><span style="font-size:10px;opacity:0.6">last 20 min</span></div><div class="bar"><div class="bar-fill" id="ovOnlineBar"></div></div></div>
+        <div class="stat-card yellow"><div class="num" id="ovIdle">-</div><div class="lbl">🟡 Idle<br><span style="font-size:10px;opacity:0.6">20min–2hrs</span></div><div class="bar"><div class="bar-fill" id="ovIdleBar"></div></div></div>
+        <div class="stat-card red"><div class="num" id="ovOffline">-</div><div class="lbl">🔴 Offline<br><span style="font-size:10px;opacity:0.6">2hrs+</span></div><div class="bar"><div class="bar-fill" id="ovOfflineBar"></div></div></div>
+        <div class="stat-card orange"><div class="num" id="ovSuspDev">-</div><div class="lbl">⛔ Suspended</div><div class="bar"><div class="bar-fill" id="ovSuspDevBar"></div></div></div>
+      </div>
+
+      <div class="section-label">Trial status</div>
+      <div class="stats-grid" style="grid-template-columns:repeat(6,1fr);margin-bottom:12px">
+        <div class="stat-card"><div class="num" id="ovTotalTrial">-</div><div class="lbl">Total trials</div><div class="bar"><div class="bar-fill" style="background:#00e5ff;width:100%"></div></div></div>
+        <div class="stat-card green"><div class="num" id="ovActiveTrial">-</div><div class="lbl">Active trials</div><div class="bar"><div class="bar-fill" id="ovActiveTrialBar"></div></div></div>
+        <div class="stat-card green"><div class="num" id="ovTrialOnline">-</div><div class="lbl">🟢 Trial online</div><div class="bar"><div class="bar-fill" id="ovTrialOnlineBar"></div></div></div>
+        <div class="stat-card red"><div class="num" id="ovTrialOffline">-</div><div class="lbl">🔴 Trial offline</div><div class="bar"><div class="bar-fill" id="ovTrialOfflineBar"></div></div></div>
+        <div class="stat-card"><div class="num" id="ovExpiredTrial">-</div><div class="lbl">Expired trials</div><div class="bar"><div class="bar-fill" style="background:#555;width:0%"></div></div></div>
+        <div class="stat-card" style="--n:#44aaff"><div class="num" id="ovConverted" style="color:#44aaff">-</div><div class="lbl">✅ Converted</div><div class="bar"><div class="bar-fill" id="ovConvertedBar" style="background:#44aaff"></div></div></div>
+      </div>
+
+      <div class="two-col">
+        <!-- Device list -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>Active devices</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span id="ovOnlineBadge" style="font-size:10px;background:#0a2a0a;color:#44ff88;padding:2px 8px;border-radius:99px">- online</span>
+              <button class="btn btn-gray" style="padding:3px 8px;font-size:11px" onclick="loadOverview()">↻</button>
+            </div>
+          </div>
+          <div id="ovDeviceList" class="panel-body"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="panel">
+          <div class="panel-header">Quick actions</div>
+          <div style="padding:12px">
+            <button class="quick-btn" style="background:#1a3a22;color:#44ff88;border:0.5px solid #2a5a32" onclick="showTab('licenses');openAddLicense()">
+              ➕ Add License
+            </button>
+            <button class="quick-btn" style="background:#1a2a4a;color:#5599ff;border:0.5px solid #2a3a6a" onclick="showTab('versions');openAddVersion()">
+              📦 Upload APK Version
+            </button>
+            <button class="quick-btn" style="background:#1a1a3a;color:#8888ff;border:0.5px solid #2a2a5a" onclick="showTab('settings')">
+              ⏱ Adjust Trial Time
+            </button>
+            <button class="quick-btn" style="background:#3a1a1a;color:#ff5252;border:0.5px solid #5a2a2a" onclick="showTab('blacklist');openAddBlacklist()">
+              🚫 Add to Blacklist
+            </button>
+            <div style="border-top:0.5px solid #2a2a3a;margin-top:6px;padding-top:10px">
+              <div style="font-size:10px;color:#444;display:flex;justify-content:space-between">
+                <span>Auto-refresh</span>
+                <span style="color:#44ff88">● 30s</span>
+              </div>
+              <div style="font-size:10px;color:#444;margin-top:4px;display:flex;justify-content:space-between">
+                <span>Last updated</span>
+                <span id="lastUpdated" style="color:#555">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent activity -->
+      <div class="panel">
+        <div class="panel-header">
+          <span>Recent activity</span>
+          <button class="btn btn-gray" style="padding:3px 8px;font-size:11px" onclick="loadAuditPreview()">↻</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Time</th><th>Action</th><th>License</th><th>Device</th><th>IP</th></tr></thead>
+            <tbody id="auditPreviewBody"><tr><td colspan="5" class="loading"><div class="spinner"></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- LICENSES TAB -->
     <div class="tab-pane" id="tab-licenses">
-
-      <!-- ── License Stats ── -->
-      <div class="stat-section-label">📊 License Overview</div>
-      <div class="stats-grid" id="licenseStatsGrid">
-        <div class="stat-card"><div class="num" id="statTotal">-</div><div class="lbl">Total Licenses</div></div>
-        <div class="stat-card green"><div class="num" id="statActive">-</div><div class="lbl">Active</div></div>
-        <div class="stat-card"><div class="num" id="statInactive">-</div><div class="lbl">Inactive</div></div>
-        <div class="stat-card red"><div class="num" id="statExpired">-</div><div class="lbl">Expired</div></div>
-        <div class="stat-card orange"><div class="num" id="statSuspended">-</div><div class="lbl">Suspended</div></div>
-      </div>
-
-      <!-- ── Device Stats ── -->
-      <div class="stat-section-label">📱 Active Devices</div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="num" id="statTotalDevices">-</div><div class="lbl">Total Devices</div></div>
-        <div class="stat-card green"><div class="num" id="statOnlineDevices">-</div><div class="lbl">🟢 Online<br><span style="font-size:10px;color:#2a6a3a">(last 20 min)</span></div></div>
-        <div class="stat-card yellow"><div class="num" id="statIdleDevices">-</div><div class="lbl">🟡 Idle<br><span style="font-size:10px;color:#6a6a2a">(20min–2hrs)</span></div></div>
-        <div class="stat-card red"><div class="num" id="statOfflineDevices">-</div><div class="lbl">🔴 Offline<br><span style="font-size:10px;color:#6a2a2a">(2hrs+)</span></div></div>
-        <div class="stat-card orange"><div class="num" id="statSuspendedDevices">-</div><div class="lbl">⛔ Suspended</div></div>
-      </div>
-
-      <!-- ── Trial Stats ── -->
-      <div class="stat-section-label">⏱ Trial Status</div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="num" id="statTotalTrials">-</div><div class="lbl">Total Trials</div></div>
-        <div class="stat-card green"><div class="num" id="statActiveTrials">-</div><div class="lbl">Active Trials</div></div>
-        <div class="stat-card green"><div class="num" id="statTrialOnline">-</div><div class="lbl">🟢 Trial Online<br><span style="font-size:10px;color:#2a6a3a">(last 20 min)</span></div></div>
-        <div class="stat-card red"><div class="num" id="statTrialOffline">-</div><div class="lbl">🔴 Trial Offline<br><span style="font-size:10px;color:#6a2a2a">(2hrs+)</span></div></div>
-        <div class="stat-card"><div class="num" id="statExpiredTrials">-</div><div class="lbl">Expired Trials</div></div>
-        <div class="stat-card blue"><div class="num" id="statConvertedTrials">-</div><div class="lbl">✅ Converted<br><span style="font-size:10px;color:#2a2a6a">(bought license)</span></div></div>
-      </div>
-
-      <div class="action-bar" style="margin-top:8px">
-        <button class="btn btn-green" onclick="openAddLicense()">+ Add License</button>
-        <button class="btn btn-gray"  onclick="loadLicenses()">↻ Refresh All</button>
-        <input class="search-input" placeholder="Search license code..." oninput="filterTable('licenseTable', this.value)" />
-      </div>
-      <div class="table-wrap">
-        <table id="licenseTable">
-          <thead><tr>
-            <th>Code</th><th>Status</th><th>Devices</th>
-            <th>Expiry</th><th>Notes</th><th>Created</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="licenseBody"><tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
-        </table>
+      <div class="panel">
+        <div class="action-bar">
+          <button class="btn btn-green" onclick="openAddLicense()">+ Add License</button>
+          <button class="btn btn-gray"  onclick="loadLicenses()">↻ Refresh</button>
+          <input class="search-input" placeholder="Search license code or notes..." oninput="filterTable('licenseTable',this.value)" />
+          <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
+            <span style="font-size:11px;color:#555">Hide all codes</span>
+            <div id="globalCodeToggle" onclick="toggleAllCodes()" style="width:32px;height:18px;background:#44ff88;border-radius:99px;cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0">
+              <div id="globalCodeThumb" style="width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;top:2px;left:16px;transition:left 0.2s"></div>
+            </div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="licenseTable">
+            <thead><tr>
+              <th>Code</th><th>Status</th><th>Devices</th>
+              <th>Expiry</th><th>Notes</th><th>Created</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="licenseBody"><tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
     <!-- DEVICES TAB -->
     <div class="tab-pane" id="tab-devices">
-      <div style="background:#1c1c2a;border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px">
-        <div style="color:#888;margin-bottom:10px;font-weight:600">📖 Status Guide:</div>
-        <div style="display:flex;flex-wrap:wrap;gap:24px">
-          <div>
-            <div style="color:#aaa;margin-bottom:6px">Device Status:</div>
-            <div style="margin-bottom:4px"><span class="badge badge-active">✅ Active</span> <span style="color:#666;margin-left:6px">Licensed — working normally</span></div>
-            <div style="margin-bottom:4px"><span class="badge badge-suspended">⛔ Suspended</span> <span style="color:#666;margin-left:6px">Admin blocked</span></div>
-            <div><span class="badge badge-expired">🚫 Blocked</span> <span style="color:#666;margin-left:6px">Permanently blacklisted</span></div>
+      <div style="background:#1c1c2a;border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:12px;border:0.5px solid #2a2a3a">
+        <div style="color:#666;margin-bottom:8px;font-size:10px;text-transform:uppercase;letter-spacing:0.5px">Status guide</div>
+        <div style="display:flex;flex-wrap:wrap;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <span style="color:#555;font-size:10px;margin-bottom:2px">Device status</span>
+            <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-active">✅ Active</span><span style="color:#555;font-size:11px">Licensed, working normally</span></div>
+            <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-suspended">⛔ Suspended</span><span style="color:#555;font-size:11px">Admin blocked</span></div>
+            <div style="display:flex;align-items:center;gap:6px"><span class="badge badge-expired">🚫 Blocked</span><span style="color:#555;font-size:11px">Permanently blacklisted</span></div>
           </div>
-          <div>
-            <div style="color:#aaa;margin-bottom:6px">Connection:</div>
-            <div style="margin-bottom:4px"><span class="badge" style="background:#0a2a0a;color:#44ff88">🟢 Online</span> <span style="color:#666;margin-left:6px">Last 20 minutes</span></div>
-            <div style="margin-bottom:4px"><span class="badge" style="background:#2a2a0a;color:#ffff44">🟡 Idle</span> <span style="color:#666;margin-left:6px">20min–2hrs ago</span></div>
-            <div><span class="badge" style="background:#2a0a0a;color:#ff5252">🔴 Offline</span> <span style="color:#666;margin-left:6px">2+ hours ago</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <span style="color:#555;font-size:10px;margin-bottom:2px">Connection</span>
+            <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#0a2a0a;color:#44ff88">🟢 Online</span><span style="color:#555;font-size:11px">Heartbeat within 20 min</span></div>
+            <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#2a2a0a;color:#ffff44">🟡 Idle</span><span style="color:#555;font-size:11px">20 min – 2 hrs ago</span></div>
+            <div style="display:flex;align-items:center;gap:6px"><span class="badge" style="background:#2a0a0a;color:#ff5252">🔴 Offline</span><span style="color:#555;font-size:11px">No heartbeat 2+ hrs</span></div>
           </div>
         </div>
       </div>
-      <div class="action-bar">
-        <button class="btn btn-gray" onclick="loadDevices()">↻ Refresh</button>
-        <input class="search-input" placeholder="Search device name or hash..." oninput="filterTable('deviceTable', this.value)" />
-      </div>
-      <div class="table-wrap">
-        <table id="deviceTable">
-          <thead><tr>
-            <th>Device Name</th><th>License</th><th>Device Status</th>
-            <th>Connection</th><th>Last Seen</th><th>Hash</th><th>Actions</th>
-          </tr></thead>
-          <tbody id="deviceBody"><tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
-        </table>
+      <div class="panel">
+        <div class="action-bar">
+          <button class="btn btn-gray" onclick="loadDevices()">↻ Refresh</button>
+          <input class="search-input" placeholder="Search device name or hash..." oninput="filterTable('deviceTable',this.value)" />
+        </div>
+        <div class="table-wrap">
+          <table id="deviceTable">
+            <thead><tr>
+              <th>Device name</th><th>License</th><th>Status</th>
+              <th>Connection</th><th>Last seen</th><th>Hash</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="deviceBody"><tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
     <!-- TRIALS TAB -->
     <div class="tab-pane" id="tab-trials">
-      <div class="action-bar">
-        <button class="btn btn-gray" onclick="loadTrials()">↻ Refresh</button>
-        <input class="search-input" placeholder="Search device hash..." oninput="filterTable('trialTable', this.value)" />
-      </div>
-      <div class="table-wrap">
-        <table id="trialTable">
-          <thead><tr>
-            <th>Device Hash</th><th>Status</th><th>Connection</th><th>Started</th><th>Expires</th><th>Time Left</th>
-          </tr></thead>
-          <tbody id="trialBody"><tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
-        </table>
+      <div class="panel">
+        <div class="action-bar">
+          <button class="btn btn-gray" onclick="loadTrials()">↻ Refresh</button>
+          <input class="search-input" placeholder="Search device hash..." oninput="filterTable('trialTable',this.value)" />
+        </div>
+        <div class="table-wrap">
+          <table id="trialTable">
+            <thead><tr><th>Device hash</th><th>Status</th><th>Connection</th><th>Started</th><th>Expires</th><th>Time left</th></tr></thead>
+            <tbody id="trialBody"><tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
     <!-- BLACKLIST TAB -->
     <div class="tab-pane" id="tab-blacklist">
-      <div class="action-bar">
-        <button class="btn btn-red"  onclick="openAddBlacklist()">+ Add to Blacklist</button>
-        <button class="btn btn-gray" onclick="loadBlacklist()">↻ Refresh</button>
-      </div>
-      <div class="table-wrap">
-        <table id="blacklistTable">
-          <thead><tr><th>Type</th><th>Identifier</th><th>Reason</th><th>Date</th><th>Actions</th></tr></thead>
-          <tbody id="blacklistBody"><tr><td colspan="5" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
-        </table>
+      <div class="panel">
+        <div class="action-bar">
+          <button class="btn btn-red"  onclick="openAddBlacklist()">+ Add to Blacklist</button>
+          <button class="btn btn-gray" onclick="loadBlacklist()">↻ Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table id="blacklistTable">
+            <thead><tr><th>Type</th><th>Identifier</th><th>Reason</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="blacklistBody"><tr><td colspan="5" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
     <!-- AUDIT LOG TAB -->
     <div class="tab-pane" id="tab-audit">
-      <div class="action-bar">
-        <button class="btn btn-gray" onclick="loadAudit()">↻ Refresh</button>
-        <input class="search-input" placeholder="Search action or device..." oninput="filterTable('auditTable', this.value)" />
-      </div>
-      <div class="table-wrap">
-        <table id="auditTable">
-          <thead><tr><th>Time</th><th>Action</th><th>License</th><th>Device (short)</th><th>IP</th></tr></thead>
-          <tbody id="auditBody"><tr><td colspan="5" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
-        </table>
+      <div class="panel">
+        <div class="action-bar">
+          <button class="btn btn-gray" onclick="loadAudit()">↻ Refresh</button>
+          <input class="search-input" placeholder="Search action or device..." oninput="filterTable('auditTable',this.value)" />
+        </div>
+        <div class="table-wrap">
+          <table id="auditTable">
+            <thead><tr><th>Time</th><th>Action</th><th>License</th><th>Device (short)</th><th>IP</th></tr></thead>
+            <tbody id="auditBody"><tr><td colspan="5" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- APP VERSIONS TAB -->
+    <!-- VERSIONS TAB -->
     <div class="tab-pane" id="tab-versions">
-      <div class="action-bar">
-        <button class="btn btn-green" onclick="openAddVersion()">+ Add Version</button>
-        <button class="btn btn-gray"  onclick="loadVersions()">↻ Refresh</button>
-      </div>
-      <div class="table-wrap">
-        <table id="versionTable">
-          <thead><tr><th>Version</th><th>Code</th><th>APK URL</th><th>Forced</th><th>Date</th><th>Actions</th></tr></thead>
-          <tbody id="versionBody"><tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
-        </table>
+      <div class="panel">
+        <div class="action-bar">
+          <button class="btn btn-green" onclick="openAddVersion()">+ Add Version</button>
+          <button class="btn btn-gray"  onclick="loadVersions()">↻ Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table id="versionTable">
+            <thead><tr><th>Version</th><th>Code</th><th>APK URL</th><th>Type</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="versionBody"><tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
     <!-- SETTINGS TAB -->
     <div class="tab-pane" id="tab-settings">
-      <div style="max-width:500px">
-        <h2 style="color:#00e5ff;margin-bottom:24px">⚙️ System Settings</h2>
-        <div class="stat-card" style="margin-bottom:16px;text-align:left">
-          <h3 style="color:#fff;margin-bottom:16px">⏱ Trial Duration</h3>
-          <p style="color:#888;font-size:13px;margin-bottom:16px">How many days new devices get for free trial.<br><strong style="color:#ff9944">Note:</strong> Only affects NEW trials.</p>
-          <div class="form-group">
-            <label>Trial Duration (days)</label>
-            <select id="trialDays" style="width:100%;padding:10px;background:#0d0d15;border:1px solid #334;border-radius:8px;color:#fff;font-size:16px">
-              <option value="1">1 day (testing)</option>
-              <option value="3">3 days</option>
-              <option value="7" selected>7 days (default)</option>
-              <option value="14">14 days</option>
-              <option value="30">30 days</option>
-            </select>
+      <div style="max-width:500px;display:flex;flex-direction:column;gap:12px">
+        <div class="panel">
+          <div class="panel-header">⏱ Trial Duration</div>
+          <div style="padding:14px">
+            <p style="color:#666;font-size:12px;margin-bottom:12px">How many days new devices get for free trial. Only affects new trials.</p>
+            <div class="form-group">
+              <label>Duration</label>
+              <select id="trialDays" style="width:100%;padding:9px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px">
+                <option value="1">1 day (testing)</option>
+                <option value="3">3 days</option>
+                <option value="7" selected>7 days (default)</option>
+                <option value="14">14 days</option>
+                <option value="30">30 days</option>
+              </select>
+            </div>
+            <button class="btn btn-green" onclick="saveTrialDuration()" style="width:100%;padding:10px;justify-content:center">💾 Save (reminder only)</button>
+            <div id="trialSaveMsg" style="margin-top:8px;font-size:11px"></div>
           </div>
-          <button class="btn btn-green" onclick="saveTrialDuration()" style="width:100%;padding:12px;font-size:15px">💾 Save Trial Duration</button>
-          <div id="trialSaveMsg" style="margin-top:8px;font-size:13px"></div>
         </div>
-        <div class="stat-card" style="text-align:left">
-          <h3 style="color:#fff;margin-bottom:16px">🔧 Adjust Trial Time</h3>
-          <p style="color:#888;font-size:13px;margin-bottom:16px">Extend, reduce, or set exact trial time for a device.</p>
-          <div class="form-group">
-            <label>Device Hash (from Trials tab)</label>
-            <input id="extendDeviceHash" placeholder="Paste device hash here..." />
+        <div class="panel">
+          <div class="panel-header">🔧 Adjust Trial Time for Device</div>
+          <div style="padding:14px">
+            <div class="form-group">
+              <label>Device Hash</label>
+              <input id="extendDeviceHash" placeholder="Paste full device hash..." />
+            </div>
+            <div class="form-group">
+              <label>Action</label>
+              <select id="extendAction" style="width:100%;padding:9px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px">
+                <option value="set">⏰ Set exact time from NOW</option>
+                <option value="add">➕ Add time to current expiry</option>
+                <option value="subtract">➖ Reduce time from current expiry</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Days</label>
+              <input id="extendDays" type="number" value="1" min="1" max="365" />
+            </div>
+            <button class="btn btn-blue" onclick="extendTrial()" style="width:100%;padding:10px;justify-content:center">✅ Apply Change</button>
+            <div id="extendMsg" style="margin-top:8px;font-size:11px"></div>
           </div>
-          <div class="form-group">
-            <label>Action</label>
-            <select id="extendAction" style="width:100%;padding:10px;background:#0d0d15;border:1px solid #334;border-radius:8px;color:#fff;font-size:14px">
-              <option value="set">⏰ Set exact time from NOW</option>
-              <option value="add">➕ Add time to current expiry</option>
-              <option value="subtract">➖ Reduce time from current expiry</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Days</label>
-            <input id="extendDays" type="number" value="1" min="1" max="365" />
-          </div>
-          <button class="btn btn-blue" onclick="extendTrial()" style="width:100%;padding:12px;font-size:15px">✅ Apply Change</button>
-          <div id="extendMsg" style="margin-top:8px;font-size:13px"></div>
         </div>
       </div>
     </div>
@@ -335,10 +417,10 @@
 <div class="modal-overlay" id="modalAddLicense">
   <div class="modal">
     <h2>➕ Add License</h2>
-    <div class="form-group"><label>License Code</label><input id="newLicenseCode" placeholder="PL-XXXX-XXXX or leave blank to auto-generate" /></div>
+    <div class="form-group"><label>License Code</label><input id="newLicenseCode" placeholder="Leave blank to auto-generate (PL-XXXX-XXXX)" /></div>
     <div class="form-group"><label>Max Devices</label><input id="newLicenseMax" type="number" value="1" min="1" max="10" /></div>
-    <div class="form-group"><label>Expiry Date (leave blank = never expires)</label><input id="newLicenseExpiry" type="date" /></div>
-    <div class="form-group"><label>Notes</label><textarea id="newLicenseNotes" placeholder="e.g. Sold to Juan dela Cruz, Davao"></textarea></div>
+    <div class="form-group"><label>Expiry Date (blank = never)</label><input id="newLicenseExpiry" type="date" /></div>
+    <div class="form-group"><label>Notes</label><textarea id="newLicenseNotes" placeholder="e.g. Sold to Juan, Davao"></textarea></div>
     <div class="error-msg" id="addLicenseError"></div>
     <div class="modal-actions">
       <button class="btn btn-gray"  onclick="closeModal('modalAddLicense')">Cancel</button>
@@ -352,7 +434,7 @@
     <h2>✏️ Edit License</h2>
     <input type="hidden" id="editLicenseId" />
     <div class="form-group"><label>Status</label>
-      <select id="editLicenseStatus">
+      <select id="editLicenseStatus" style="width:100%;padding:9px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px">
         <option value="active">Active</option>
         <option value="inactive">Inactive</option>
         <option value="suspended">Suspended</option>
@@ -374,7 +456,7 @@
   <div class="modal">
     <h2>🚫 Add to Blacklist</h2>
     <div class="form-group"><label>Type</label>
-      <select id="newBlacklistType">
+      <select id="newBlacklistType" style="width:100%;padding:9px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px">
         <option value="device">Device Hash</option>
         <option value="license">License Code</option>
       </select>
@@ -393,13 +475,13 @@
   <div class="modal">
     <h2>📦 Add App Version</h2>
     <div class="form-group"><label>Version Name (e.g. 23.22)</label><input id="newVersionName" placeholder="23.22" /></div>
-    <div class="form-group"><label>Version Code (e.g. 2322)</label><input id="newVersionCode" type="number" placeholder="2322" /></div>
-    <div class="form-group"><label>APK URL</label><input id="newVersionUrl" placeholder="https://xxxx.supabase.co/storage/v1/object/public/apk-releases/pisolock-v23.22.apk" /></div>
-    <div class="form-group"><label>Release Notes</label><textarea id="newVersionNotes" placeholder="What's new in this version?"></textarea></div>
+    <div class="form-group"><label>Version Code (e.g. 49)</label><input id="newVersionCode" type="number" placeholder="49" /></div>
+    <div class="form-group"><label>APK URL (Supabase Storage)</label><input id="newVersionUrl" placeholder="https://xxxx.supabase.co/storage/v1/object/public/apk-releases/pisolock-v23.22.apk" /></div>
+    <div class="form-group"><label>Release Notes</label><textarea id="newVersionNotes" placeholder="What's new?"></textarea></div>
     <div class="form-group">
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
         <input type="checkbox" id="newVersionForced" style="width:auto" />
-        Force update (all devices MUST update)
+        Force update (all devices must update)
       </label>
     </div>
     <div class="error-msg" id="addVersionError"></div>
@@ -413,649 +495,623 @@
 <div id="toast"></div>
 
 <script>
-// ════════════════════════════════════════════
-// CONFIGURATION
-// ════════════════════════════════════════════
 const SUPABASE_URL  = 'https://opfwpwjkembglzthaivv.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wZndwd2prZW1iZ2x6dGhhaXZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwOTc5NjYsImV4cCI6MjA5MzY3Mzk2Nn0.tHkAwe7QOf3H_UgfEP5TvNbjrNssrnFULA3AITSuwIk';
 
-// ════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════
 let authToken = localStorage.getItem('pisolock_auth_token') || null;
 let authUser  = JSON.parse(localStorage.getItem('pisolock_auth_user') || 'null');
 let autoRefreshInterval = null;
+let allCodesHidden = false;
+const codeStore = {};
 
-// ════════════════════════════════════════════
-// ONLINE STATUS HELPER
-// ════════════════════════════════════════════
-function getConnectionLabel(lastSeenStr) {
-  if (!lastSeenStr) return 'never';
-  const mins = Math.floor((Date.now() - new Date(lastSeenStr).getTime()) / 60000);
-  if (mins < 20)  return 'online';
-  if (mins < 120) return 'idle';
+function connLabel(ls) {
+  if (!ls) return 'never';
+  const m = Math.floor((Date.now() - new Date(ls).getTime()) / 60000);
+  if (m < 20)  return 'online';
+  if (m < 120) return 'idle';
   return 'offline';
 }
-
-function getOnlineStatus(lastSeenStr) {
-  const label = getConnectionLabel(lastSeenStr);
-  const badges = {
-    online:  { dot: '🟢', badge: '<span class="badge" style="background:#0a2a0a;color:#44ff88;border:1px solid #44ff8844">🟢 Online</span>' },
-    idle:    { dot: '🟡', badge: '<span class="badge" style="background:#2a2a0a;color:#ffff44;border:1px solid #ffff4444">🟡 Idle</span>' },
-    offline: { dot: '🔴', badge: '<span class="badge" style="background:#2a0a0a;color:#ff5252;border:1px solid #ff525244">🔴 Offline</span>' },
-    never:   { dot: '⚫', badge: '<span class="badge" style="background:#1a1a2a;color:#555">Never seen</span>' }
-  };
-  return badges[label] || badges.never;
+function connBadge(ls) {
+  const l = connLabel(ls);
+  if (l==='online')  return '<span class="badge" style="background:#0a2a0a;color:#44ff88">🟢 Online</span>';
+  if (l==='idle')    return '<span class="badge" style="background:#2a2a0a;color:#ffff44">🟡 Idle</span>';
+  if (l==='offline') return '<span class="badge" style="background:#2a0a0a;color:#ff5252">🔴 Offline</span>';
+  return '<span class="badge badge-inactive">Never</span>';
+}
+function connDot(ls) {
+  const l = connLabel(ls);
+  const c = l==='online'?'#44ff88':l==='idle'?'#ffff44':'#ff5252';
+  return `<div class="online-dot" style="background:${c}"></div>`;
+}
+function devStatusBadge(s) {
+  if (s==='active')    return '<span class="badge badge-active">✅ Active</span>';
+  if (s==='suspended') return '<span class="badge badge-suspended">⛔ Suspended</span>';
+  if (s==='blocked')   return '<span class="badge badge-expired">🚫 Blocked</span>';
+  return `<span class="badge badge-inactive">${s}</span>`;
+}
+function timeAgo(ds) {
+  const d=Date.now()-new Date(ds).getTime(), m=Math.floor(d/60000), h=Math.floor(m/60), dy=Math.floor(h/24);
+  if (dy>0) return `${dy}d ago`;
+  if (h>0)  return `${h}h ago`;
+  if (m>0)  return `${m}m ago`;
+  return 'just now';
 }
 
-function getDeviceStatusBadge(status) {
-  const badges = {
-    'active':    '<span class="badge badge-active"    title="Licensed and working normally">✅ Active</span>',
-    'suspended': '<span class="badge badge-suspended" title="Admin blocked">⛔ Suspended</span>',
-    'blocked':   '<span class="badge badge-expired"   title="Permanently blacklisted">🚫 Blocked</span>'
-  };
-  return badges[status] || `<span class="badge badge-inactive">${status}</span>`;
-}
-
-// ════════════════════════════════════════════
-// AUTH
-// ════════════════════════════════════════════
 async function doLogin() {
-  const email    = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const errEl    = document.getElementById('loginError');
-  errEl.textContent = '';
-  if (!email || !password) { errEl.textContent = 'Please enter email and password.'; return; }
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPassword').value;
+  const err=document.getElementById('loginError');
+  err.textContent='';
+  if (!email||!pass){err.textContent='Please enter email and password.';return;}
   try {
-    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error_description || data.msg || 'Login failed');
-    authToken = data.access_token;
-    authUser  = data.user;
-    localStorage.setItem('pisolock_auth_token', authToken);
-    localStorage.setItem('pisolock_auth_user', JSON.stringify(authUser));
+    const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON},body:JSON.stringify({email,password:pass})});
+    const d=await r.json();
+    if (!r.ok) throw new Error(d.error_description||d.msg||'Login failed');
+    authToken=d.access_token; authUser=d.user;
+    localStorage.setItem('pisolock_auth_token',authToken);
+    localStorage.setItem('pisolock_auth_user',JSON.stringify(authUser));
     showDashboard(email);
-  } catch (e) { errEl.textContent = '❌ ' + e.message; }
+  } catch(e){err.textContent='❌ '+e.message;}
 }
 
 function showDashboard(email) {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('dashboard').style.display   = 'block';
-  document.getElementById('headerMeta').textContent    = `Logged in as ${email}`;
-  const savedTab = localStorage.getItem('pisolock_active_tab') || 'licenses';
-  showTab(savedTab, true);
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  document.getElementById('headerMeta').textContent=email;
+  const tab=localStorage.getItem('pisolock_active_tab')||'overview';
+  showTab(tab,true);
   startAutoRefresh();
 }
 
 function doLogout() {
-  authToken = null; authUser = null;
+  authToken=null; authUser=null;
   localStorage.removeItem('pisolock_auth_token');
   localStorage.removeItem('pisolock_auth_user');
   localStorage.removeItem('pisolock_active_tab');
-  document.getElementById('dashboard').style.display   = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('loginPassword').value = '';
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginPassword').value='';
   stopAutoRefresh();
 }
 
-// ════════════════════════════════════════════
-// API HELPER
-// ════════════════════════════════════════════
-async function api(table, options = {}) {
-  const { method = 'GET', filter = '', body = null,
-          select = '*', order = 'created_at.desc', limit = 500 } = options;
-  let url = `${SUPABASE_URL}/rest/v1/${table}?select=${select}&limit=${limit}`;
-  if (order)  url += `&order=${order}`;
-  if (filter) url += `&${filter}`;
-  const headers = {
-    'Content-Type': 'application/json', 'apikey': SUPABASE_ANON,
-    'Authorization': `Bearer ${authToken}`,
-    'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal'
-  };
-  const res = await fetch(url, { method, headers, body: body ? JSON.stringify(body) : null });
-  if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || `HTTP ${res.status}`); }
-  if (res.status === 204) return null;
-  return res.json();
+async function api(table,options={}) {
+  const{method='GET',filter='',body=null,select='*',order='created_at.desc',limit=500}=options;
+  let url=`${SUPABASE_URL}/rest/v1/${table}?select=${select}&limit=${limit}`;
+  if (order) url+=`&order=${order}`;
+  if (filter) url+=`&${filter}`;
+  const h={'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${authToken}`,'Prefer':method==='POST'?'return=representation':'return=minimal'};
+  const r=await fetch(url,{method,headers:h,body:body?JSON.stringify(body):null});
+  if (!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||`HTTP ${r.status}`);}
+  if (r.status===204) return null;
+  return r.json();
 }
 
-async function apiWithFilter(table, filter, method, body = null) {
-  const url = `${SUPABASE_URL}/rest/v1/${table}?${filter}`;
-  const headers = {
-    'Content-Type': 'application/json', 'apikey': SUPABASE_ANON,
-    'Authorization': `Bearer ${authToken}`, 'Prefer': 'return=minimal'
-  };
-  const res = await fetch(url, { method, headers, body: body ? JSON.stringify(body) : null });
-  if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || `HTTP ${res.status}`); }
+async function apiWF(table,filter,method,body=null) {
+  const url=`${SUPABASE_URL}/rest/v1/${table}?${filter}`;
+  const h={'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${authToken}`,'Prefer':'return=minimal'};
+  const r=await fetch(url,{method,headers:h,body:body?JSON.stringify(body):null});
+  if (!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||`HTTP ${r.status}`);}
   return true;
 }
 
-// ════════════════════════════════════════════
-// TAB NAVIGATION
-// ════════════════════════════════════════════
-function showTab(name, restoreMode = false) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  const activeBtn = document.getElementById('tabBtn-' + name);
-  if (activeBtn) activeBtn.classList.add('active');
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  const activePane = document.getElementById('tab-' + name);
-  if (activePane) activePane.classList.add('active');
-  localStorage.setItem('pisolock_active_tab', name);
-  const loaders = { licenses: loadLicenses, devices: loadDevices, trials: loadTrials, blacklist: loadBlacklist, audit: loadAudit, versions: loadVersions };
+function showTab(name,restore=false) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const tb=document.getElementById('tabBtn-'+name);
+  if (tb) tb.classList.add('active');
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  const tp=document.getElementById('tab-'+name);
+  if (tp) tp.classList.add('active');
+  localStorage.setItem('pisolock_active_tab',name);
+  const loaders={overview:loadOverview,licenses:loadLicenses,devices:loadDevices,trials:loadTrials,blacklist:loadBlacklist,audit:loadAudit,versions:loadVersions};
   if (loaders[name]) loaders[name]();
 }
 
-// ════════════════════════════════════════════
-// AUTO REFRESH
-// ════════════════════════════════════════════
 function startAutoRefresh() {
   stopAutoRefresh();
-  autoRefreshInterval = setInterval(() => {
-    const activePane = document.querySelector('.tab-pane.active');
-    if (!activePane) return;
-    if (activePane.id === 'tab-licenses') loadLicenses();
-    if (activePane.id === 'tab-devices')  loadDevices();
-  }, 30000); // every 30 seconds
+  autoRefreshInterval=setInterval(()=>{
+    const a=document.querySelector('.tab-pane.active');
+    if (!a) return;
+    if (a.id==='tab-overview')  loadOverview();
+    if (a.id==='tab-devices')   loadDevices();
+    if (a.id==='tab-licenses')  loadLicenses();
+  },30000);
 }
-function stopAutoRefresh() {
-  if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
-}
+function stopAutoRefresh(){if (autoRefreshInterval){clearInterval(autoRefreshInterval);autoRefreshInterval=null;}}
 
-// ════════════════════════════════════════════
-// LICENSES + ALL STATS
-// ════════════════════════════════════════════
-async function loadLicenses() {
-  const tbody = document.getElementById('licenseBody');
-  tbody.innerHTML = '<tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr>';
-
+async function loadOverview() {
   try {
-    // Load all data in parallel
-    const [licenses, devices, trials] = await Promise.all([
-      api('licenses', { select: 'id,code,status,max_devices,expiry_date,notes,created_at', order: 'created_at.desc' }),
-      api('devices',  { select: 'id,license_id,status,last_seen', limit: 1000 }),
-      api('trials',   { select: 'id,device_hash,status,expiry_time', limit: 1000 })
+    const [licenses,devices,trials,trialDevices]=await Promise.all([
+      api('licenses',{select:'id,status',limit:1000}),
+      api('devices',{select:'id,license_id,status,last_seen',limit:1000}),
+      api('trials',{select:'id,device_hash,status',limit:1000}),
+      api('devices',{select:'device_hash,last_seen',limit:1000})
     ]);
+    const now=Date.now();
+    const total=licenses.length;
+    const active=licenses.filter(l=>l.status==='active').length;
+    const inactive=licenses.filter(l=>l.status==='inactive').length;
+    const expired=licenses.filter(l=>l.status==='expired').length;
+    const susp=licenses.filter(l=>l.status==='suspended').length;
+    const pct=(n)=>total?Math.round(n/total*100)+'%':'0%';
 
-    const now = Date.now();
+    setText('ovTotal',total);setText('ovActive',active);setText('ovInactive',inactive);
+    setText('ovExpired',expired);setText('ovSuspended',susp);
+    setW('ovActiveBar',pct(active));setW('ovExpiredBar',pct(expired));setW('ovSuspBar',pct(susp));
 
-    // ── Device Stats ──
-    const activeDevices    = devices.filter(d => d.status === 'active');
-    const suspendedDevices = devices.filter(d => d.status === 'suspended');
+    const activeDev=devices.filter(d=>d.status==='active');
+    const suspDev=devices.filter(d=>d.status==='suspended');
+    const online=activeDev.filter(d=>connLabel(d.last_seen)==='online').length;
+    const idle=activeDev.filter(d=>connLabel(d.last_seen)==='idle').length;
+    const offline=activeDev.filter(d=>connLabel(d.last_seen)==='offline'||connLabel(d.last_seen)==='never').length;
+    const totalDev=activeDev.length+suspDev.length;
+    const dpct=(n)=>totalDev?Math.round(n/totalDev*100)+'%':'0%';
 
-    const onlineDevices  = activeDevices.filter(d => getConnectionLabel(d.last_seen) === 'online');
-    const idleDevices    = activeDevices.filter(d => getConnectionLabel(d.last_seen) === 'idle');
-    const offlineDevices = activeDevices.filter(d => ['offline','never'].includes(getConnectionLabel(d.last_seen)));
+    setText('ovTotalDev',totalDev);setText('ovOnline',online);setText('ovIdle',idle);
+    setText('ovOffline',offline);setText('ovSuspDev',suspDev.length);
+    setW('ovOnlineBar',dpct(online));setW('ovIdleBar',dpct(idle));
+    setW('ovOfflineBar',dpct(offline));setW('ovSuspDevBar',dpct(suspDev.length));
+    document.getElementById('ovOnlineBadge').textContent=online+' online';
 
-    // ── License Stats ──
-    const devCount = {};
-    devices.forEach(d => { devCount[d.license_id] = (devCount[d.license_id] || 0) + 1; });
-
-    // ── Trial Stats ──
-    const activeTrials    = trials.filter(t => t.status === 'active');
-    const expiredTrials   = trials.filter(t => t.status === 'expired');
-    const convertedTrials = trials.filter(t => t.status === 'converted');
-
-    // For trial online/offline — need to cross-reference with devices by device_hash
-    // Trials don't have last_seen directly, so check devices table
-    // Get device hashes from active trials, then find their last_seen from devices
-    const deviceHashMap = {};
-    devices.forEach(d => { if (d.device_hash) deviceHashMap[d.device_hash] = d.last_seen; });
-
-    // Load trials with device_hash for online check
-    const trialsWithHash = await api('trials', {
-      select: 'device_hash,status',
-      filter: 'status=eq.active',
-      limit: 1000
+    const tdm={};trialDevices.forEach(d=>{tdm[d.device_hash]=d.last_seen;});
+    const activeTrials=trials.filter(t=>t.status==='active');
+    let tOnline=0,tOffline=0;
+    activeTrials.forEach(t=>{
+      const l=connLabel(tdm[t.device_hash]||null);
+      if (l==='online'||l==='idle') tOnline++; else tOffline++;
     });
+    const expiredT=trials.filter(t=>t.status==='expired').length;
+    const converted=trials.filter(t=>t.status==='converted').length;
+    const totalT=trials.length;
+    const tpct=(n)=>totalT?Math.round(n/totalT*100)+'%':'0%';
 
-    // Check device last_seen for each trial device
-    // We need device last_seen — get from devices joined
-    const trialDevices = await api('devices', {
-      select: 'device_hash,last_seen,status',
-      limit: 1000
-    });
-    const trialDeviceMap = {};
-    trialDevices.forEach(d => { trialDeviceMap[d.device_hash] = d.last_seen; });
+    setText('ovTotalTrial',totalT);setText('ovActiveTrial',activeTrials.length);
+    setText('ovTrialOnline',tOnline);setText('ovTrialOffline',tOffline);
+    setText('ovExpiredTrial',expiredT);setText('ovConverted',converted);
+    setW('ovActiveTrialBar',tpct(activeTrials.length));
+    setW('ovTrialOnlineBar',tpct(tOnline));setW('ovTrialOfflineBar',tpct(tOffline));
+    setW('ovConvertedBar',tpct(converted));
 
-    let trialOnline  = 0;
-    let trialOffline = 0;
-    trialsWithHash.forEach(t => {
-      const lastSeen = trialDeviceMap[t.device_hash] || null;
-      const conn = getConnectionLabel(lastSeen);
-      if (conn === 'online' || conn === 'idle') trialOnline++;
-      else trialOffline++;
-    });
+    const sortedDev=devices.filter(d=>d.status==='active').sort((a,b)=>new Date(b.last_seen)-new Date(a.last_seen));
+    const licMap={};licenses.forEach(l=>{licMap[l.id]=l.code;});
+    document.getElementById('ovDeviceList').innerHTML=sortedDev.slice(0,6).map(d=>`
+      <div class="device-row">
+        ${connDot(d.last_seen)}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;color:#ddd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.device_name||'Unknown'}</div>
+          <div style="font-size:10px;color:#444">${licMap[d.license_id]||'—'} · ${d.last_seen?timeAgo(d.last_seen):'Never'}</div>
+        </div>
+        <button class="btn btn-red" style="padding:3px 8px;font-size:10px" onclick="suspendDevice('${d.id}')">Suspend</button>
+      </div>`).join('')+(sortedDev.length===0?'<div class="empty-state"><div class="icon">📱</div>No devices yet</div>':'');
 
-    // ── Update License Stats ──
-    document.getElementById('statTotal').textContent     = licenses.length;
-    document.getElementById('statActive').textContent    = licenses.filter(l => l.status === 'active').length;
-    document.getElementById('statInactive').textContent  = licenses.filter(l => l.status === 'inactive').length;
-    document.getElementById('statExpired').textContent   = licenses.filter(l => l.status === 'expired').length;
-    document.getElementById('statSuspended').textContent = licenses.filter(l => l.status === 'suspended').length;
-
-    // ── Update Device Stats ──
-    document.getElementById('statTotalDevices').textContent     = activeDevices.length + suspendedDevices.length;
-    document.getElementById('statOnlineDevices').textContent    = onlineDevices.length;
-    document.getElementById('statIdleDevices').textContent      = idleDevices.length;
-    document.getElementById('statOfflineDevices').textContent   = offlineDevices.length;
-    document.getElementById('statSuspendedDevices').textContent = suspendedDevices.length;
-
-    // ── Update Trial Stats ──
-    document.getElementById('statTotalTrials').textContent     = trials.length;
-    document.getElementById('statActiveTrials').textContent    = activeTrials.length;
-    document.getElementById('statTrialOnline').textContent     = trialOnline;
-    document.getElementById('statTrialOffline').textContent    = trialOffline;
-    document.getElementById('statExpiredTrials').textContent   = expiredTrials.length;
-    document.getElementById('statConvertedTrials').textContent = convertedTrials.length;
-
-    // ── Render License Table ──
-    if (licenses.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon">🔑</div>No licenses yet. Add one!</div></td></tr>';
-      return;
-    }
-
-    tbody.innerHTML = licenses.map(l => {
-      const used    = devCount[l.id] || 0;
-      const expiry  = l.expiry_date ? new Date(l.expiry_date).toLocaleDateString() : 'Never';
-      const created = new Date(l.created_at).toLocaleDateString();
-      return `<tr>
-        <td><code>${l.code}</code></td>
-        <td><span class="badge badge-${l.status}">${l.status}</span></td>
-        <td>${used} / ${l.max_devices}</td>
-        <td>${expiry}</td>
-        <td class="text-muted">${l.notes || '—'}</td>
-        <td class="text-muted">${created}</td>
-        <td>
-          <button class="btn btn-blue" onclick='openEditLicense(${JSON.stringify(l)})'>Edit</button>
-          <button class="btn btn-red"  onclick="deleteLicense('${l.id}','${l.code}')" style="margin-left:4px">Delete</button>
-        </td>
-      </tr>`;
-    }).join('');
-
-  } catch (e) {
-    tbody.innerHTML = `<tr><td colspan="7" style="color:#ff5252;padding:24px">❌ ${e.message}</td></tr>`;
-  }
+    document.getElementById('lastUpdated').textContent=new Date().toLocaleTimeString();
+    await loadAuditPreview();
+  } catch(e){toast('❌ Overview error: '+e.message);}
 }
 
-function openAddLicense() {
-  document.getElementById('newLicenseCode').value  = '';
-  document.getElementById('newLicenseMax').value   = '1';
-  document.getElementById('newLicenseExpiry').value= '';
-  document.getElementById('newLicenseNotes').value = '';
-  document.getElementById('addLicenseError').textContent = '';
-  openModal('modalAddLicense');
-}
-
-function generateCode() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const rand4 = () => Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
-  return `PL-${rand4()}-${rand4()}`;
-}
-
-async function saveLicense() {
-  const code   = document.getElementById('newLicenseCode').value.trim().toUpperCase() || generateCode();
-  const max    = parseInt(document.getElementById('newLicenseMax').value) || 1;
-  const expiry = document.getElementById('newLicenseExpiry').value || null;
-  const notes  = document.getElementById('newLicenseNotes').value.trim();
-  const errEl  = document.getElementById('addLicenseError');
-  errEl.textContent = '';
+async function loadAuditPreview() {
+  const tbody=document.getElementById('auditPreviewBody');
   try {
-    await api('licenses', { method: 'POST', body: { code, status: 'active', max_devices: max, expiry_date: expiry || null, notes } });
-    closeModal('modalAddLicense');
-    toast(`✅ License ${code} created!`);
-    loadLicenses();
-  } catch (e) { errEl.textContent = '❌ ' + e.message; }
-}
-
-function openEditLicense(l) {
-  document.getElementById('editLicenseId').value     = l.id;
-  document.getElementById('editLicenseStatus').value = l.status;
-  document.getElementById('editLicenseMax').value    = l.max_devices;
-  document.getElementById('editLicenseExpiry').value = l.expiry_date ? l.expiry_date.split('T')[0] : '';
-  document.getElementById('editLicenseNotes').value  = l.notes || '';
-  document.getElementById('editLicenseError').textContent = '';
-  openModal('modalEditLicense');
-}
-
-async function updateLicense() {
-  const id     = document.getElementById('editLicenseId').value;
-  const status = document.getElementById('editLicenseStatus').value;
-  const max    = parseInt(document.getElementById('editLicenseMax').value);
-  const expiry = document.getElementById('editLicenseExpiry').value || null;
-  const notes  = document.getElementById('editLicenseNotes').value.trim();
-  const errEl  = document.getElementById('editLicenseError');
-  try {
-    await apiWithFilter('licenses', `id=eq.${id}`, 'PATCH', { status, max_devices: max, expiry_date: expiry, notes });
-    closeModal('modalEditLicense');
-    toast('✅ License updated!');
-    loadLicenses();
-  } catch (e) { errEl.textContent = '❌ ' + e.message; }
-}
-
-async function deleteLicense(id, code) {
-  if (!confirm(`Delete license ${code}? This cannot be undone.`)) return;
-  try { await apiWithFilter('licenses', `id=eq.${id}`, 'DELETE'); toast(`🗑️ License ${code} deleted`); loadLicenses(); }
-  catch (e) { toast('❌ ' + e.message); }
-}
-
-// ════════════════════════════════════════════
-// DEVICES
-// ════════════════════════════════════════════
-async function loadDevices() {
-  const tbody = document.getElementById('deviceBody');
-  tbody.innerHTML = '<tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr>';
-  try {
-    const devices = await api('devices', {
-      select: 'id,device_hash,device_name,status,last_seen,activated_at,license_id,licenses(code)',
-      order: 'last_seen.desc'
-    });
-    if (devices.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon">📱</div>No devices activated yet.</div></td></tr>';
-      return;
-    }
-    tbody.innerHTML = devices.map(d => {
-      const lastSeen          = d.last_seen ? timeAgo(d.last_seen) : 'Never';
-      const hash              = d.device_hash ? d.device_hash.substring(0, 12) + '...' : '—';
-      const license           = d.licenses ? d.licenses.code : '—';
-      const onlineStatus      = getOnlineStatus(d.last_seen);
-      const deviceStatusBadge = getDeviceStatusBadge(d.status);
-      return `<tr>
-        <td>${onlineStatus.dot} ${d.device_name || 'Unknown'}</td>
-        <td><code>${license}</code></td>
-        <td>${deviceStatusBadge}</td>
-        <td>${onlineStatus.badge}</td>
-        <td>${lastSeen}</td>
-        <td><code title="${d.device_hash}">${hash}</code></td>
-        <td>
-          ${d.status === 'active'
-            ? `<button class="btn btn-red"   onclick="suspendDevice('${d.id}')">Suspend</button>`
-            : `<button class="btn btn-green" onclick="unsuspendDevice('${d.id}')">Restore</button>`}
-          <button class="btn btn-gray" onclick="deleteDevice('${d.id}')" style="margin-left:4px">Remove</button>
-        </td>
-      </tr>`;
-    }).join('');
-  } catch (e) {
-    tbody.innerHTML = `<tr><td colspan="7" style="color:#ff5252;padding:24px">❌ ${e.message}</td></tr>`;
-  }
-}
-
-async function suspendDevice(id) {
-  if (!confirm('Suspend this device?')) return;
-  try { await apiWithFilter('devices', `id=eq.${id}`, 'PATCH', { status: 'suspended' }); toast('⛔ Device suspended'); loadDevices(); }
-  catch (e) { toast('❌ ' + e.message); }
-}
-async function unsuspendDevice(id) {
-  try { await apiWithFilter('devices', `id=eq.${id}`, 'PATCH', { status: 'active' }); toast('✅ Device restored'); loadDevices(); }
-  catch (e) { toast('❌ ' + e.message); }
-}
-async function deleteDevice(id) {
-  if (!confirm('Remove this device record?')) return;
-  try { await apiWithFilter('devices', `id=eq.${id}`, 'DELETE'); toast('🗑️ Device removed'); loadDevices(); }
-  catch (e) { toast('❌ ' + e.message); }
-}
-
-// ════════════════════════════════════════════
-// TRIALS — now shows connection status too
-// ════════════════════════════════════════════
-async function loadTrials() {
-  const tbody = document.getElementById('trialBody');
-  tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr>';
-  try {
-    const trials = await api('trials', { order: 'created_at.desc' });
-    if (trials.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="icon">⏱</div>No trials yet.</div></td></tr>';
-      return;
-    }
-
-    // Get device last_seen for connection status
-    const devices = await api('devices', { select: 'device_hash,last_seen', limit: 1000 });
-    const deviceMap = {};
-    devices.forEach(d => { deviceMap[d.device_hash] = d.last_seen; });
-
-    tbody.innerHTML = trials.map(t => {
-      const now       = new Date();
-      const expiry    = new Date(t.expiry_time);
-      const hoursLeft = Math.max(0, Math.floor((expiry - now) / 3600000));
-      const minsLeft  = Math.max(0, Math.floor((expiry - now) / 60000));
-      const hash      = t.device_hash.substring(0, 16) + '...';
-
-      // Get connection status from devices table
-      const lastSeen     = deviceMap[t.device_hash] || null;
-      const connStatus   = getOnlineStatus(lastSeen);
-      const timeLeftStr  = t.status === 'active'
-        ? (hoursLeft > 0 ? `${hoursLeft}h` : `${minsLeft}m`)
-        : '—';
-
-      return `<tr>
-        <td><code title="${t.device_hash}">${hash}</code></td>
-        <td><span class="badge badge-${t.status}">${t.status}</span></td>
-        <td>${t.status === 'active' ? connStatus.badge : '<span class="badge badge-inactive">—</span>'}</td>
-        <td class="text-muted">${new Date(t.start_time).toLocaleDateString()}</td>
-        <td class="text-muted">${expiry.toLocaleDateString()}</td>
-        <td style="font-weight:${t.status==='active'?'600':'400'}">${timeLeftStr}</td>
-      </tr>`;
-    }).join('');
-  } catch (e) {
-    tbody.innerHTML = `<tr><td colspan="6" style="color:#ff5252;padding:24px">❌ ${e.message}</td></tr>`;
-  }
-}
-
-// ════════════════════════════════════════════
-// BLACKLIST
-// ════════════════════════════════════════════
-async function loadBlacklist() {
-  const tbody = document.getElementById('blacklistBody');
-  tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="spinner"></div>Loading...</td></tr>';
-  try {
-    const rows = await api('blacklist', { order: 'created_at.desc' });
-    if (rows.length === 0) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon">🚫</div>Blacklist is empty.</div></td></tr>'; return; }
-    tbody.innerHTML = rows.map(r => `<tr>
-      <td><span class="badge badge-${r.type === 'device' ? 'inactive' : 'expired'}">${r.type}</span></td>
-      <td><code>${r.identifier}</code></td>
-      <td class="text-muted">${r.reason || '—'}</td>
-      <td class="text-muted">${new Date(r.created_at).toLocaleDateString()}</td>
-      <td><button class="btn btn-gray" onclick="removeBlacklist('${r.id}')">Remove</button></td>
-    </tr>`).join('');
-  } catch (e) { tbody.innerHTML = `<tr><td colspan="5" style="color:#ff5252;padding:24px">❌ ${e.message}</td></tr>`; }
-}
-
-function openAddBlacklist() {
-  document.getElementById('newBlacklistId').value = '';
-  document.getElementById('newBlacklistReason').value = '';
-  document.getElementById('addBlacklistError').textContent = '';
-  openModal('modalAddBlacklist');
-}
-async function saveBlacklist() {
-  const type = document.getElementById('newBlacklistType').value;
-  const identifier = document.getElementById('newBlacklistId').value.trim();
-  const reason = document.getElementById('newBlacklistReason').value.trim();
-  const errEl = document.getElementById('addBlacklistError');
-  if (!identifier) { errEl.textContent = 'Identifier is required.'; return; }
-  try {
-    await api('blacklist', { method: 'POST', body: { type, identifier, reason } });
-    closeModal('modalAddBlacklist');
-    toast('🚫 Added to blacklist');
-    loadBlacklist();
-  } catch (e) { errEl.textContent = '❌ ' + e.message; }
-}
-async function removeBlacklist(id) {
-  if (!confirm('Remove from blacklist?')) return;
-  try { await apiWithFilter('blacklist', `id=eq.${id}`, 'DELETE'); toast('✅ Removed from blacklist'); loadBlacklist(); }
-  catch (e) { toast('❌ ' + e.message); }
-}
-
-// ════════════════════════════════════════════
-// AUDIT LOG
-// ════════════════════════════════════════════
-async function loadAudit() {
-  const tbody = document.getElementById('auditBody');
-  tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="spinner"></div>Loading...</td></tr>';
-  try {
-    const rows = await api('audit_log', { select: 'action,device_hash,license_code,ip_address,created_at', order: 'created_at.desc', limit: 200 });
-    if (rows.length === 0) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div>No audit logs yet.</div></td></tr>'; return; }
-    tbody.innerHTML = rows.map(r => {
-      const hash = r.device_hash ? r.device_hash.substring(0, 10) + '...' : '—';
+    const rows=await api('audit_log',{select:'action,device_hash,license_code,ip_address,created_at',order:'created_at.desc',limit:8});
+    if (!rows||rows.length===0){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:#444">No activity yet</td></tr>';return;}
+    const colors={heartbeat:'#0a2a0a,#44ff88',verify:'#0a1a3a,#5599ff',trial:'#1a1a0a,#ffff44',activate:'#1a0a2a,#bb88ff',default:'#1a1a1a,#888'};
+    tbody.innerHTML=rows.map(r=>{
+      const [bg,fg]=(colors[r.action]||colors.default).split(',');
+      const hash=r.device_hash?r.device_hash.substring(0,10)+'...':'—';
       return `<tr>
         <td class="text-muted">${timeAgo(r.created_at)}</td>
-        <td><code>${r.action}</code></td>
-        <td>${r.license_code || '—'}</td>
-        <td><code title="${r.device_hash}">${hash}</code></td>
-        <td class="text-muted">${r.ip_address || '—'}</td>
+        <td><span style="font-size:10px;background:${bg};color:${fg};padding:2px 6px;border-radius:4px;font-family:monospace">${r.action}</span></td>
+        <td>${r.license_code||'—'}</td>
+        <td><code style="font-size:10px" title="${r.device_hash}">${hash}</code></td>
+        <td class="text-muted">${r.ip_address||'—'}</td>
       </tr>`;
     }).join('');
-  } catch (e) { tbody.innerHTML = `<tr><td colspan="5" style="color:#ff5252;padding:24px">❌ ${e.message}</td></tr>`; }
+  } catch(e){tbody.innerHTML='<tr><td colspan="5" style="color:#ff5252;padding:16px">❌ '+e.message+'</td></tr>';}
 }
 
-// ════════════════════════════════════════════
-// APP VERSIONS
-// ════════════════════════════════════════════
-async function loadVersions() {
-  const tbody = document.getElementById('versionBody');
-  tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr>';
+function setText(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function setW(id,w){const e=document.getElementById(id);if(e)e.style.width=w;}
+
+async function loadLicenses() {
+  const tbody=document.getElementById('licenseBody');
+  tbody.innerHTML='<tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr>';
   try {
-    const rows = await api('app_versions', { order: 'version_code.desc' });
-    if (rows.length === 0) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div>No versions yet.</div></td></tr>'; return; }
-    tbody.innerHTML = rows.map(r => `<tr>
+    const [licenses,devices]=await Promise.all([
+      api('licenses',{select:'id,code,status,max_devices,expiry_date,notes,created_at',order:'created_at.desc'}),
+      api('devices',{select:'license_id',filter:'status=eq.active'})
+    ]);
+    const devCount={};
+    devices.forEach(d=>{devCount[d.license_id]=(devCount[d.license_id]||0)+1;});
+    if (licenses.length===0){tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">🔑</div>No licenses yet. Add one!</div></td></tr>';return;}
+    tbody.innerHTML=licenses.map((l,i)=>{
+      const used=devCount[l.id]||0;
+      const expiry=l.expiry_date?new Date(l.expiry_date).toLocaleDateString():'Never';
+      const created=new Date(l.created_at).toLocaleDateString();
+      const codeId=`lcode_${i}`;
+      codeStore[codeId]=l.code;
+      const isHidden=allCodesHidden;
+      const displayCode=isHidden?'••••-••••-••••':l.code;
+      const codeColor=isHidden?'#444':'#00e5ff';
+      const spacing=isHidden?'2px':'0.5px';
+      const eyeIcon=isHidden?'ti-eye-off':'ti-eye';
+      return `<tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:5px">
+            <code id="${codeId}" style="color:${codeColor};letter-spacing:${spacing};transition:all 0.2s">${displayCode}</code>
+            <button class="btn-icon" id="eye_${i}" onclick="toggleOneCode('${codeId}','eye_${i}')" title="Show/hide" style="background:#2a2a3a;color:#888">
+              <i class="ti ${eyeIcon}" aria-hidden="true"></i>
+            </button>
+            <button class="btn-icon" onclick="copyCode('${l.code}','cpbtn_${i}')" title="Copy (works even if hidden)" style="background:#1a3a1a;color:#44ff88">
+              <i id="cpbtn_${i}" class="ti ti-copy" aria-hidden="true"></i>
+            </button>
+          </div>
+        </td>
+        <td><span class="badge badge-${l.status}">${l.status}</span></td>
+        <td style="text-align:center">${used}/${l.max_devices}</td>
+        <td class="text-muted">${expiry}</td>
+        <td class="text-muted" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.notes||'—'}</td>
+        <td class="text-muted">${created}</td>
+        <td>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-blue" onclick='openEditLicense(${JSON.stringify(l)})' style="padding:4px 8px;font-size:11px">Edit</button>
+            <button class="btn btn-red"  onclick="deleteLicense('${l.id}','${l.code}')" style="padding:4px 8px;font-size:11px">Del</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+    if (allCodesHidden) {
+      document.getElementById('globalCodeToggle').style.background='#334';
+      document.getElementById('globalCodeThumb').style.left='2px';
+    }
+  } catch(e){tbody.innerHTML=`<tr><td colspan="7" style="color:#ff5252;padding:20px">❌ ${e.message}</td></tr>`;}
+}
+
+function toggleOneCode(codeId, btnId) {
+  const el=document.getElementById(codeId);
+  const btn=document.getElementById(btnId);
+  if (!el) return;
+  const isNowHidden=el.textContent.includes('•');
+  if (isNowHidden) {
+    el.textContent=codeStore[codeId]||el.textContent;
+    el.style.color='#00e5ff';el.style.letterSpacing='0.5px';
+    btn.innerHTML='<i class="ti ti-eye" aria-hidden="true"></i>';
+  } else {
+    el.textContent='••••-••••-••••';
+    el.style.color='#444';el.style.letterSpacing='2px';
+    btn.innerHTML='<i class="ti ti-eye-off" aria-hidden="true"></i>';
+  }
+}
+
+function toggleAllCodes() {
+  allCodesHidden=!allCodesHidden;
+  const toggle=document.getElementById('globalCodeToggle');
+  const thumb=document.getElementById('globalCodeThumb');
+  toggle.style.background=allCodesHidden?'#334':'#44ff88';
+  thumb.style.left=allCodesHidden?'2px':'16px';
+  document.querySelectorAll('[id^="lcode_"]').forEach(el=>{
+    const id=el.id;
+    if (allCodesHidden){
+      el.textContent='••••-••••-••••';
+      el.style.color='#444';el.style.letterSpacing='2px';
+    } else {
+      el.textContent=codeStore[id]||el.textContent;
+      el.style.color='#00e5ff';el.style.letterSpacing='0.5px';
+    }
+  });
+  document.querySelectorAll('[id^="eye_"]').forEach(btn=>{
+    btn.innerHTML=`<i class="ti ${allCodesHidden?'ti-eye-off':'ti-eye'}" aria-hidden="true"></i>`;
+  });
+}
+
+function copyCode(code, btnId) {
+  navigator.clipboard.writeText(code).then(()=>{
+    const icon=document.getElementById(btnId);
+    if (icon){icon.className='ti ti-check';icon.parentElement.style.background='#0a3a1a';}
+    toast('✅ Copied: '+code);
+    setTimeout(()=>{if(icon){icon.className='ti ti-copy';icon.parentElement.style.background='#1a3a1a';}},1500);
+  }).catch(()=>toast('❌ Copy failed'));
+}
+
+function copyHash(hash, btnId) {
+  navigator.clipboard.writeText(hash).then(()=>{
+    const icon=document.getElementById(btnId);
+    if (icon){icon.className='ti ti-check';icon.parentElement.style.background='#0a1a3a';}
+    toast('✅ Device hash copied');
+    setTimeout(()=>{if(icon){icon.className='ti ti-copy';icon.parentElement.style.background='#1a2a4a';}},1500);
+  }).catch(()=>toast('❌ Copy failed'));
+}
+
+function openAddLicense(){
+  ['newLicenseCode','newLicenseNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('newLicenseMax').value='1';
+  document.getElementById('newLicenseExpiry').value='';
+  document.getElementById('addLicenseError').textContent='';
+  openModal('modalAddLicense');
+}
+function generateCode(){
+  const c='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const r4=()=>Array.from({length:4},()=>c[Math.floor(Math.random()*c.length)]).join('');
+  return `PL-${r4()}-${r4()}`;
+}
+async function saveLicense(){
+  const code=document.getElementById('newLicenseCode').value.trim().toUpperCase()||generateCode();
+  const max=parseInt(document.getElementById('newLicenseMax').value)||1;
+  const expiry=document.getElementById('newLicenseExpiry').value||null;
+  const notes=document.getElementById('newLicenseNotes').value.trim();
+  const errEl=document.getElementById('addLicenseError');
+  errEl.textContent='';
+  try{
+    await api('licenses',{method:'POST',body:{code,status:'active',max_devices:max,expiry_date:expiry||null,notes}});
+    closeModal('modalAddLicense');toast('✅ License '+code+' created!');loadLicenses();
+  }catch(e){errEl.textContent='❌ '+e.message;}
+}
+function openEditLicense(l){
+  document.getElementById('editLicenseId').value=l.id;
+  document.getElementById('editLicenseStatus').value=l.status;
+  document.getElementById('editLicenseMax').value=l.max_devices;
+  document.getElementById('editLicenseExpiry').value=l.expiry_date?l.expiry_date.split('T')[0]:'';
+  document.getElementById('editLicenseNotes').value=l.notes||'';
+  document.getElementById('editLicenseError').textContent='';
+  openModal('modalEditLicense');
+}
+async function updateLicense(){
+  const id=document.getElementById('editLicenseId').value;
+  const status=document.getElementById('editLicenseStatus').value;
+  const max=parseInt(document.getElementById('editLicenseMax').value);
+  const expiry=document.getElementById('editLicenseExpiry').value||null;
+  const notes=document.getElementById('editLicenseNotes').value.trim();
+  const errEl=document.getElementById('editLicenseError');
+  try{await apiWF('licenses',`id=eq.${id}`,'PATCH',{status,max_devices:max,expiry_date:expiry,notes});closeModal('modalEditLicense');toast('✅ License updated!');loadLicenses();}
+  catch(e){errEl.textContent='❌ '+e.message;}
+}
+async function deleteLicense(id,code){
+  if (!confirm(`Delete license ${code}?`)) return;
+  try{await apiWF('licenses',`id=eq.${id}`,'DELETE');toast('🗑️ License '+code+' deleted');loadLicenses();}
+  catch(e){toast('❌ '+e.message);}
+}
+
+async function loadDevices(){
+  const tbody=document.getElementById('deviceBody');
+  tbody.innerHTML='<tr><td colspan="7" class="loading"><div class="spinner"></div>Loading...</td></tr>';
+  try{
+    const devices=await api('devices',{select:'id,device_hash,device_name,status,last_seen,license_id,licenses(code)',order:'last_seen.desc'});
+    if (devices.length===0){tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">📱</div>No devices yet</div></td></tr>';return;}
+    tbody.innerHTML=devices.map((d,i)=>{
+      const ls=d.last_seen?timeAgo(d.last_seen):'Never';
+      const fullHash=d.device_hash||'';
+      const shortHash=fullHash?fullHash.substring(0,12)+'...':'—';
+      const lic=d.licenses?d.licenses.code:'—';
+      const hbtnId=`hbtn_${i}`;
+      return `<tr>
+        <td style="display:flex;align-items:center;gap:6px;border-bottom:none">
+          ${connDot(d.last_seen)}
+          <span style="font-size:12px">${d.device_name||'Unknown'}</span>
+        </td>
+        <td><code>${lic}</code></td>
+        <td>${devStatusBadge(d.status)}</td>
+        <td>${connBadge(d.last_seen)}</td>
+        <td class="text-muted">${ls}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:4px">
+            <code style="font-size:10px;color:#555" title="${fullHash}">${shortHash}</code>
+            <button class="btn-icon" id="${hbtnId}" onclick="copyHash('${fullHash}','${hbtnId}')" title="Copy full hash" style="background:#1a2a4a;color:#5599ff">
+              <i class="ti ti-copy" aria-hidden="true"></i>
+            </button>
+          </div>
+        </td>
+        <td>
+          <div style="display:flex;gap:4px">
+            ${d.status==='active'
+              ?`<button class="btn btn-red" onclick="suspendDevice('${d.id}')" style="padding:4px 8px;font-size:11px">Suspend</button>`
+              :`<button class="btn btn-green" onclick="unsuspendDevice('${d.id}')" style="padding:4px 8px;font-size:11px">Restore</button>`}
+            <button class="btn btn-gray" onclick="deleteDevice('${d.id}')" style="padding:4px 8px;font-size:11px">Remove</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="7" style="color:#ff5252;padding:20px">❌ ${e.message}</td></tr>`;}
+}
+
+async function suspendDevice(id){
+  if (!confirm('Suspend this device?')) return;
+  try{await apiWF('devices',`id=eq.${id}`,'PATCH',{status:'suspended'});toast('⛔ Device suspended');loadDevices();loadOverview();}
+  catch(e){toast('❌ '+e.message);}
+}
+async function unsuspendDevice(id){
+  try{await apiWF('devices',`id=eq.${id}`,'PATCH',{status:'active'});toast('✅ Device restored');loadDevices();}
+  catch(e){toast('❌ '+e.message);}
+}
+async function deleteDevice(id){
+  if (!confirm('Remove this device?')) return;
+  try{await apiWF('devices',`id=eq.${id}`,'DELETE');toast('🗑️ Device removed');loadDevices();}
+  catch(e){toast('❌ '+e.message);}
+}
+
+async function loadTrials(){
+  const tbody=document.getElementById('trialBody');
+  tbody.innerHTML='<tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr>';
+  try{
+    const [trials,devs]=await Promise.all([
+      api('trials',{order:'created_at.desc'}),
+      api('devices',{select:'device_hash,last_seen',limit:1000})
+    ]);
+    const dm={};devs.forEach(d=>{dm[d.device_hash]=d.last_seen;});
+    if (trials.length===0){tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="icon">⏱</div>No trials yet</div></td></tr>';return;}
+    tbody.innerHTML=trials.map(t=>{
+      const exp=new Date(t.expiry_time);
+      const now=new Date();
+      const hLeft=Math.max(0,Math.floor((exp-now)/3600000));
+      const mLeft=Math.max(0,Math.floor((exp-now)/60000));
+      const timeLeft=t.status==='active'?(hLeft>0?`${hLeft}h`:`${mLeft}m`):'—';
+      const hash=t.device_hash.substring(0,16)+'...';
+      const ls=dm[t.device_hash]||null;
+      return `<tr>
+        <td><code style="font-size:11px" title="${t.device_hash}">${hash}</code></td>
+        <td><span class="badge badge-${t.status}">${t.status}</span></td>
+        <td>${t.status==='active'?connBadge(ls):'<span class="badge badge-inactive">—</span>'}</td>
+        <td class="text-muted">${new Date(t.start_time).toLocaleDateString()}</td>
+        <td class="text-muted">${exp.toLocaleDateString()}</td>
+        <td style="font-weight:${t.status==='active'?500:400}">${timeLeft}</td>
+      </tr>`;
+    }).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="6" style="color:#ff5252;padding:20px">❌ ${e.message}</td></tr>`;}
+}
+
+async function loadBlacklist(){
+  const tbody=document.getElementById('blacklistBody');
+  tbody.innerHTML='<tr><td colspan="5" class="loading"><div class="spinner"></div>Loading...</td></tr>';
+  try{
+    const rows=await api('blacklist',{order:'created_at.desc'});
+    if (rows.length===0){tbody.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="icon">🚫</div>Blacklist is empty</div></td></tr>';return;}
+    tbody.innerHTML=rows.map(r=>`<tr>
+      <td><span class="badge badge-${r.type==='device'?'inactive':'expired'}">${r.type}</span></td>
+      <td><code>${r.identifier}</code></td>
+      <td class="text-muted">${r.reason||'—'}</td>
+      <td class="text-muted">${new Date(r.created_at).toLocaleDateString()}</td>
+      <td><button class="btn btn-gray" onclick="removeBlacklist('${r.id}')" style="padding:4px 8px;font-size:11px">Remove</button></td>
+    </tr>`).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="5" style="color:#ff5252;padding:20px">❌ ${e.message}</td></tr>`;}
+}
+function openAddBlacklist(){
+  ['newBlacklistId','newBlacklistReason'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('addBlacklistError').textContent='';
+  openModal('modalAddBlacklist');
+}
+async function saveBlacklist(){
+  const type=document.getElementById('newBlacklistType').value;
+  const identifier=document.getElementById('newBlacklistId').value.trim();
+  const reason=document.getElementById('newBlacklistReason').value.trim();
+  const errEl=document.getElementById('addBlacklistError');
+  if (!identifier){errEl.textContent='Identifier is required.';return;}
+  try{await api('blacklist',{method:'POST',body:{type,identifier,reason}});closeModal('modalAddBlacklist');toast('🚫 Added to blacklist');loadBlacklist();}
+  catch(e){errEl.textContent='❌ '+e.message;}
+}
+async function removeBlacklist(id){
+  if (!confirm('Remove from blacklist?')) return;
+  try{await apiWF('blacklist',`id=eq.${id}`,'DELETE');toast('✅ Removed from blacklist');loadBlacklist();}
+  catch(e){toast('❌ '+e.message);}
+}
+
+async function loadAudit(){
+  const tbody=document.getElementById('auditBody');
+  tbody.innerHTML='<tr><td colspan="5" class="loading"><div class="spinner"></div>Loading...</td></tr>';
+  try{
+    const rows=await api('audit_log',{select:'action,device_hash,license_code,ip_address,created_at',order:'created_at.desc',limit:200});
+    if (rows.length===0){tbody.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div>No logs yet</div></td></tr>';return;}
+    tbody.innerHTML=rows.map(r=>{
+      const hash=r.device_hash?r.device_hash.substring(0,10)+'...':'—';
+      return `<tr>
+        <td class="text-muted">${timeAgo(r.created_at)}</td>
+        <td><code style="font-size:10px">${r.action}</code></td>
+        <td>${r.license_code||'—'}</td>
+        <td><code style="font-size:10px" title="${r.device_hash}">${hash}</code></td>
+        <td class="text-muted">${r.ip_address||'—'}</td>
+      </tr>`;
+    }).join('');
+  }catch(e){tbody.innerHTML=`<tr><td colspan="5" style="color:#ff5252;padding:20px">❌ ${e.message}</td></tr>`;}
+}
+
+async function loadVersions(){
+  const tbody=document.getElementById('versionBody');
+  tbody.innerHTML='<tr><td colspan="6" class="loading"><div class="spinner"></div>Loading...</td></tr>';
+  try{
+    const rows=await api('app_versions',{order:'version_code.desc'});
+    if (rows.length===0){tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div>No versions yet</div></td></tr>';return;}
+    tbody.innerHTML=rows.map(r=>`<tr>
       <td><strong>v${r.version_name}</strong></td>
       <td>${r.version_code}</td>
-      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">
-        <a href="${r.apk_url}" target="_blank" style="color:#00e5ff">${r.apk_url.split('/').pop()}</a>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis">
+        <a href="${r.apk_url}" target="_blank" style="color:#00e5ff;font-size:11px">${r.apk_url.split('/').pop()}</a>
       </td>
-      <td>${r.is_forced ? '<span class="badge badge-suspended">FORCED</span>' : '<span class="badge badge-inactive">Optional</span>'}</td>
+      <td>${r.is_forced?'<span class="badge badge-suspended">FORCED</span>':'<span class="badge badge-inactive">Optional</span>'}</td>
       <td class="text-muted">${new Date(r.created_at).toLocaleDateString()}</td>
-      <td><button class="btn btn-red" onclick="deleteVersion('${r.id}')">Delete</button></td>
+      <td><button class="btn btn-red" onclick="deleteVersion('${r.id}')" style="padding:4px 8px;font-size:11px">Delete</button></td>
     </tr>`).join('');
-  } catch (e) { tbody.innerHTML = `<tr><td colspan="6" style="color:#ff5252;padding:24px">❌ ${e.message}</td></tr>`; }
+  }catch(e){tbody.innerHTML=`<tr><td colspan="6" style="color:#ff5252;padding:20px">❌ ${e.message}</td></tr>`;}
 }
-
-function openAddVersion() {
-  document.getElementById('newVersionName').value  = '';
-  document.getElementById('newVersionCode').value  = '';
-  document.getElementById('newVersionUrl').value   = 'https://opfwpwjkembglzthaivv.supabase.co/storage/v1/object/public/apk-releases/pisolock-v.apk';
-  document.getElementById('newVersionNotes').value = '';
-  document.getElementById('newVersionForced').checked = false;
-  document.getElementById('addVersionError').textContent = '';
+function openAddVersion(){
+  ['newVersionName','newVersionNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('newVersionCode').value='';
+  document.getElementById('newVersionUrl').value='https://opfwpwjkembglzthaivv.supabase.co/storage/v1/object/public/apk-releases/pisolock-v.apk';
+  document.getElementById('newVersionForced').checked=false;
+  document.getElementById('addVersionError').textContent='';
   openModal('modalAddVersion');
 }
-async function saveVersion() {
-  const name = document.getElementById('newVersionName').value.trim();
-  const code = parseInt(document.getElementById('newVersionCode').value);
-  const url  = document.getElementById('newVersionUrl').value.trim();
-  const notes = document.getElementById('newVersionNotes').value.trim();
-  const forced = document.getElementById('newVersionForced').checked;
-  const errEl = document.getElementById('addVersionError');
-  if (!name || !code || !url) { errEl.textContent = 'Name, code and URL are required.'; return; }
-  try {
-    await api('app_versions', { method: 'POST', body: { version_name: name, version_code: code, apk_url: url, release_notes: notes, is_forced: forced } });
-    closeModal('modalAddVersion');
-    toast(`✅ Version v${name} added!`);
-    loadVersions();
-  } catch (e) { errEl.textContent = '❌ ' + e.message; }
+async function saveVersion(){
+  const name=document.getElementById('newVersionName').value.trim();
+  const code=parseInt(document.getElementById('newVersionCode').value);
+  const url=document.getElementById('newVersionUrl').value.trim();
+  const notes=document.getElementById('newVersionNotes').value.trim();
+  const forced=document.getElementById('newVersionForced').checked;
+  const errEl=document.getElementById('addVersionError');
+  if (!name||!code||!url){errEl.textContent='Name, code and URL are required.';return;}
+  try{
+    await api('app_versions',{method:'POST',body:{version_name:name,version_code:code,apk_url:url,release_notes:notes,is_forced:forced}});
+    closeModal('modalAddVersion');toast('✅ Version v'+name+' added!');loadVersions();
+  }catch(e){errEl.textContent='❌ '+e.message;}
 }
-async function deleteVersion(id) {
-  if (!confirm('Delete this version record?')) return;
-  try { await apiWithFilter('app_versions', `id=eq.${id}`, 'DELETE'); toast('🗑️ Version deleted'); loadVersions(); }
-  catch (e) { toast('❌ ' + e.message); }
+async function deleteVersion(id){
+  if (!confirm('Delete this version?')) return;
+  try{await apiWF('app_versions',`id=eq.${id}`,'DELETE');toast('🗑️ Version deleted');loadVersions();}
+  catch(e){toast('❌ '+e.message);}
 }
 
-// ════════════════════════════════════════════
-// SETTINGS
-// ════════════════════════════════════════════
-async function saveTrialDuration() {
-  const days = parseInt(document.getElementById('trialDays').value);
-  const msgEl = document.getElementById('trialSaveMsg');
-  localStorage.setItem('trial_days_setting', days);
-  msgEl.style.color = '#ffaa00';
-  msgEl.textContent = `⚠️ To apply: Update trial/index.ts — change to "+ ${days} * 24 * 60 * 60 * 1000" then redeploy.`;
-  toast(`✅ Reminder saved — update Edge Function to apply!`);
+async function saveTrialDuration(){
+  const days=parseInt(document.getElementById('trialDays').value);
+  const m=document.getElementById('trialSaveMsg');
+  localStorage.setItem('trial_days_setting',days);
+  m.style.color='#ff9944';
+  m.textContent=`⚠️ Update trial/index.ts: change to "+ ${days} * 24 * 60 * 60 * 1000" then redeploy CLI.`;
+  toast('Reminder saved — update Edge Function to apply!');
 }
-
-async function extendTrial() {
-  const deviceHash = document.getElementById('extendDeviceHash').value.trim();
-  const days       = parseInt(document.getElementById('extendDays').value) || 1;
-  const action     = document.getElementById('extendAction').value;
-  const msgEl      = document.getElementById('extendMsg');
-  msgEl.textContent = '';
-  if (!deviceHash) { msgEl.style.color = '#ff5252'; msgEl.textContent = '❌ Please enter a device hash'; return; }
-  try {
-    const trials = await api('trials', { filter: `device_hash=eq.${deviceHash}` });
-    if (!trials || trials.length === 0) { msgEl.style.color = '#ff5252'; msgEl.textContent = '❌ No trial found'; return; }
-    let newExpiry;
-    if (action === 'set') {
-      newExpiry = new Date(Date.now() + days * 86400000);
-    } else if (action === 'add') {
-      newExpiry = new Date(new Date(trials[0].expiry_time).getTime() + days * 86400000);
-    } else {
-      newExpiry = new Date(new Date(trials[0].expiry_time).getTime() - days * 86400000);
-      if (newExpiry < new Date(Date.now() + 60000)) newExpiry = new Date(Date.now() + 60000);
+async function extendTrial(){
+  const hash=document.getElementById('extendDeviceHash').value.trim();
+  const days=parseInt(document.getElementById('extendDays').value)||1;
+  const action=document.getElementById('extendAction').value;
+  const m=document.getElementById('extendMsg');
+  m.textContent='';
+  if (!hash){m.style.color='#ff5252';m.textContent='❌ Enter a device hash';return;}
+  try{
+    const trials=await api('trials',{filter:`device_hash=eq.${hash}`});
+    if (!trials||trials.length===0){m.style.color='#ff5252';m.textContent='❌ No trial found for this hash';return;}
+    let exp;
+    if (action==='set') exp=new Date(Date.now()+days*86400000);
+    else if (action==='add') exp=new Date(new Date(trials[0].expiry_time).getTime()+days*86400000);
+    else {
+      exp=new Date(new Date(trials[0].expiry_time).getTime()-days*86400000);
+      if (exp<new Date(Date.now()+60000)) exp=new Date(Date.now()+60000);
     }
-    await apiWithFilter('trials', `device_hash=eq.${deviceHash}`, 'PATCH', {
-      expiry_time: newExpiry.toISOString(),
-      status: newExpiry > new Date() ? 'active' : 'expired'
-    });
-    msgEl.style.color = '#44ff88';
-    msgEl.textContent = `✅ Done! New expiry: ${newExpiry.toLocaleString()}`;
+    await apiWF('trials',`device_hash=eq.${hash}`,'PATCH',{expiry_time:exp.toISOString(),status:exp>new Date()?'active':'expired'});
+    m.style.color='#44ff88';
+    m.textContent='✅ Done! New expiry: '+exp.toLocaleString();
     toast('✅ Trial updated!');
-  } catch (e) { msgEl.style.color = '#ff5252'; msgEl.textContent = '❌ ' + e.message; }
+  }catch(e){m.style.color='#ff5252';m.textContent='❌ '+e.message;}
 }
 
-// ════════════════════════════════════════════
-// UTILITIES
-// ════════════════════════════════════════════
-function filterTable(tableId, query) {
-  const q = query.toLowerCase();
-  document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => {
-    row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
-  });
+function filterTable(id,q){
+  const ql=q.toLowerCase();
+  document.querySelectorAll(`#${id} tbody tr`).forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(ql)?'':'none';});
 }
-
-function timeAgo(dateStr) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const m = Math.floor(diff / 60000);
-  const h = Math.floor(m / 60);
-  const d = Math.floor(h / 24);
-  if (d > 0) return `${d}d ago`;
-  if (h > 0) return `${h}h ago`;
-  if (m > 0) return `${m}m ago`;
-  return 'just now';
-}
-
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
-});
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(el=>{el.addEventListener('click',e=>{if (e.target===el) el.classList.remove('open');});});
 
 let toastTimer;
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.style.display = 'block';
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.style.display='block';
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.style.display = 'none', 3000);
+  toastTimer=setTimeout(()=>el.style.display='none',3000);
 }
 
-// ════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-  const savedDays = localStorage.getItem('trial_days_setting');
-  if (savedDays) { const sel = document.getElementById('trialDays'); if (sel) sel.value = savedDays; }
-
-  document.getElementById('loginPassword').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
-  });
-
-  if (authToken && authUser) {
-    const email = authUser.email || 'Admin';
-    fetch(`${SUPABASE_URL}/auth/v1/user`, {
-      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${authToken}` }
-    }).then(res => {
-      if (!res.ok) doLogout();
-      else showDashboard(email);
-    }).catch(() => showDashboard(email));
+document.addEventListener('DOMContentLoaded',()=>{
+  const sd=localStorage.getItem('trial_days_setting');
+  if (sd){const s=document.getElementById('trialDays');if(s)s.value=sd;}
+  document.getElementById('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+  if (authToken&&authUser){
+    const email=authUser.email||'Admin';
+    fetch(`${SUPABASE_URL}/auth/v1/user`,{headers:{'apikey':SUPABASE_ANON,'Authorization':`Bearer ${authToken}`}})
+      .then(r=>{if(!r.ok)doLogout();else showDashboard(email);})
+      .catch(()=>showDashboard(email));
   }
 });
 </script>
