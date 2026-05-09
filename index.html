@@ -427,18 +427,19 @@ code.hidden-code{color:#444;letter-spacing:2px}
         <div class="panel">
           <div class="panel-header">⏱ Trial Duration</div>
           <div style="padding:14px">
-            <p style="color:#666;font-size:12px;margin-bottom:12px">How many days new devices get for free trial. Only affects new trials.</p>
+            <p style="color:#666;font-size:12px;margin-bottom:12px">How long new devices get for free trial. Only affects NEW trials (not existing ones).</p>
             <div class="form-group">
               <label>Duration</label>
-              <select id="trialDays" style="width:100%;padding:9px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px">
-                <option value="1">1 day (testing)</option>
-                <option value="3">3 days</option>
-                <option value="7" selected>7 days (default)</option>
-                <option value="14">14 days</option>
-                <option value="30">30 days</option>
-              </select>
+              <div style="display:flex;gap:8px">
+                <input id="trialAmount" type="number" min="1" value="7" style="flex:1;padding:9px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px" />
+                <select id="trialUnit" style="width:120px;padding:9px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px">
+                  <option value="minutes">Minutes</option>
+                  <option value="hours">Hours</option>
+                  <option value="days" selected>Days</option>
+                </select>
+              </div>
             </div>
-            <button class="btn btn-green" onclick="saveTrialDuration()" style="width:100%;padding:10px;justify-content:center">💾 Save (reminder only)</button>
+            <button class="btn btn-green" onclick="saveTrialDuration()" style="width:100%;padding:10px;justify-content:center">💾 Save to Server</button>
             <div id="trialSaveMsg" style="margin-top:8px;font-size:11px"></div>
           </div>
         </div>
@@ -458,8 +459,15 @@ code.hidden-code{color:#444;letter-spacing:2px}
               </select>
             </div>
             <div class="form-group">
-              <label>Days</label>
-              <input id="extendDays" type="number" value="1" min="1" max="365" />
+              <label>Amount</label>
+              <div style="display:flex;gap:8px">
+                <input id="extendAmount" type="number" value="1" min="1" max="99999" style="flex:1" />
+                <select id="extendUnit" style="width:120px;padding:9px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px">
+                  <option value="minutes" selected>Minutes</option>
+                  <option value="hours">Hours</option>
+                  <option value="days">Days</option>
+                </select>
+              </div>
             </div>
             <button class="btn btn-blue" onclick="extendTrial()" style="width:100%;padding:10px;justify-content:center">✅ Apply Change</button>
             <div id="extendMsg" style="margin-top:8px;font-size:11px"></div>
@@ -1113,17 +1121,37 @@ async function deleteVersion(id){
   catch(e){toast('❌ '+e.message);}
 }
 
+// ── Helper: convert amount + unit to milliseconds ──
+function unitToMs(unit) {
+  const u = { minutes: 60_000, hours: 3_600_000, days: 86_400_000 };
+  return u[unit] || 86_400_000;
+}
+
 async function saveTrialDuration(){
-  const days=parseInt(document.getElementById('trialDays').value);
+  const amount=parseInt(document.getElementById('trialAmount').value)||7;
+  const unit=document.getElementById('trialUnit').value;
+  const ms=amount*unitToMs(unit);
   const m=document.getElementById('trialSaveMsg');
-  localStorage.setItem('trial_days_setting',days);
-  m.style.color='#ff9944';
-  m.textContent=`⚠️ Update trial/index.ts: change to "+ ${days} * 24 * 60 * 60 * 1000" then redeploy CLI.`;
-  toast('Reminder saved — update Edge Function to apply!');
+  m.textContent='';
+  try{
+    await apiWF('app_config','key=eq.trial_duration_ms','PATCH',{value:String(ms)});
+    m.style.color='#44ff88';
+    m.textContent='✅ Saved! New trials will use this duration immediately.';
+    toast('✅ Trial duration saved to server!');
+  }catch(e){
+    m.style.color='#ff5252';
+    if (e.message&&(e.message.includes('401')||e.message.includes('403'))){
+      m.textContent='❌ RLS blocked — add the app_config policy from Phase 3 SQL first.';
+    } else {
+      m.textContent='❌ '+e.message;
+    }
+  }
 }
 async function extendTrial(){
   const hash=document.getElementById('extendDeviceHash').value.trim();
-  const days=parseInt(document.getElementById('extendDays').value)||1;
+  const amount=parseInt(document.getElementById('extendAmount').value)||1;
+  const unit=document.getElementById('extendUnit').value;
+  const deltaMs=amount*unitToMs(unit);
   const action=document.getElementById('extendAction').value;
   const m=document.getElementById('extendMsg');
   m.textContent='';
@@ -1132,10 +1160,10 @@ async function extendTrial(){
     const trials=await api('trials',{filter:`device_hash=eq.${hash}`});
     if (!trials||trials.length===0){m.style.color='#ff5252';m.textContent='❌ No trial found for this hash';return;}
     let exp;
-    if (action==='set') exp=new Date(Date.now()+days*86400000);
-    else if (action==='add') exp=new Date(new Date(trials[0].expiry_time).getTime()+days*86400000);
+    if (action==='set') exp=new Date(Date.now()+deltaMs);
+    else if (action==='add') exp=new Date(new Date(trials[0].expiry_time).getTime()+deltaMs);
     else {
-      exp=new Date(new Date(trials[0].expiry_time).getTime()-days*86400000);
+      exp=new Date(new Date(trials[0].expiry_time).getTime()-deltaMs);
       if (exp<new Date(Date.now()+60000)) exp=new Date(Date.now()+60000);
     }
     await apiWF('trials',`device_hash=eq.${hash}`,'PATCH',{expiry_time:exp.toISOString(),status:exp>new Date()?'active':'expired'});
@@ -1162,8 +1190,29 @@ function toast(msg){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
+  // ── Migrate legacy localStorage trial setting → server, then clear it
   const sd=localStorage.getItem('trial_days_setting');
-  if (sd){const s=document.getElementById('trialDays');if(s)s.value=sd;}
+  if (sd && authToken) {
+    const legacyMs = parseInt(sd) * 86_400_000;
+    apiWF('app_config','key=eq.trial_duration_ms','PATCH',{value:String(legacyMs)})
+      .then(()=>{ localStorage.removeItem('trial_days_setting'); })
+      .catch(()=>{}); // silent — server wins
+  }
+  // ── On load, read trial_duration_ms from server and populate the inputs
+  if (authToken) {
+    api('app_config',{filter:'key=eq.trial_duration_ms'}).then(rows=>{
+      if (!rows||rows.length===0) return;
+      const ms=parseInt(rows[0].value)||604800000;
+      let amount, unit;
+      if (ms % 86_400_000 === 0) { amount=ms/86_400_000; unit='days'; }
+      else if (ms % 3_600_000 === 0) { amount=ms/3_600_000; unit='hours'; }
+      else { amount=ms/60_000; unit='minutes'; }
+      const amtEl=document.getElementById('trialAmount');
+      const unitEl=document.getElementById('trialUnit');
+      if(amtEl) amtEl.value=amount;
+      if(unitEl) unitEl.value=unit;
+    }).catch(()=>{});
+  }
   document.getElementById('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
   if (authToken&&authUser){
     const email=authUser.email||'Admin';
