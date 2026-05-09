@@ -431,11 +431,11 @@ code.hidden-code{color:#444;letter-spacing:2px}
             <div class="form-group">
               <label>Duration</label>
               <div style="display:flex;gap:8px">
-                <input id="trialAmount" type="number" min="1" value="7" style="flex:1;padding:9px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px" />
+                <input id="trialAmount" type="number" min="1" value="24" style="flex:1;padding:9px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px" />
                 <select id="trialUnit" style="width:120px;padding:9px;background:#0d0d15;border:0.5px solid #334;border-radius:7px;color:#fff;font-size:13px">
                   <option value="minutes">Minutes</option>
-                  <option value="hours">Hours</option>
-                  <option value="days" selected>Days</option>
+                  <option value="hours" selected>Hours</option>
+                  <option value="days">Days</option>
                 </select>
               </div>
             </div>
@@ -567,7 +567,7 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 let authToken = localStorage.getItem('pisolock_auth_token') || null;
 let authUser  = JSON.parse(localStorage.getItem('pisolock_auth_user') || 'null');
 let autoRefreshInterval = null;
-let allCodesHidden = false;
+let allCodesHidden = localStorage.getItem('pisolock_codes_hidden') === 'true';
 const codeStore = {};
 
 function connLabel(ls) {
@@ -620,6 +620,24 @@ async function doLogin() {
   } catch(e){err.textContent='❌ '+e.message;}
 }
 
+
+// ── Restore Settings inputs from server (called after login) ──
+async function restoreSettingsFromServer() {
+  try {
+    const rows = await api('app_config', {filter: 'key=eq.trial_duration_ms'});
+    if (!rows || rows.length === 0) return;
+    const ms = parseInt(rows[0].value) || 86400000;
+    let amount, unit;
+    if (ms % 86_400_000 === 0) { amount = ms / 86_400_000; unit = 'days'; }
+    else if (ms % 3_600_000 === 0) { amount = ms / 3_600_000; unit = 'hours'; }
+    else { amount = ms / 60_000; unit = 'minutes'; }
+    const amtEl = document.getElementById('trialAmount');
+    const unitEl = document.getElementById('trialUnit');
+    if (amtEl) amtEl.value = amount;
+    if (unitEl) unitEl.value = unit;
+  } catch(_) {}
+}
+
 function showDashboard(email) {
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('dashboard').style.display='block';
@@ -627,6 +645,7 @@ function showDashboard(email) {
   const tab=localStorage.getItem('pisolock_active_tab')||'overview';
   showTab(tab,true);
   startAutoRefresh();
+  restoreSettingsFromServer();
 }
 
 function doLogout() {
@@ -849,6 +868,7 @@ function toggleOneCode(codeId, btnId) {
 
 function toggleAllCodes() {
   allCodesHidden=!allCodesHidden;
+  localStorage.setItem('pisolock_codes_hidden', allCodesHidden);
   const toggle=document.getElementById('globalCodeToggle');
   const thumb=document.getElementById('globalCodeThumb');
   toggle.style.background=allCodesHidden?'#334':'#44ff88';
@@ -1010,8 +1030,12 @@ async function loadTrials(){
       const timeLeft=t.status==='active'?(hLeft>0?`${hLeft}h`:`${mLeft}m`):'—';
       const hash=t.device_hash.substring(0,16)+'...';
       const ls=dm[t.device_hash]||null;
+      const thbtnId='th_'+t.device_hash.substring(0,8);
       return `<tr>
-        <td><code style="font-size:11px" title="${t.device_hash}">${hash}</code></td>
+        <td style="display:flex;align-items:center;gap:6px">
+          <code style="font-size:11px" title="${t.device_hash}">${hash}</code>
+          <button id="${thbtnId}" onclick="copyHash('${t.device_hash}','${thbtnId}')" title="Copy full hash" style="background:#1a2a4a;border:0.5px solid #2a3a5a;color:#5599ff;border-radius:5px;padding:2px 5px;cursor:pointer;font-size:11px;line-height:1;flex-shrink:0"><i class="ti ti-copy" style="font-size:12px" aria-hidden="true"></i></button>
+        </td>
         <td><span class="badge badge-${t.status}">${t.status}</span></td>
         <td>${t.status==='active'?connBadge(ls):'<span class="badge badge-inactive">—</span>'}</td>
         <td class="text-muted">${new Date(t.start_time).toLocaleDateString()}</td>
@@ -1198,21 +1222,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       .then(()=>{ localStorage.removeItem('trial_days_setting'); })
       .catch(()=>{}); // silent — server wins
   }
-  // ── On load, read trial_duration_ms from server and populate the inputs
-  if (authToken) {
-    api('app_config',{filter:'key=eq.trial_duration_ms'}).then(rows=>{
-      if (!rows||rows.length===0) return;
-      const ms=parseInt(rows[0].value)||604800000;
-      let amount, unit;
-      if (ms % 86_400_000 === 0) { amount=ms/86_400_000; unit='days'; }
-      else if (ms % 3_600_000 === 0) { amount=ms/3_600_000; unit='hours'; }
-      else { amount=ms/60_000; unit='minutes'; }
-      const amtEl=document.getElementById('trialAmount');
-      const unitEl=document.getElementById('trialUnit');
-      if(amtEl) amtEl.value=amount;
-      if(unitEl) unitEl.value=unit;
-    }).catch(()=>{});
-  }
+  // Settings are restored via restoreSettingsFromServer() called from showDashboard after login
   document.getElementById('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
   if (authToken&&authUser){
     const email=authUser.email||'Admin';
