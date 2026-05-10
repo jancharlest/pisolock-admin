@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#07070f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>PisoLock — Shop Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070f;--surface:#0f0f1e;--card:#13131f;--border:#1e1e30;
+  --cyan:#00e5ff;--cyan-dim:#00b8cc;--green:#00ff88;--yellow:#ffcc00;
+  --red:#ff4444;--text:#e8e8f0;--muted:#666688;--r:12px;--rs:8px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--bg);color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased}
+
+/* Login */
+#loginScreen{display:flex;flex-direction:column;align-items:center;
+  justify-content:center;min-height:100dvh;padding:24px;gap:16px}
+.l-logo{font-size:48px;margin-bottom:4px}
+.l-title{font-size:24px;font-weight:700;color:var(--cyan)}
+.l-sub{font-size:13px;color:var(--muted);margin-bottom:4px}
+.l-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:28px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px}
+.l-card input{background:#0a0a18;border:1px solid var(--border);border-radius:var(--rs);
+  padding:13px 16px;color:var(--text);font-size:15px;outline:none;width:100%;transition:border-color .2s}
+.l-card input:focus{border-color:var(--cyan)}
+.btn-p{background:var(--cyan);color:#000;font-weight:700;border:none;border-radius:var(--rs);
+  padding:14px;font-size:15px;cursor:pointer;width:100%;transition:opacity .15s}
+.btn-p:hover{opacity:.85}.btn-p:disabled{opacity:.4;cursor:not-allowed}
+.l-err{color:var(--red);font-size:13px;text-align:center;display:none}
+
+/* App shell */
+#app{display:none;flex-direction:column;min-height:100dvh}
+
+/* Header */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);
+  padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100}
+.hdr-l{display:flex;flex-direction:column;gap:2px}
+.hdr-shop{font-size:18px;font-weight:700;color:var(--cyan)}
+.hdr-date{font-size:11px;color:var(--muted)}
+.hdr-r{display:flex;align-items:center;gap:8px}
+.earn-badge{background:#0a2a1a;border:1px solid #00ff8833;border-radius:20px;
+  padding:6px 14px;font-size:16px;font-weight:700;color:var(--green)}
+.btn-icon{background:transparent;border:1px solid var(--border);border-radius:8px;
+  padding:7px 10px;color:var(--muted);cursor:pointer;font-size:14px;transition:all .15s}
+.btn-icon:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* Page */
+.page{padding:16px;display:flex;flex-direction:column;gap:16px;
+  max-width:680px;margin:0 auto;width:100%}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:1.5px;
+  color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+
+/* Alerts */
+#alertsPanel{display:none;flex-direction:column;gap:8px}
+.alert-item{background:#1a0a0a;border:1px solid #ff444433;border-radius:var(--rs);
+  padding:12px 14px;display:flex;align-items:center;gap:10px;font-size:13px}
+.a-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.a-dot.red{background:var(--red)}.a-dot.yellow{background:var(--yellow)}
+
+/* Device strip */
+.d-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.d-strip::-webkit-scrollbar{display:none}
+.d-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px;min-width:152px;flex-shrink:0;cursor:pointer;
+  transition:border-color .2s,transform .1s;position:relative;user-select:none}
+.d-card:active{transform:scale(.97)}
+.d-card.online{border-color:#00ff8820}.d-card.offline{border-color:#ff444420;opacity:.75}
+.d-card.warn{border-color:#ffcc0030}
+.d-status-row{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.s-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.s-dot.g{background:var(--green);box-shadow:0 0 6px var(--green)}
+.s-dot.r{background:var(--red)}.s-dot.y{background:var(--yellow);box-shadow:0 0 6px var(--yellow)}
+.d-name{font-size:12px;font-weight:600;flex:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.d-timer{font-size:22px;font-weight:700;color:var(--cyan);margin-bottom:4px;line-height:1.1}
+.d-timer.idle{font-size:13px;color:var(--muted)}
+.d-timer.offl{font-size:11px;color:var(--red)}
+.d-today{font-size:11px;color:var(--muted)}
+.d-today span{color:var(--green);font-weight:600}
+.d-actions{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);
+  padding:8px;z-index:50;flex-direction:column;gap:4px}
+.d-actions.open{display:flex}
+.d-act-btn{background:transparent;border:1px solid var(--border);border-radius:6px;
+  padding:9px 12px;color:var(--text);font-size:12px;cursor:pointer;text-align:left;
+  transition:background .15s}
+.d-act-btn:hover{background:var(--border)}
+.d-act-btn.danger{color:var(--red)}
+
+/* Chart */
+.chart-card{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px}
+.chart-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.chart-title{font-size:13px;font-weight:600}
+.chart-total{font-size:22px;font-weight:700;color:var(--green)}
+.chart-cmp{font-size:11px;color:var(--muted);margin-top:2px}
+.bars{display:flex;align-items:flex-end;gap:3px;height:80px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bar{width:100%;border-radius:3px 3px 0 0;background:var(--cyan-dim);
+  min-height:2px;transition:height .4s}
+.bar.today{background:var(--cyan)}
+.bar-lbl{font-size:9px;color:var(--muted);white-space:nowrap}
+
+/* Quick actions */
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(min-width:480px){.q-grid{grid-template-columns:repeat(4,1fr)}}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px;display:flex;flex-direction:column;gap:6px;cursor:pointer;
+  transition:border-color .2s,background .15s}
+.q-card:hover{border-color:var(--cyan);background:#0d0d20}
+.q-icon{font-size:22px}.q-label{font-size:12px;font-weight:600}
+.q-sub{font-size:11px;color:var(--muted)}
+
+/* Help */
+.help-bar{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.help-txt{font-size:13px;color:var(--muted)}
+.help-txt strong{color:var(--text)}
+.btn-help{background:var(--cyan);color:#000;font-weight:700;border:none;
+  border-radius:var(--rs);padding:9px 18px;font-size:13px;cursor:pointer}
+
+/* Modals */
+.modal-ov{display:none;position:fixed;inset:0;background:#00000099;z-index:200;
+  align-items:flex-end;justify-content:center}
+.modal-ov.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r) var(--r) 0 0;padding:24px 20px 36px;width:100%;
+  max-width:500px;display:flex;flex-direction:column;gap:14px;
+  animation:su .2s ease}
+@keyframes su{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.modal-title{font-size:16px;font-weight:700}
+.m-input{background:#0a0a18;border:1px solid var(--border);border-radius:var(--rs);
+  padding:12px 14px;color:var(--text);font-size:15px;outline:none;width:100%}
+.m-input:focus{border-color:var(--cyan)}
+.m-actions{display:flex;gap:10px}
+.btn-sec{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);
+  padding:13px;font-size:14px;color:var(--text);cursor:pointer;flex:1}
+.m-actions .btn-p{flex:1;padding:13px}
+
+/* Skeleton */
+.skel{background:linear-gradient(90deg,var(--card) 25%,var(--surface) 50%,var(--card) 75%);
+  background-size:200% 100%;animation:sh 1.5s infinite;border-radius:8px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:#222234;border:1px solid var(--border);border-radius:20px;
+  padding:10px 20px;font-size:13px;opacity:0;pointer-events:none;
+  transition:opacity .2s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="loginScreen">
+  <div class="l-logo">🪙</div>
+  <div class="l-title">PisoLock</div>
+  <div class="l-sub">Shop Admin Dashboard</div>
+  <div class="l-card">
+    <input id="lEmail" type="email" placeholder="Email address" autocomplete="email">
+    <input id="lPass"  type="password" placeholder="Password" autocomplete="current-password">
+    <button class="btn-p" id="lBtn" onclick="doLogin()">Sign In</button>
+    <div class="l-err" id="lErr"></div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-l">
+      <div class="hdr-shop" id="hShop">My Shop</div>
+      <div class="hdr-date" id="hDate">—</div>
+    </div>
+    <div class="hdr-r">
+      <div class="earn-badge">₱<span id="hEarn">0</span></div>
+      <button class="btn-icon" onclick="refreshAll()" title="Refresh">↻</button>
+      <button class="btn-icon" onclick="doLogout()" title="Logout">⏻</button>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <!-- Alerts -->
+    <div id="alertsPanel">
+      <div class="sec-label">⚠️ Needs Attention</div>
+      <div id="alertsList"></div>
+    </div>
+
+    <!-- Devices -->
+    <div>
+      <div class="sec-label">Devices — <span id="devCount">…</span></div>
+      <div class="d-strip" id="dStrip">
+        <div class="skel" style="min-width:152px;height:108px"></div>
+        <div class="skel" style="min-width:152px;height:108px"></div>
+        <div class="skel" style="min-width:152px;height:108px"></div>
+      </div>
+    </div>
+
+    <!-- Revenue chart -->
+    <div class="chart-card">
+      <div class="chart-hdr">
+        <div>
+          <div class="chart-title">Today's Revenue — 7-day view</div>
+          <div class="chart-cmp" id="cmpLabel">vs yesterday</div>
+        </div>
+        <div class="chart-total">₱<span id="chartTotal">—</span></div>
+      </div>
+      <div class="bars" id="chartBars">
+        <div class="bar-col" style="flex:1"><div class="skel" style="height:60px;width:100%"></div></div>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div>
+      <div class="sec-label">Quick Actions</div>
+      <div class="q-grid">
+        <div class="q-card" onclick="openSetPrice()">
+          <div class="q-icon">💰</div>
+          <div class="q-label">Set Price</div>
+          <div class="q-sub">Coin rates</div>
+        </div>
+        <div class="q-card" onclick="openAnnounce()">
+          <div class="q-icon">📢</div>
+          <div class="q-label">Announce</div>
+          <div class="q-sub">All devices</div>
+        </div>
+        <div class="q-card" onclick="window.location.href='index.html'">
+          <div class="q-icon">🔧</div>
+          <div class="q-label">Admin Panel</div>
+          <div class="q-sub">Full controls</div>
+        </div>
+        <div class="q-card" onclick="refreshAll()">
+          <div class="q-icon">↻</div>
+          <div class="q-label">Refresh</div>
+          <div class="q-sub">Update now</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help -->
+    <div class="help-bar">
+      <div class="help-txt"><strong>Need help?</strong> We're here for you.</div>
+      <button class="btn-help" onclick="openSupport()">💬 Chat</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Set Price Modal -->
+<div class="modal-ov" id="mPrice">
+  <div class="modal">
+    <div class="modal-title">💰 Coin Rates</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">₱1 = minutes</div>
+        <input class="m-input" id="r1" type="number" min="1" placeholder="6">
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">₱5 = minutes</div>
+        <input class="m-input" id="r5" type="number" min="1" placeholder="30">
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">₱10 = minutes</div>
+        <input class="m-input" id="r10" type="number" min="1" placeholder="60">
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">₱20 = minutes</div>
+        <input class="m-input" id="r20" type="number" min="1" placeholder="120">
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--muted)">Applies on next device heartbeat (≤60 min)</div>
+    <div class="m-actions">
+      <button class="btn-sec" onclick="closeM('mPrice')">Cancel</button>
+      <button class="btn-p" onclick="saveRates()">Save Rates</button>
+    </div>
+  </div>
+</div>
+
+<!-- Announce Modal -->
+<div class="modal-ov" id="mAnnounce">
+  <div class="modal">
+    <div class="modal-title">📢 Announcement</div>
+    <div style="font-size:12px;color:var(--muted)">Pushed to all devices on next heartbeat.</div>
+    <textarea class="m-input" id="aMsg" rows="3" placeholder="e.g. Closing at 10pm tonight." style="resize:none"></textarea>
+    <div class="m-actions">
+      <button class="btn-sec" onclick="closeM('mAnnounce')">Cancel</button>
+      <button class="btn-p" onclick="sendAnnounce()">Send</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL  = 'https://opfwpwjkembglzthaivv.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wZndwd2prZW1iZ2x6dGhhaXZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwOTc5NjYsImV4cCI6MjA5MzY3Mzk2Nn0.tHkAwe7QOf3H_UgfEP5TvNbjrNssrnFULA3AITSuwIk';
+
+let tok = localStorage.getItem('sh_tok');
+let timer;
+
+// ── Boot ───────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  setDate();
+  if (tok) showApp();
+});
+
+function setDate() {
+  document.getElementById('hDate').textContent =
+    new Date().toLocaleDateString('en-PH', {weekday:'long',month:'long',day:'numeric'});
+}
+
+// ── Auth ───────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('lEmail').value.trim();
+  const pass  = document.getElementById('lPass').value;
+  const btn   = document.getElementById('lBtn');
+  const err   = document.getElementById('lErr');
+  if (!email || !pass) { err.textContent='Enter email and password'; err.style.display='block'; return; }
+  btn.disabled=true; btn.textContent='Signing in…'; err.style.display='none';
+  try {
+    const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=password`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SB_ANON},
+      body:JSON.stringify({email,password:pass})
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error_description || 'Login failed');
+    tok = d.access_token;
+    localStorage.setItem('sh_tok', tok);
+    localStorage.setItem('sh_email', email);
+    showApp(email);
+  } catch(e) {
+    err.textContent = e.message; err.style.display='block';
+    btn.disabled=false; btn.textContent='Sign In';
+  }
+}
+
+function showApp(email) {
+  email = email || localStorage.getItem('sh_email') || '';
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  const n = email.split('@')[0];
+  document.getElementById('hShop').textContent = n.charAt(0).toUpperCase()+n.slice(1)+"'s Shop";
+  refreshAll();
+  timer = setInterval(refreshAll, 60000);
+}
+
+function doLogout() {
+  localStorage.removeItem('sh_tok'); localStorage.removeItem('sh_email');
+  tok=null; clearInterval(timer);
+  document.getElementById('app').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+}
+
+// ── API ────────────────────────────────────────────────────
+async function get(table, qs='') {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}?${qs}`,{
+    headers:{'apikey':SB_ANON,'Authorization':`Bearer ${tok}`}
+  });
+  if (r.status===401){doLogout();return [];}
+  return r.ok ? r.json() : [];
+}
+
+async function post(table, body) {
+  return fetch(`${SB_URL}/rest/v1/${table}`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SB_ANON,
+      'Authorization':`Bearer ${tok}`,'Prefer':'resolution=merge-duplicates'},
+    body:JSON.stringify(body)
+  });
+}
+
+function today() { return new Date().toISOString().slice(0,10); }
+
+// ── Refresh ────────────────────────────────────────────────
+async function refreshAll() {
+  setDate();
+  try { await Promise.all([loadDevices(), loadRevenue()]); }
+  catch(e) { showToast('Connection error — retrying…'); }
+}
+
+// ── Devices ────────────────────────────────────────────────
+async function loadDevices() {
+  const [devices, revenue] = await Promise.all([
+    get('devices','select=id,device_name,status,last_seen&limit=100'),
+    get('v_daily_revenue',`revenue_date=eq.${today()}&select=device_id,total_php&limit=200`)
+  ]);
+
+  const revMap = {};
+  revenue.forEach(r => revMap[r.device_id] = parseFloat(r.total_php||0));
+
+  const strip = document.getElementById('dStrip');
+  const alerts = [];
+  const now = Date.now();
+  let online = 0;
+
+  if (!devices.length) {
+    strip.innerHTML = `<div style="min-width:280px;text-align:center;padding:32px;color:var(--muted);font-size:13px">
+      📱 No devices yet. Activate a device to get started.</div>`;
+    return;
+  }
+
+  strip.innerHTML = '';
+  for (const d of devices) {
+    const minsAgo = d.last_seen ? Math.floor((now - new Date(d.last_seen))/60000) : 9999;
+    const isOnline = minsAgo < 90;
+    if (isOnline) online++;
+    const php = revMap[d.id] || 0;
+
+    let cls='offline', dot='r', timerHtml='';
+    if (isOnline) { cls='online'; dot='y'; }
+
+    if (isOnline && php > 0) dot='g';
+
+    if (!isOnline && d.status==='active') {
+      const h=Math.floor(minsAgo/60), m=minsAgo%60;
+      alerts.push({cls:'red', msg:`${d.device_name||'Device'} offline ${h>0?h+'h ':''}${m}m`});
+      timerHtml=`<div class="d-timer offl">Offline ${h>0?h+'h ':''}${m}m ago</div>`;
+    } else if (isOnline) {
+      timerHtml=`<div class="d-timer idle">● Online</div>`;
+    }
+
+    const el = document.createElement('div');
+    el.className=`d-card ${cls}`;
+    el.id=`dc-${d.id}`;
+    el.innerHTML=`
+      <div class="d-status-row">
+        <div class="s-dot ${dot}"></div>
+        <div class="d-name">${d.device_name||'Device'}</div>
+      </div>
+      ${timerHtml}
+      <div class="d-today">Today: <span>₱${php.toFixed(0)}</span></div>
+      <div class="d-actions" id="da-${d.id}">
+        <button class="d-act-btn" onclick="cmd('${d.id}','lock_now');event.stopPropagation()">🔒 Lock Now</button>
+        <button class="d-act-btn" onclick="cmd('${d.id}','reboot');event.stopPropagation()">🔄 Reboot</button>
+      </div>`;
+    el.addEventListener('click', e => { e.stopPropagation(); toggleAct(d.id); });
+    strip.appendChild(el);
+  }
+
+  document.getElementById('devCount').textContent = `${online}/${devices.length} online`;
+
+  // Alerts
+  const panel = document.getElementById('alertsPanel');
+  if (alerts.length) {
+    panel.style.display='flex';
+    document.getElementById('alertsList').innerHTML = alerts.map(a=>
+      `<div class="alert-item"><div class="a-dot ${a.cls}"></div><span>${a.msg}</span></div>`
+    ).join('');
+  } else {
+    panel.style.display='none';
+  }
+}
+
+function toggleAct(id) {
+  document.querySelectorAll('.d-actions.open').forEach(el=>el.classList.remove('open'));
+  const el = document.getElementById(`da-${id}`);
+  if (el) el.classList.add('open');
+}
+document.addEventListener('click', ()=>
+  document.querySelectorAll('.d-actions.open').forEach(el=>el.classList.remove('open')));
+
+// ── Revenue chart ──────────────────────────────────────────
+async function loadRevenue() {
+  const d7 = new Date(Date.now()-6*86400000).toISOString().slice(0,10);
+  const rows = await get('v_daily_revenue',
+    `revenue_date=gte.${d7}&select=revenue_date,total_php&order=revenue_date.asc&limit=200`);
+
+  const byDate = {};
+  rows.forEach(r => byDate[r.revenue_date] = (byDate[r.revenue_date]||0) + parseFloat(r.total_php||0));
+
+  const days = Array.from({length:7},(_,i)=>{
+    const d = new Date(Date.now()-(6-i)*86400000);
+    const k = d.toISOString().slice(0,10);
+    const lbl = i===6?'Today':i===5?'Yest':d.toLocaleDateString('en',{weekday:'short'});
+    return {k, lbl, v:byDate[k]||0, today:i===6};
+  });
+
+  const todayV = days[6].v, yestV = days[5].v;
+  const maxV = Math.max(...days.map(d=>d.v), 1);
+
+  document.getElementById('chartTotal').textContent = todayV.toFixed(0);
+  document.getElementById('hEarn').textContent = todayV.toFixed(0);
+
+  const diff = todayV - yestV;
+  const pct  = yestV > 0 ? Math.abs((diff/yestV)*100).toFixed(0) : '—';
+  const arrow = diff >= 0 ? '▲' : '▼';
+  const col   = diff >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('cmpLabel').innerHTML =
+    `vs yesterday <span style="color:${col}">${arrow}${pct}%</span>`;
+
+  document.getElementById('chartBars').innerHTML = days.map(d=>`
+    <div class="bar-col">
+      <div class="bar${d.today?' today':''}" style="height:${Math.max((d.v/maxV)*100,2)}%"></div>
+      <div class="bar-lbl">${d.lbl}</div>
+    </div>`).join('');
+}
+
+// ── Commands ───────────────────────────────────────────────
+async function cmd(deviceId, command) {
+  try {
+    await post('remote_commands', {device_id:deviceId, command, status:'pending'});
+    showToast(`✓ Command sent: ${command}`);
+  } catch(e) { showToast('Failed — check connection'); }
+}
+
+// ── Set price ──────────────────────────────────────────────
+function openSetPrice() {
+  get('feature_flags','select=key,value&device_id=is.null').then(flags=>{
+    const m={};flags.forEach(f=>m[f.key]=f.value);
+    document.getElementById('r1').value  = m['rate_1_mins']  ||'';
+    document.getElementById('r5').value  = m['rate_5_mins']  ||'';
+    document.getElementById('r10').value = m['rate_10_mins'] ||'';
+    document.getElementById('r20').value = m['rate_20_mins'] ||'';
+  });
+  openM('mPrice');
+}
+
+async function saveRates() {
+  const rates = [
+    {key:'rate_1_mins',  val:document.getElementById('r1').value},
+    {key:'rate_5_mins',  val:document.getElementById('r5').value},
+    {key:'rate_10_mins', val:document.getElementById('r10').value},
+    {key:'rate_20_mins', val:document.getElementById('r20').value},
+  ].filter(r=>r.val);
+  try {
+    await Promise.all(rates.map(r=>post('feature_flags',{device_id:null,key:r.key,value:r.val,enabled:true})));
+    showToast('Rates saved ✓ — applies in ≤60 min');
+    closeM('mPrice');
+  } catch(e) { showToast('Failed to save'); }
+}
+
+// ── Announce ───────────────────────────────────────────────
+function openAnnounce() { openM('mAnnounce'); }
+async function sendAnnounce() {
+  const msg = document.getElementById('aMsg').value.trim();
+  if (!msg) return;
+  try {
+    await post('feature_flags',{device_id:null,key:'announcement',value:msg,enabled:true});
+    showToast('Announcement sent ✓');
+    closeM('mAnnounce');
+    document.getElementById('aMsg').value='';
+  } catch(e) { showToast('Failed to send'); }
+}
+
+// ── Support ────────────────────────────────────────────────
+function openSupport() { window.open('https://m.me/pisolock','_blank'); }
+
+// ── Modal helpers ──────────────────────────────────────────
+function openM(id)  { document.getElementById(id).classList.add('open'); }
+function closeM(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-ov').forEach(el=>
+  el.addEventListener('click',e=>{ if(e.target===el) el.classList.remove('open'); }));
+
+// ── Toast ──────────────────────────────────────────────────
+let tTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(tTimer); tTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// Enter key on login
+document.addEventListener('keydown', e=>{
+  if (e.key==='Enter' && !tok) doLogin();
+});
+</script>
+</body>
+</html>
