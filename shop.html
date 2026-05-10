@@ -373,7 +373,17 @@ async function post(table, body) {
   return fetch(`${SB_URL}/rest/v1/${table}`,{
     method:'POST',
     headers:{'Content-Type':'application/json','apikey':SB_ANON,
-      'Authorization':`Bearer ${tok}`,'Prefer':'resolution=merge-duplicates'},
+      'Authorization':`Bearer ${tok}`,'Prefer':'return=minimal'},
+    body:JSON.stringify(body)
+  });
+}
+
+// Upsert using ON CONFLICT key via query param
+async function upsert(table, body, onConflict) {
+  return fetch(`${SB_URL}/rest/v1/${table}?on_conflict=${onConflict}`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SB_ANON,
+      'Authorization':`Bearer ${tok}`,'Prefer':'resolution=merge-duplicates,return=minimal'},
     body:JSON.stringify(body)
   });
 }
@@ -532,7 +542,7 @@ async function saveRates() {
     {key:'rate_20_mins', val:document.getElementById('r20').value},
   ].filter(r=>r.val);
   try {
-    await Promise.all(rates.map(r=>post('feature_flags',{device_id:null,key:r.key,value:r.val,enabled:true})));
+    await Promise.all(rates.map(r=>upsert('feature_flags',{device_id:null,key:r.key,value:r.val,enabled:true,updated_at:new Date().toISOString()},'device_id,key')));
     showToast('Rates saved ✓ — applies in ≤60 min');
     closeM('mPrice');
   } catch(e) { showToast('Failed to save'); }
@@ -544,7 +554,7 @@ async function sendAnnounce() {
   const msg = document.getElementById('aMsg').value.trim();
   if (!msg) return;
   try {
-    await post('feature_flags',{device_id:null,key:'announcement',value:msg,enabled:true});
+    await upsert('feature_flags',{device_id:null,key:'announcement',value:msg,enabled:true,updated_at:new Date().toISOString()},'device_id,key');
     showToast('Announcement sent ✓');
     closeM('mAnnounce');
     document.getElementById('aMsg').value='';
