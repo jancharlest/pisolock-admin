@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en">was
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -746,6 +746,96 @@
   }
   .feat-tab-badge-central { color: var(--accent); }
   .feat-tab-badge-noncen { color: #6cb8ff; }
+  .feat-tab-badge-diagram { color: #a78bfa; }
+
+  /* Diagram panel styles */
+  .diagram-section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .diagram-section-label-central { color: var(--accent); }
+  .diagram-section-label-noncen { color: #6cb8ff; }
+  .diagram-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+  .diagram-block {
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .diagram-block-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-elev);
+  }
+  .diagram-block-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .diagram-block-sub {
+    font-size: 13px;
+    color: var(--text-mute);
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  .diagram-svg-wrap {
+    padding: 40px 28px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .diagram-svg-wrap svg {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+  .diagram-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 16px 28px 20px;
+    border-top: 1px solid var(--line);
+  }
+  .diagram-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-mute);
+    font-family: var(--font-mono);
+  }
+  .diagram-legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .diagram-note {
+    margin-top: 8px;
+    padding: 14px 20px;
+    background: rgba(167,139,250,0.06);
+    border: 1px solid rgba(167,139,250,0.18);
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    color: rgba(167,139,250,0.85);
+    line-height: 1.6;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .diagram-note svg { flex-shrink: 0; margin-top: 2px; }
   .feat-tab-sub {
     font-size: 12px;
     color: var(--text-dim);
@@ -1670,7 +1760,11 @@
         </button>
         <button class="feat-tab" data-tab="noncen" role="tab">
           <span class="feat-tab-badge feat-tab-badge-noncen">Non-Centralized</span>
-          <span class="feat-tab-sub">1 coinslot per tablet</span>
+          <span class="feat-tab-sub">1 coinslot per device</span>
+        </button>
+        <button class="feat-tab" data-tab="diagram" role="tab">
+          <span class="feat-tab-badge feat-tab-badge-diagram">Wiring Diagram</span>
+          <span class="feat-tab-sub">Coinslot → ESP32 → Device</span>
         </button>
       </div>
 
@@ -1791,792 +1885,24 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
           Non-Centralized is ideal for <strong>1–4 tablets</strong> or operators who prefer a fully independent per-unit setup. Easy to expand one tablet at a time.
         </div>
-      </div>
+      </div><!-- end panel-noncen -->
 
-    </div>
-
-    <script>
-      (function() {
-        var tabs = document.querySelectorAll('.feat-tab');
-        var panels = document.querySelectorAll('.feat-panel');
-        tabs.forEach(function(tab) {
-          tab.addEventListener('click', function() {
-            var target = this.dataset.tab;
-            tabs.forEach(function(t) { t.classList.remove('active'); });
-            panels.forEach(function(p) { p.classList.remove('active'); });
-            this.classList.add('active');
-            document.getElementById('panel-' + target).classList.add('active');
-          });
-        });
-      })();
-    </script>
-  </div>
-</section>
-
-<!-- ============ DOWNLOADS ============ -->
-<section class="block" id="downloads">
-  <div class="container">
-    <div class="section-head">
-      <div class="section-label">— 03 / Downloads</div>
-      <h2>Install PisoLock, <em>step by step.</em></h2>
-    </div>
-
-    <div class="downloads-layout">
-
-      <!-- Steps -->
-      <div class="dl-steps">
-
-        <div class="dl-step">
-          <div class="dl-step-num">01</div>
-          <div class="dl-step-body">
-            <h4>Enable Developer Options on your device</h4>
-            <p>Go to <strong>Settings → About phone (or About tablet)</strong> and tap <strong>Build number</strong> seven times until you see "You are now a developer." Then go to <strong>Settings → Developer Options</strong> and enable <strong>USB Debugging</strong>.</p>
-          </div>
+      <!-- Wiring Diagram panel -->
+      <div class="feat-panel" id="panel-diagram">
+        <div class="feat-panel-intro">
+          <p>Your actual hardware — <strong>Allan Universal Coinslot</strong>, <strong>ESP32 Dev Board</strong>, <strong>12V DC Adapter</strong>, and <strong>10K Ohm Resistor</strong>. Wire them up exactly as shown in the connection diagram below.</p>
         </div>
 
-        <div class="dl-step">
-          <div class="dl-step-num">02</div>
-          <div class="dl-step-body">
-            <h4>Make sure no Google account is signed in on the device</h4>
-            <p>Device Owner mode requires a clean device. If any Google account is active, <strong>sign out first</strong> or do a factory reset. This is a one-time requirement before the first install.</p>
-          </div>
-        </div>
+        <div class="diagram-wrap">
 
-        <div class="dl-step">
-          <div class="dl-step-num">03</div>
-          <div class="dl-step-body">
-            <h4>Download the installer files</h4>
-            <p>Download both files below and place them in the <strong>same folder</strong> on your Windows PC. The installer will auto-download ADB tools if not already present.</p>
-            <!-- Installer + Uninstaller row -->
-            <div class="dl-files" style="margin-bottom: 24px;">
-              <a href="#" class="dl-btn">
-                <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path d="M12 3v13m0 0l-4-4m4 4l4-4"/>
-                  <path d="M3 17v2a2 2 0 002 2h14a2 2 0 002-2v-2"/>
-                </svg>
-                <div class="dl-btn-text">
-                  <span class="dl-btn-label">PisoLock_Install.bat</span>
-                  <span class="dl-btn-sub">Windows Installer · v24.12</span>
-                </div>
-              </a>
-              <a href="#" class="dl-btn">
-                <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path d="M12 3v13m0 0l-4-4m4 4l4-4"/>
-                  <path d="M3 17v2a2 2 0 002 2h14a2 2 0 002-2v-2"/>
-                </svg>
-                <div class="dl-btn-text">
-                  <span class="dl-btn-label">PisoLock_Uninstall.bat</span>
-                  <span class="dl-btn-sub">Windows Uninstaller · v24.12</span>
-                </div>
-              </a>
-            </div>
+          <!-- HARDWARE GRID — real photos -->
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; margin-bottom:8px;">
 
-            <!-- APK variant cards -->
-            <p style="font-size:12px; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-dim); margin-bottom: 14px;">Choose your APK variant:</p>
-            <div class="apk-variants">
-
-              <a href="#" class="apk-card apk-central">
-                <div class="apk-card-top">
-                  <span class="apk-badge apk-badge-central">Centralized</span>
-                  <svg class="apk-dl-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M12 3v13m0 0l-4-4m4 4l4-4"/>
-                    <path d="M3 17v2a2 2 0 002 2h14a2 2 0 002-2v-2"/>
-                  </svg>
-                </div>
-                <div class="apk-card-name">PisoLock APK</div>
-                <div class="apk-card-ver">v24.12 · Android Package</div>
-                <ul class="apk-card-feats">
-                  <li>1 coinslot → up to 10–20 tablets</li>
-                  <li>Mas tipid sa kuryente</li>
-                  <li>Easy to maintain</li>
-                  <li>Premium license</li>
-                </ul>
-                <div class="apk-card-cta">Download <span>→</span></div>
-              </a>
-
-              <a href="#" class="apk-card apk-noncen">
-                <div class="apk-card-top">
-                  <span class="apk-badge apk-badge-noncen">Non-Centralized</span>
-                  <svg class="apk-dl-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M12 3v13m0 0l-4-4m4 4l4-4"/>
-                    <path d="M3 17v2a2 2 0 002 2h14a2 2 0 002-2v-2"/>
-                  </svg>
-                </div>
-                <div class="apk-card-name">PisoLock APK</div>
-                <div class="apk-card-ver">v24.12 · Android Package</div>
-                <ul class="apk-card-feats">
-                  <li>1 coinslot per tablet</li>
-                  <li>Simple standalone setup</li>
-                  <li>Mas barato nga license</li>
-                  <li>No server needed</li>
-                </ul>
-                <div class="apk-card-cta">Download <span>→</span></div>
-              </a>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="dl-step">
-          <div class="dl-step-num">04</div>
-          <div class="dl-step-body">
-            <h4>Connect your Android device via USB and run the installer</h4>
-            <p>Plug your Android device into your PC using a <strong>data cable</strong> (not a charge-only cable). Double-click <code class="dl-code">PisoLock_Install.bat</code> and follow the on-screen prompts. When the device shows an <strong>"Allow USB Debugging"</strong> popup, tap <strong>Allow</strong>.</p>
-          </div>
-        </div>
-
-        <div class="dl-step">
-          <div class="dl-step-num">05</div>
-          <div class="dl-step-body">
-            <h4>Complete the Setup Wizard on the device</h4>
-            <p>Once PisoLock launches, finish the in-app Setup Wizard, set your <strong>Admin PIN</strong>, and configure your coin rate. Triple-tap the timer bubble anytime to open the Admin panel.</p>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Sidebar note -->
-      <div class="dl-sidebar">
-        <div class="dl-note">
-          <div class="dl-note-label">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
-            </svg>
-            Requirements
-          </div>
-          <ul class="dl-req-list">
-            <li>Windows 10 / 11 PC</li>
-            <li>Any Android phone or tablet</li>
-            <li>USB data cable</li>
-            <li>No Google account signed in on device</li>
-            <li>USB Debugging enabled</li>
-            <li>Internet connection (first run only)</li>
-          </ul>
-        </div>
-        <div class="dl-note" style="margin-top: 16px;">
-          <div class="dl-note-label">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2L3 7v5c0 5 4 9 9 10 5-1 9-5 9-10V7l-9-5z"/>
-            </svg>
-            Uninstalling
-          </div>
-          <p style="font-size:13px; color:var(--text-mute); line-height:1.6; margin-top:8px;">
-            To remove PisoLock, run <code class="dl-code">PisoLock_Uninstall.bat</code> and enter your Admin PIN when prompted. The device returns to normal Android.
-          </p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ============ COMPARISON ============ -->
-<section class="block" id="compare">
-  <div class="container">
-    <div class="section-head">
-      <div class="section-label">— 04 / Why PisoLock</div>
-      <h2>Built-in advantages, <em>zero compromises.</em></h2>
-    </div>
-
-    <div class="compare-wrap">
-      <table class="compare-table" role="table">
-        <thead>
-          <tr>
-            <th scope="col">Feature</th>
-            <th scope="col">
-              <div class="compare-th-badge compare-th-noncen">
-                <span class="compare-th-label">Non-Centralized</span>
-                <span class="compare-th-sub">1 coinslot / tablet</span>
+            <!-- COINSLOT -->
+            <div class="diagram-block" style="overflow:hidden;">
+              <div class="diagram-block-header" style="padding:12px 18px;">
+                <span class="apk-badge apk-badge-central" style="font-size:10px;">Coin Input</span>
+                <span class="diagram-block-title" style="font-size:14px;">Allan Coinslot</span>
               </div>
-            </th>
-            <th scope="col">
-              <div class="compare-th-badge compare-th-central">
-                <span class="compare-th-label">Centralized</span>
-                <span class="compare-th-sub">1 coinslot → up to 20</span>
-              </div>
-            </th>
-            <th scope="col">
-              <div class="compare-th-badge compare-th-others">
-                <span class="compare-th-label">Others</span>
-                <span class="compare-th-sub">Generic solutions</span>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <!-- Category: Timer & App -->
-          <tr class="compare-cat-row"><td colspan="4">Timer &amp; App</td></tr>
-
-          <tr class="compare-highlight">
-            <td>
-              <div class="compare-feat-label">Built-in timer</div>
-              <div class="compare-feat-sub">No external timer app needed — timer is part of PisoLock itself</div>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-blue">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-blue"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-gold">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-gold"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-no">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cmp-cross"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
-              </span>
-            </td>
-          </tr>
-
-          <tr class="compare-highlight">
-            <td>
-              <div class="compare-feat-label">Lightweight &amp; fast — built in Kotlin</div>
-              <div class="compare-feat-sub">Native Android, no bloat, instant response even on entry-level Android devices</div>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-blue">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-blue"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-gold">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-gold"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-no">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cmp-cross"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
-              </span>
-            </td>
-          </tr>
-
-          <tr class="compare-highlight">
-            <td>
-              <div class="compare-feat-label">Smart charging feature</div>
-              <div class="compare-feat-sub">Built-in logic protects battery health during rental sessions</div>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-blue">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-blue"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-gold">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-gold"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-no">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cmp-cross"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
-              </span>
-            </td>
-          </tr>
-
-          <!-- Category: Lockdown -->
-          <tr class="compare-cat-row"><td colspan="4">Kiosk &amp; Security</td></tr>
-
-          <tr>
-            <td>
-              <div class="compare-feat-label">Real Device Owner lockdown</div>
-              <div class="compare-feat-sub">System-level — survives reboots, no accessibility hacks</div>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-blue">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-blue"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-gold">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-gold"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-partial">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-partial-icon"><path d="M5 12h14" stroke-linecap="round"/></svg>
-              </span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <div class="compare-feat-label">Offline grace period</div>
-              <div class="compare-feat-sub">Works through internet outages — no unexpected shutdowns</div>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-blue">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-blue"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-gold">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-gold"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-no">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cmp-cross"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
-              </span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <div class="compare-feat-label">Admin panel + PIN control</div>
-              <div class="compare-feat-sub">Triple-tap access — operator command center always on screen</div>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-blue">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-blue"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-gold">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-gold"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-no">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cmp-cross"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
-              </span>
-            </td>
-          </tr>
-
-          <!-- Category: Hardware -->
-          <tr class="compare-cat-row"><td colspan="4">Hardware &amp; Maintenance</td></tr>
-
-          <tr>
-            <td>
-              <div class="compare-feat-label">ESP32 atomic pulse counting</div>
-              <div class="compare-feat-sub">Microsecond-debounced coin counting — no missed coins, no over-credits</div>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-blue">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-blue"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-gold">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-gold"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-partial">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-partial-icon"><path d="M5 12h14" stroke-linecap="round"/></svg>
-              </span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <div class="compare-feat-label">OTA updates via dashboard</div>
-              <div class="compare-feat-sub">Push to all devices remotely — no USB, no store visits</div>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-blue">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-blue"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-gold">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-gold"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-no">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cmp-cross"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
-              </span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <div class="compare-feat-label">Brownout-resilient firmware</div>
-              <div class="compare-feat-sub">Hardware watchdog with WiFi backoff — stable through power dips</div>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-blue">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-blue"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-gold">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-gold"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-no">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cmp-cross"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
-              </span>
-            </td>
-          </tr>
-
-          <!-- Category: Pricing -->
-          <tr class="compare-cat-row"><td colspan="4">Pricing &amp; Value</td></tr>
-
-          <tr>
-            <td>
-              <div class="compare-feat-label">One-time lifetime license</div>
-              <div class="compare-feat-sub">Pay once, own forever — no monthly fees, no subscriptions</div>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-blue">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-blue"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-gold">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-gold"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-no">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cmp-cross"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
-              </span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <div class="compare-feat-label">All future updates free</div>
-              <div class="compare-feat-sub">Every new release, forever — no upgrade fees</div>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-blue">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-blue"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-yes-gold">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="cmp-check-gold"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </span>
-            </td>
-            <td>
-              <span class="cmp-icon cmp-no">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cmp-cross"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
-              </span>
-            </td>
-          </tr>
-
-        </tbody>
-      </table>
-    </div>
-
-    <div class="compare-note">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
-      <span>Highlighted rows mark <strong style="color:var(--text);">PisoLock-exclusive advantages</strong> — features most generic piso-net apps simply don't have. Built-in timer, Kotlin-native speed, and smart charging come baked into every license. No add-ons. No extras.</span>
-    </div>
-
-  </div>
-</section>
-
-<!-- ============ STATS ============ -->
-<section class="container">
-  <div class="stats">
-    <div>
-      <div class="stat-num"><em>23.13</em></div>
-      <div class="stat-label">Current Build</div>
-    </div>
-    <div>
-      <div class="stat-num">v20d</div>
-      <div class="stat-label">Firmware</div>
-    </div>
-    <div>
-      <div class="stat-num">100<em>%</em></div>
-      <div class="stat-label">Real-hardware tested</div>
-    </div>
-    <div>
-      <div class="stat-num">PH</div>
-      <div class="stat-label">Designed in Davao</div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ PRICING ============ -->
-<section class="block" id="pricing">
-  <div class="container">
-    <div class="section-head">
-      <div class="section-label">— 05 / Pricing</div>
-      <h2>One-time license. <em>Lifetime access.</em></h2>
-    </div>
-
-    <!-- Toggle -->
-    <div class="price-toggle-wrap">
-      <div class="price-toggle" id="priceToggle">
-        <button class="ptog-btn active" data-mode="single">Single</button>
-        <button class="ptog-btn" data-mode="bulk">Bulk (10+)</button>
-        <div class="ptog-pill" id="ptogPill"></div>
-      </div>
-    </div>
-
-    <!-- Savings callout (bulk only) -->
-    <div class="price-bulk-callout" id="priceBulkCallout">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
-      50% off when you order 10 or more licenses — mix &amp; match Centralized and Non-Centralized.
-    </div>
-
-    <!-- License cards -->
-    <div class="price-grid">
-
-      <!-- Non-Centralized -->
-      <div class="price-card">
-        <div class="price-card-top">
-          <span class="apk-badge apk-badge-noncen" style="font-size:11px;">Non-Centralized</span>
-          <p class="price-card-desc">1 coinslot per device. Simple, standalone, independent.</p>
-        </div>
-        <div class="price-amount">
-          <span class="price-currency">₱</span>
-          <span class="price-num" id="priceNoncen">299</span>
-          <span class="price-period">/ license</span>
-        </div>
-        <div class="price-tag" id="priceTagNoncen">Lifetime · one-time payment</div>
-        <div class="price-save-badge" id="priceSaveNoncen">Save ₱149 per license</div>
-        <ul class="price-feats">
-          <li>1 device + 1 coinslot</li>
-          <li>Full kiosk lockdown</li>
-          <li>All future updates included</li>
-          <li>Offline grace period</li>
-          <li>Admin panel + PIN control</li>
-        </ul>
-        <a href="#" class="btn price-btn price-btn-noncen">
-          Buy License
-          <svg class="arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M1 7h12m0 0L7 1m6 6l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          </svg>
-        </a>
-      </div>
-
-      <!-- Centralized -->
-      <div class="price-card price-card-featured">
-        <div class="price-featured-badge" id="priceFeatBadge">Most Value</div>
-        <div class="price-card-top">
-          <span class="apk-badge apk-badge-central" style="font-size:11px;">Centralized</span>
-          <p class="price-card-desc">1 coinslot drives up to 10–20 tablets. Built for the serious operator.</p>
-        </div>
-        <div class="price-amount">
-          <span class="price-currency">₱</span>
-          <span class="price-num" id="priceCentral">499</span>
-          <span class="price-period">/ license</span>
-        </div>
-        <div class="price-tag" id="priceTagCentral">Lifetime · one-time payment</div>
-        <div class="price-save-badge price-save-badge-central" id="priceSaveCentral">Save ₱249 per license</div>
-        <ul class="price-feats">
-          <li>Up to 10–20 tablets per coinslot</li>
-          <li>Mas tipid sa kuryente</li>
-          <li>All future updates included</li>
-          <li>Easy centralized maintenance</li>
-          <li>Admin panel + PIN control</li>
-          <li>OTA updates via dashboard</li>
-        </ul>
-        <a href="#" class="btn price-btn price-btn-central">
-          Buy License
-          <svg class="arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M1 7h12m0 0L7 1m6 6l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          </svg>
-        </a>
-      </div>
-
-    </div>
-
-    <script>
-    (function() {
-      var prices = { single: { noncen: 299, central: 499 }, bulk: { noncen: 150, central: 250 } };
-      var mode = 'single';
-      var btns = document.querySelectorAll('.ptog-btn');
-      var pill = document.getElementById('ptogPill');
-      var callout = document.getElementById('priceBulkCallout');
-      var saveNoncen = document.getElementById('priceSaveNoncen');
-      var saveCentral = document.getElementById('priceSaveCentral');
-      var featBadge = document.getElementById('priceFeatBadge');
-
-      function setPill(el) {
-        pill.style.width = el.offsetWidth + 'px';
-        pill.style.left = el.offsetLeft + 'px';
-      }
-
-      function animateNum(el, from, to, duration) {
-        var start = null;
-        function step(ts) {
-          if (!start) start = ts;
-          var prog = Math.min((ts - start) / duration, 1);
-          var ease = 1 - Math.pow(1 - prog, 3);
-          el.textContent = Math.round(from + (to - from) * ease);
-          if (prog < 1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-      }
-
-      function update(newMode) {
-        var prev = prices[mode];
-        mode = newMode;
-        var next = prices[mode];
-        animateNum(document.getElementById('priceNoncen'), prev.noncen, next.noncen, 400);
-        animateNum(document.getElementById('priceCentral'), prev.central, next.central, 400);
-        if (mode === 'bulk') {
-          callout.classList.add('visible');
-          saveNoncen.classList.add('visible');
-          saveCentral.classList.add('visible');
-          featBadge.textContent = 'Best Deal';
-          document.getElementById('priceTagNoncen').textContent = 'Lifetime · min. 10 licenses';
-          document.getElementById('priceTagCentral').textContent = 'Lifetime · min. 10 licenses';
-        } else {
-          callout.classList.remove('visible');
-          saveNoncen.classList.remove('visible');
-          saveCentral.classList.remove('visible');
-          featBadge.textContent = 'Most Value';
-          document.getElementById('priceTagNoncen').textContent = 'Lifetime · one-time payment';
-          document.getElementById('priceTagCentral').textContent = 'Lifetime · one-time payment';
-        }
-      }
-
-      btns.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          btns.forEach(function(b) { b.classList.remove('active'); });
-          this.classList.add('active');
-          setPill(this);
-          update(this.dataset.mode);
-        });
-      });
-
-      // Init pill position
-      window.addEventListener('load', function() {
-        var active = document.querySelector('.ptog-btn.active');
-        if (active) setPill(active);
-      });
-      setTimeout(function() {
-        var active = document.querySelector('.ptog-btn.active');
-        if (active) setPill(active);
-      }, 50);
-    })();
-    </script>
-
-    <!-- Distributor tiers -->
-    <div class="dist-wrap">
-      <div class="dist-header">
-        <div>
-          <div class="section-label" style="margin-bottom:8px;">— Distributor Pricing</div>
-          <h3 class="dist-title">Buying in bulk? <em>We reward volume.</em></h3>
-          <p class="dist-sub">For resellers and distributors. Discount applies to both license types. Contact us to get your distributor code.</p>
-        </div>
-      </div>
-
-      <div class="dist-tiers">
-        <div class="dist-tier">
-          <div class="dist-tier-range">100+ licenses</div>
-          <div class="dist-tier-disc">20% off</div>
-          <div class="dist-tier-price">
-            <span>Non-Centralized</span>
-            <span class="dist-price-val">₱<strong>239</strong> <span class="dist-orig">₱299</span></span>
-          </div>
-          <div class="dist-tier-price">
-            <span>Centralized</span>
-            <span class="dist-price-val">₱<strong>399</strong> <span class="dist-orig">₱499</span></span>
-          </div>
-        </div>
-        <div class="dist-tier dist-tier-mid">
-          <div class="dist-tier-range">500+ licenses</div>
-          <div class="dist-tier-disc">30% off</div>
-          <div class="dist-tier-price">
-            <span>Non-Centralized</span>
-            <span class="dist-price-val">₱<strong>209</strong> <span class="dist-orig">₱299</span></span>
-          </div>
-          <div class="dist-tier-price">
-            <span>Centralized</span>
-            <span class="dist-price-val">₱<strong>349</strong> <span class="dist-orig">₱499</span></span>
-          </div>
-        </div>
-        <div class="dist-tier dist-tier-top">
-          <div class="dist-tier-range">1,000+ licenses</div>
-          <div class="dist-tier-disc">40% off</div>
-          <div class="dist-tier-price">
-            <span>Non-Centralized</span>
-            <span class="dist-price-val">₱<strong>179</strong> <span class="dist-orig">₱299</span></span>
-          </div>
-          <div class="dist-tier-price">
-            <span>Centralized</span>
-            <span class="dist-price-val">₱<strong>299</strong> <span class="dist-orig">₱499</span></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="dist-note">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
-        All distributor licenses are lifetime and carry the same features as retail. <a href="#cta" class="dist-contact">Contact us</a> to apply for a distributor account.
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ============ ABOUT ============ -->
-<section class="block" id="about">
-  <div class="container">
-    <div class="section-head">
-      <div class="section-label">— 06 / About</div>
-      <h2>A small lab, <em>building for one market well.</em></h2>
-    </div>
-    <div style="max-width: 720px;">
-      <p style="font-size: 19px; color: var(--text-mute); line-height: 1.7; font-weight: 300;">
-        JClabs is an independent product lab based in the Philippines. We build for piso-net operators because we understand the floor — the dust, the coin jams, the brownouts, the late-night reboots. Every release is tested on the same hardware our customers run. No marketing fluff. Just software that works tomorrow morning, when the first customer drops a five-peso coin.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CTA ============ -->
-<section class="cta-block" id="cta">
-  <div class="container">
-    <h2>Ready to run <em>a quieter shop?</em></h2>
-    <p>Start a PisoLock trial. Activate when you're ready. Backend, dashboard, and OTA updates included.</p>
-    <div class="cta-actions">
-      <a href="#" class="btn btn-primary">
-        Start free trial
-        <svg class="arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M1 7h12m0 0L7 1m6 6l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-      </a>
-      <a href="#" class="btn btn-ghost">Read the docs</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FOOTER ============ -->
-<footer>
-  <div class="container">
-    <div class="foot-grid">
-      <div>
-        <div class="foot-brand">
-          <svg style="color: var(--text);"><use href="#jclabs-mark"/></svg>
-          JClabs
-        </div>
-        <p class="foot-tag">Hardware-software products for the Filipino operator. Quietly engineered, loudly reliable.</p>
-      </div>
-      <div class="foot-col">
-        <h5>Products</h5>
-        <a href="#">PisoLock</a>
-        <a href="#">Coinslot ESP32</a>
-        <a href="#">Admin Dashboard</a>
-      </div>
-      <div class="foot-col">
-        <h5>Resources</h5>
-        <a href="#">Documentation</a>
-        <a href="#">Changelog</a>
-        <a href="#">Support</a>
-      </div>
-      <div class="foot-col">
-        <h5>Company</h5>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-        <a href="#">Legal</a>
-      </div>
-    </div>
-    <div class="foot-bottom">
-      <span>© 2026 JClabs · Davao, PH</span>
-      <span>Built in the Philippines</span>
-    </div>
-  </div>
-</footer>
-
-</body>
-</html>
+              <div style="background:#0d0d10; display:flex; align-items:center; justify-content:center; padding:20px; min-height:200px;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAYAAADL1t+KAAAAAXNSR0IArs4c6QAAIABJREFUeF7svQeUXWd57v/s0/uZ3jRFGpWRZPVebMm2ZBtsbMDGxhjbdMdAIARIAjfYmAsJ3Bsg4dIhNJPQAqbZxFW2ZFmS1azeR9N7P73v/33ePUfx4k9uRJBcRu9Za9ZIM+fss7/f3nOe7+0G9KEElIASUAJKQAm86gkYr/oV6AKUgBJQAkpACSgBqKDrTaAElIASUAJKYAoQUEGfAhdRl6AElIASUAJKQAVd7wEloASUgBJQAlOAgAr6FLiIugQloASUgBJQAiroeg8oASWgBJSAEpgCBFTQp8BF1CUoASWgBJSAElBB13tACSgBJaAElMAUIKCCPgUuoi5BCSgBJaAElIAKut4DSkAJKAEloASmAAEV9ClwEXUJSkAJKAEloARU0PUeUAJKQAkoASUwBQiooE+Bi6hLUAJKQAkoASWggq73gBJQAkpACSiBKUBABX0KXERdghJQAkpACSgBFXS9B5SAElACSkAJTAECKuhT4CLqEpSAElACSkAJqKDrPaAElIASUAJKYAoQUEGfAhdRl6AElIASUAJKQAVd7wEloASUgBJQAlOAgAr6FLiIugQloASUgBJQAiroeg8oASWgBJSAEpgCBFTQp8BF1CUoASWgBJSAElBB13tACSgBJaAElMAUIKCCPgUuoi5BCSgBJaAElIAKut4DSkAJKAEloASmAAEV9ClwEXUJSkAJKAEloARU0PUeUAJKQAkoASUwBQiooE+Bi6hLUAJKQAkoASWggq73gBJQAkpACSiBKUBABX0KXERdghJQAkpACSgBFXS9B5SAElACSkAJTAECKuhT4CLqEpSAElACSkAJqKDrPaAElIASUAJKYAoQUEGfAhdRl6AElIASUAJKQAVd7wEloASUgBJQAlOAgAr6FLiIugQloASUgBJQAiroeg8oASWgBJSAEpgCBFTQp8BF1CUoASWgBJSAElBB13tACSgBJaAElMAUIKCCPgUuoi5BCSgBJaAElIAKut4DSkAJKAEloASmAAEV9ClwEXUJSkAJKAEloARU0PUeUAJKQAkoASUwBQiooE+Bi6hLUAJKQAkoASWggq73gBJQAkpACSiBKUBABX0KXERdghJQAkpACSgBFXS9B5SAElACSkAJTAECKuhT4CLqEpSAElACSkAJqKDrPaAElIASUAJKYAoQUEGfAhdRl6AElIASUAJKQAVd7wEloASUgBJQAlOAgAr6FLiIugQloASUgBJQAiroeg8oASWgBJSAEpgCBFTQp8BF1CUoASWgBJSAElBB13tACSgBJaAElMAUIKCCPgUuoi5BCSgBJaAElIAKut4DSkAJKAEloASmAAEV9ClwEXUJSkAJKAEloARU0PUeUAJKQAkoASUwBQiooE+Bi6hLUAJKQAkoASWggq73gBJQAkpACSiBKUBABX0KXERdghJQAkpACSgBFXS9B5SAElACSkAJTAECKuhT4CLqEpSAElACSkAJqKDrPaAElIASUAJKYAoQUEGfAhdRl6AElIASUAJKQAVd7wEloASUgBJQAlOAgAr6FLiIugQloASUgBJQAiroeg8oASWgBJSAEpgCBFTQp8BF1CUoASWgBJSAElBB13tACSgBJaAElMAUIKCCPgUuoi5BCSgBJaAElIAKut4DSkAJKAEloASmAAEV9ClwEXUJSkAJKAEloARU0PUeUAJKQAkoASUwBQiooE+Bi6hLUAJKQAkoASWggq73gBJQAkpACSiBKUBABX0KXERdghJQAkpACSgBFXS9B5SAElACSkAJTAECKuhT4CLqEpSAElACSkAJqKDrPaAElIASUAJKYAoQUEGfAhdRl6AElIASUAJKQAVd7wEloASUwAUm0NnZuaCju3vd6MDgnW63u8EfCCRD4dCg1+9vc7qdJ51O9xGbw9FaW17eZRhG7AK/vR7uEiWggn6JXnhdthJQAheHQG9v77x73/feQ0sXL3EsWbQYuUwGuVwONpsNpmEgV8gjk8siW8jC4bKn3D5PwuVyx0Lh0N7pDXM+Onf69LaLc2Z61KlOQAV9ql9hXZ8SUAIvKYGPffzjT+3bvedqr9uN111/A5KxOJKJGPL5POx2O2x2O5weN+weF1wBD5xup5wfBb+mprb3soWXvb6xsnHvS3rS+mZTgoAK+pS4jLoIJaAEXgkETrefXvr+e96/3wEDHrsTb739LfA4XQj4vfC63MgW8kgkEkhnMjBtJlK5DFLZNEwDYsXHkymUlZVNLF+x8p65cy/72SthTXoOrx4CKuivnmulZ6oElMArnMBnP/vZh7c8/sQNbpsDdhj46If+AmuWr0QiEkUqlYJhGCgp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
