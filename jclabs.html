@@ -780,6 +780,442 @@
   .feat-note-central { background: var(--accent-soft); border: 1px solid var(--accent-line); color: rgba(201,169,97,0.85); }
   .feat-note-noncen { background: rgba(108,184,255,0.08); border: 1px solid rgba(108,184,255,0.2); color: rgba(108,184,255,0.85); }
 
+  /* Toggle */
+  .price-toggle-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .price-toggle {
+    position: relative;
+    display: inline-flex;
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    border-radius: 100px;
+    padding: 4px;
+  }
+  .ptog-btn {
+    position: relative;
+    z-index: 2;
+    padding: 9px 22px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-mute);
+    cursor: pointer;
+    transition: color 0.25s ease;
+    background: none;
+    border: none;
+    white-space: nowrap;
+  }
+  .ptog-btn.active { color: var(--bg); }
+  .ptog-pill {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    height: calc(100% - 8px);
+    background: var(--accent);
+    border-radius: 100px;
+    transition: left 0.3s cubic-bezier(.4,0,.2,1), width 0.3s cubic-bezier(.4,0,.2,1);
+    z-index: 1;
+  }
+
+  /* Bulk callout */
+  .price-bulk-callout {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-line);
+    border-radius: var(--radius-md);
+    padding: 12px 18px;
+    font-size: 13px;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+    margin-bottom: 24px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.35s ease, margin-bottom 0.3s ease, padding 0.3s ease;
+    pointer-events: none;
+  }
+  .price-bulk-callout.visible {
+    opacity: 1;
+    max-height: 80px;
+    pointer-events: auto;
+  }
+
+  /* Save badge on cards */
+  .price-save-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6cb8ff;
+    background: rgba(108,184,255,0.1);
+    border: 1px solid rgba(108,184,255,0.2);
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 4px;
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+  .price-save-badge.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .price-save-badge-central {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent-line);
+  }
+
+  /* ============ PRICING ============ */
+  .price-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 64px;
+    align-items: start;
+  }
+  @media (max-width: 720px) {
+    .price-grid { grid-template-columns: 1fr; }
+  }
+  .price-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s ease;
+  }
+  .price-card::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 2px;
+  }
+  .price-card:not(.price-card-featured)::before {
+    background: linear-gradient(90deg, rgba(108,184,255,0.6), rgba(108,184,255,0.15));
+  }
+  .price-card-featured {
+    border-color: var(--accent-line);
+    background: linear-gradient(160deg, rgba(201,169,97,0.06) 0%, var(--bg-card) 60%);
+  }
+  .price-card-featured::before {
+    background: linear-gradient(90deg, var(--accent), rgba(201,169,97,0.3));
+  }
+  .price-featured-badge {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+  .price-card-top {
+    margin-bottom: 8px;
+  }
+  .price-card-desc {
+    font-size: 12px;
+    color: var(--text-mute);
+    margin-top: 6px;
+    line-height: 1.45;
+  }
+  .price-amount {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    margin-bottom: 2px;
+  }
+  .price-currency {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--text-mute);
+  }
+  .price-num {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 36px);
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--text);
+  }
+  .price-card-featured .price-num { color: var(--accent); }
+  .price-period {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-left: 3px;
+  }
+  .price-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+  .price-feats {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 14px;
+    border-top: 1px solid var(--line);
+    padding-top: 10px;
+  }
+  .price-feats li {
+    font-size: 12px;
+    color: var(--text-mute);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.35;
+  }
+  .price-feats li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .price-card:not(.price-card-featured) .price-feats li::before { color: #6cb8ff; }
+  .price-card-featured .price-feats li::before { color: var(--accent); }
+  .price-btn {
+    width: 100%;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    padding: 9px 14px;
+    font-size: 13px;
+  }
+  .price-btn-noncen {
+    background: rgba(108,184,255,0.1);
+    border: 1px solid rgba(108,184,255,0.3);
+    color: #6cb8ff;
+  }
+  .price-btn-noncen:hover {
+    background: rgba(108,184,255,0.18);
+    border-color: rgba(108,184,255,0.5);
+    transform: translateY(-1px);
+  }
+  .price-btn-central {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+  }
+  .price-btn-central:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(201,169,97,0.3);
+  }
+
+  /* Bulk deal banner */
+  .bulk-banner {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    background: linear-gradient(135deg, rgba(201,169,97,0.1) 0%, rgba(201,169,97,0.04) 100%);
+    border: 1px solid var(--accent-line);
+    border-radius: var(--radius-lg);
+    padding: 28px 36px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bulk-banner::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), rgba(201,169,97,0.2));
+  }
+  .bulk-banner-left { flex: 1; min-width: 220px; }
+  .bulk-banner-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-line);
+    padding: 3px 10px;
+    border-radius: 100px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .bulk-banner-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(20px, 2.5vw, 28px);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 6px;
+  }
+  .bulk-banner-title em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .bulk-banner-sub { font-size: 13px; color: var(--text-mute); line-height: 1.55; }
+  .bulk-banner-prices {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+  .bulk-price-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .bulk-price-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+  }
+  .bulk-price-val {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .bulk-price-val strong { font-weight: 400; }
+  .bulk-price-orig {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-decoration: line-through;
+  }
+  .bulk-price-divider {
+    width: 1px;
+    height: 48px;
+    background: var(--line-strong);
+  }
+  .bulk-cta {
+    padding: 13px 24px;
+    border-radius: var(--radius-md);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  @media (max-width: 760px) {
+    .bulk-banner { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .bulk-cta { width: 100%; justify-content: center; }
+  }
+
+  /* Distributor tiers */
+  .dist-wrap {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .dist-header {
+    padding: 36px 40px 28px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-elev);
+  }
+  .dist-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(24px, 3vw, 36px);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .dist-title em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .dist-sub {
+    font-size: 14px;
+    color: var(--text-mute);
+    max-width: 560px;
+    line-height: 1.6;
+  }
+  .dist-tiers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+  }
+  @media (max-width: 720px) {
+    .dist-tiers { grid-template-columns: 1fr; }
+  }
+  .dist-tier {
+    background: var(--bg);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: background 0.25s ease;
+  }
+  .dist-tier:hover { background: var(--bg-elev); }
+  .dist-tier-mid { background: var(--bg-card); }
+  .dist-tier-top { background: var(--bg-card); }
+  .dist-tier-range {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+  }
+  .dist-tier-disc {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .dist-tier-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-mute);
+    padding: 8px 0;
+    border-top: 1px solid var(--line);
+  }
+  .dist-price-val { display: flex; align-items: baseline; gap: 6px; }
+  .dist-price-val strong { color: var(--text); font-size: 15px; font-weight: 500; }
+  .dist-orig {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-decoration: line-through;
+  }
+  .dist-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 20px 40px;
+    background: var(--bg-elev);
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--text-mute);
+    line-height: 1.6;
+  }
+  .dist-note svg { flex-shrink: 0; margin-top: 2px; color: var(--accent); }
+  .dist-contact {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.2s;
+  }
+  .dist-contact:hover { opacity: 0.75; }
+
   /* ============ DOWNLOADS ============ */
   .downloads-layout {
     display: grid;
@@ -978,6 +1414,7 @@
       <a href="#products">Products</a>
       <a href="#features">Features</a>
       <a href="#downloads">Downloads</a>
+      <a href="#pricing">Pricing</a>
       <a href="#about">About</a>
       <a href="#docs">Docs</a>
       <a href="#cta" class="nav-cta">Get PisoLock</a>
@@ -1401,11 +1838,227 @@
   </div>
 </section>
 
+<!-- ============ PRICING ============ -->
+<section class="block" id="pricing">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-label">— 05 / Pricing</div>
+      <h2>One-time license. <em>Lifetime access.</em></h2>
+    </div>
+
+    <!-- Toggle -->
+    <div class="price-toggle-wrap">
+      <div class="price-toggle" id="priceToggle">
+        <button class="ptog-btn active" data-mode="single">Single</button>
+        <button class="ptog-btn" data-mode="bulk">Bulk (10+)</button>
+        <div class="ptog-pill" id="ptogPill"></div>
+      </div>
+    </div>
+
+    <!-- Savings callout (bulk only) -->
+    <div class="price-bulk-callout" id="priceBulkCallout">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+      50% off when you order 10 or more licenses — mix &amp; match Centralized and Non-Centralized.
+    </div>
+
+    <!-- License cards -->
+    <div class="price-grid">
+
+      <!-- Non-Centralized -->
+      <div class="price-card">
+        <div class="price-card-top">
+          <span class="apk-badge apk-badge-noncen" style="font-size:11px;">Non-Centralized</span>
+          <p class="price-card-desc">1 coinslot per tablet. Simple, standalone, independent.</p>
+        </div>
+        <div class="price-amount">
+          <span class="price-currency">₱</span>
+          <span class="price-num" id="priceNoncen">299</span>
+          <span class="price-period">/ license</span>
+        </div>
+        <div class="price-tag" id="priceTagNoncen">Lifetime · one-time payment</div>
+        <div class="price-save-badge" id="priceSaveNoncen">Save ₱149 per license</div>
+        <ul class="price-feats">
+          <li>1 tablet + 1 coinslot</li>
+          <li>Full kiosk lockdown</li>
+          <li>All future updates included</li>
+          <li>Offline grace period</li>
+          <li>Admin panel + PIN control</li>
+        </ul>
+        <a href="#" class="btn price-btn price-btn-noncen">
+          Buy License
+          <svg class="arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 7h12m0 0L7 1m6 6l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Centralized -->
+      <div class="price-card price-card-featured">
+        <div class="price-featured-badge" id="priceFeatBadge">Most Value</div>
+        <div class="price-card-top">
+          <span class="apk-badge apk-badge-central" style="font-size:11px;">Centralized</span>
+          <p class="price-card-desc">1 coinslot drives up to 10–20 tablets. Built for the serious operator.</p>
+        </div>
+        <div class="price-amount">
+          <span class="price-currency">₱</span>
+          <span class="price-num" id="priceCentral">499</span>
+          <span class="price-period">/ license</span>
+        </div>
+        <div class="price-tag" id="priceTagCentral">Lifetime · one-time payment</div>
+        <div class="price-save-badge price-save-badge-central" id="priceSaveCentral">Save ₱249 per license</div>
+        <ul class="price-feats">
+          <li>Up to 10–20 tablets per coinslot</li>
+          <li>Mas tipid sa kuryente</li>
+          <li>All future updates included</li>
+          <li>Easy centralized maintenance</li>
+          <li>Admin panel + PIN control</li>
+          <li>OTA updates via dashboard</li>
+        </ul>
+        <a href="#" class="btn price-btn price-btn-central">
+          Buy License
+          <svg class="arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 7h12m0 0L7 1m6 6l-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+
+    <script>
+    (function() {
+      var prices = { single: { noncen: 299, central: 499 }, bulk: { noncen: 150, central: 250 } };
+      var mode = 'single';
+      var btns = document.querySelectorAll('.ptog-btn');
+      var pill = document.getElementById('ptogPill');
+      var callout = document.getElementById('priceBulkCallout');
+      var saveNoncen = document.getElementById('priceSaveNoncen');
+      var saveCentral = document.getElementById('priceSaveCentral');
+      var featBadge = document.getElementById('priceFeatBadge');
+
+      function setPill(el) {
+        pill.style.width = el.offsetWidth + 'px';
+        pill.style.left = el.offsetLeft + 'px';
+      }
+
+      function animateNum(el, from, to, duration) {
+        var start = null;
+        function step(ts) {
+          if (!start) start = ts;
+          var prog = Math.min((ts - start) / duration, 1);
+          var ease = 1 - Math.pow(1 - prog, 3);
+          el.textContent = Math.round(from + (to - from) * ease);
+          if (prog < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      function update(newMode) {
+        var prev = prices[mode];
+        mode = newMode;
+        var next = prices[mode];
+        animateNum(document.getElementById('priceNoncen'), prev.noncen, next.noncen, 400);
+        animateNum(document.getElementById('priceCentral'), prev.central, next.central, 400);
+        if (mode === 'bulk') {
+          callout.classList.add('visible');
+          saveNoncen.classList.add('visible');
+          saveCentral.classList.add('visible');
+          featBadge.textContent = 'Best Deal';
+          document.getElementById('priceTagNoncen').textContent = 'Lifetime · min. 10 licenses';
+          document.getElementById('priceTagCentral').textContent = 'Lifetime · min. 10 licenses';
+        } else {
+          callout.classList.remove('visible');
+          saveNoncen.classList.remove('visible');
+          saveCentral.classList.remove('visible');
+          featBadge.textContent = 'Most Value';
+          document.getElementById('priceTagNoncen').textContent = 'Lifetime · one-time payment';
+          document.getElementById('priceTagCentral').textContent = 'Lifetime · one-time payment';
+        }
+      }
+
+      btns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          btns.forEach(function(b) { b.classList.remove('active'); });
+          this.classList.add('active');
+          setPill(this);
+          update(this.dataset.mode);
+        });
+      });
+
+      // Init pill position
+      window.addEventListener('load', function() {
+        var active = document.querySelector('.ptog-btn.active');
+        if (active) setPill(active);
+      });
+      setTimeout(function() {
+        var active = document.querySelector('.ptog-btn.active');
+        if (active) setPill(active);
+      }, 50);
+    })();
+    </script>
+
+    <!-- Distributor tiers -->
+    <div class="dist-wrap">
+      <div class="dist-header">
+        <div>
+          <div class="section-label" style="margin-bottom:8px;">— Distributor Pricing</div>
+          <h3 class="dist-title">Buying in bulk? <em>We reward volume.</em></h3>
+          <p class="dist-sub">For resellers and distributors. Discount applies to both license types. Contact us to get your distributor code.</p>
+        </div>
+      </div>
+
+      <div class="dist-tiers">
+        <div class="dist-tier">
+          <div class="dist-tier-range">100+ licenses</div>
+          <div class="dist-tier-disc">20% off</div>
+          <div class="dist-tier-price">
+            <span>Non-Centralized</span>
+            <span class="dist-price-val">₱<strong>239</strong> <span class="dist-orig">₱299</span></span>
+          </div>
+          <div class="dist-tier-price">
+            <span>Centralized</span>
+            <span class="dist-price-val">₱<strong>399</strong> <span class="dist-orig">₱499</span></span>
+          </div>
+        </div>
+        <div class="dist-tier dist-tier-mid">
+          <div class="dist-tier-range">500+ licenses</div>
+          <div class="dist-tier-disc">30% off</div>
+          <div class="dist-tier-price">
+            <span>Non-Centralized</span>
+            <span class="dist-price-val">₱<strong>209</strong> <span class="dist-orig">₱299</span></span>
+          </div>
+          <div class="dist-tier-price">
+            <span>Centralized</span>
+            <span class="dist-price-val">₱<strong>349</strong> <span class="dist-orig">₱499</span></span>
+          </div>
+        </div>
+        <div class="dist-tier dist-tier-top">
+          <div class="dist-tier-range">1,000+ licenses</div>
+          <div class="dist-tier-disc">40% off</div>
+          <div class="dist-tier-price">
+            <span>Non-Centralized</span>
+            <span class="dist-price-val">₱<strong>179</strong> <span class="dist-orig">₱299</span></span>
+          </div>
+          <div class="dist-tier-price">
+            <span>Centralized</span>
+            <span class="dist-price-val">₱<strong>299</strong> <span class="dist-orig">₱499</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dist-note">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+        All distributor licenses are lifetime and carry the same features as retail. <a href="#cta" class="dist-contact">Contact us</a> to apply for a distributor account.
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- ============ ABOUT ============ -->
 <section class="block" id="about">
   <div class="container">
     <div class="section-head">
-      <div class="section-label">— 04 / About</div>
+      <div class="section-label">— 06 / About</div>
       <h2>A small lab, <em>building for one market well.</em></h2>
     </div>
     <div style="max-width: 720px;">
