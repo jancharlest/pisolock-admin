@@ -603,6 +603,319 @@
     .foot-bottom { flex-direction: column; gap: 12px; }
   }
 
+  /* ============ APK VARIANT CARDS ============ */
+  .apk-variants {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 4px;
+  }
+  @media (max-width: 640px) {
+    .apk-variants { grid-template-columns: 1fr; }
+  }
+  .apk-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px 22px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line-strong);
+    background: var(--bg-card);
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .apk-card::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 2px;
+    transition: opacity 0.25s ease;
+  }
+  .apk-central::before { background: linear-gradient(90deg, var(--accent), rgba(201,169,97,0.3)); }
+  .apk-noncen::before { background: linear-gradient(90deg, #6cb8ff, rgba(108,184,255,0.3)); }
+  .apk-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+  .apk-central:hover { border-color: var(--accent-line); }
+  .apk-noncen:hover { border-color: rgba(108,184,255,0.35); }
+  .apk-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .apk-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+  .apk-badge-central {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid var(--accent-line);
+  }
+  .apk-badge-noncen {
+    background: rgba(108,184,255,0.1);
+    color: #6cb8ff;
+    border: 1px solid rgba(108,184,255,0.25);
+  }
+  .apk-dl-arrow {
+    width: 18px; height: 18px;
+    color: var(--text-dim);
+    transition: color 0.2s ease;
+  }
+  .apk-card:hover .apk-dl-arrow { color: var(--text-mute); }
+  .apk-card-name {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .apk-card-ver {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .apk-card-feats {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 16px;
+    flex: 1;
+  }
+  .apk-card-feats li {
+    font-size: 13px;
+    color: var(--text-mute);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .apk-central .apk-card-feats li::before { content: "·"; position: absolute; left: 0; color: var(--accent); font-size: 16px; line-height: 1; top: 1px; }
+  .apk-noncen .apk-card-feats li::before { content: "·"; position: absolute; left: 0; color: #6cb8ff; font-size: 16px; line-height: 1; top: 1px; }
+  .apk-card-cta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s ease;
+  }
+  .apk-central .apk-card-cta { color: var(--accent); }
+  .apk-noncen .apk-card-cta { color: #6cb8ff; }
+  .apk-card:hover .apk-card-cta { gap: 10px; }
+
+  /* ============ FEATURE TABS ============ */
+  .feat-tabs-wrap { position: relative; }
+  .feat-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .feat-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line-strong);
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+    min-width: 180px;
+  }
+  .feat-tab:hover { border-color: var(--line-strong); background: var(--bg-elev); }
+  .feat-tab.active { border-color: var(--accent-line); background: var(--bg-elev); }
+  .feat-tab-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+  }
+  .feat-tab-badge-central { color: var(--accent); }
+  .feat-tab-badge-noncen { color: #6cb8ff; }
+  .feat-tab-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+  }
+  .feat-tab.active .feat-tab-sub { color: var(--text-mute); }
+  .feat-panel { display: none; }
+  .feat-panel.active { display: block; }
+  .feat-panel-intro {
+    margin-bottom: 32px;
+    max-width: 640px;
+  }
+  .feat-panel-intro p {
+    font-size: 16px;
+    color: var(--text-mute);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+  .feat-panel-intro strong { color: var(--text); font-weight: 500; }
+  .feat-panel-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 24px;
+    padding: 16px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .feat-panel-note svg { flex-shrink: 0; margin-top: 2px; }
+  .feat-panel-note strong { font-weight: 500; }
+  .feat-note-central { background: var(--accent-soft); border: 1px solid var(--accent-line); color: rgba(201,169,97,0.85); }
+  .feat-note-noncen { background: rgba(108,184,255,0.08); border: 1px solid rgba(108,184,255,0.2); color: rgba(108,184,255,0.85); }
+
+  /* ============ DOWNLOADS ============ */
+  .downloads-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (max-width: 960px) {
+    .downloads-layout { grid-template-columns: 1fr; }
+    .dl-sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .dl-sidebar .dl-note { margin-top: 0 !important; }
+  }
+  @media (max-width: 580px) {
+    .dl-sidebar { grid-template-columns: 1fr; }
+  }
+  .dl-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .dl-step {
+    display: flex;
+    gap: 24px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .dl-step:first-child { padding-top: 0; }
+  .dl-step-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    min-width: 32px;
+    padding-top: 4px;
+    font-weight: 500;
+  }
+  .dl-step-body { flex: 1; }
+  .dl-step-body h4 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .dl-step-body p {
+    color: var(--text-mute);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .dl-step-body strong { color: var(--text); font-weight: 500; }
+  .dl-code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+  .dl-files {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    transition: all 0.25s ease;
+    text-decoration: none;
+    color: var(--text);
+    min-width: 220px;
+  }
+  .dl-btn:hover {
+    border-color: var(--accent-line);
+    background: var(--bg-elev);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .dl-icon {
+    width: 24px; height: 24px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .dl-btn-text { display: flex; flex-direction: column; gap: 3px; }
+  .dl-btn-label { font-size: 14px; font-weight: 500; font-family: var(--font-mono); }
+  .dl-btn-sub { font-size: 11px; color: var(--text-mute); font-family: var(--font-mono); letter-spacing: 0.05em; }
+  .dl-sidebar { display: flex; flex-direction: column; }
+  .dl-note {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    position: sticky;
+    top: 88px;
+  }
+  .dl-note-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .dl-req-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .dl-req-list li {
+    font-size: 13px;
+    color: var(--text-mute);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .dl-req-list li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--text-dim);
+    font-size: 11px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
@@ -664,6 +977,7 @@
     <div class="nav-links">
       <a href="#products">Products</a>
       <a href="#features">Features</a>
+      <a href="#downloads">Downloads</a>
       <a href="#about">About</a>
       <a href="#docs">Docs</a>
       <a href="#cta" class="nav-cta">Get PisoLock</a>
@@ -756,56 +1070,311 @@
       <h2>Every detail, <em>engineered.</em></h2>
     </div>
 
-    <div class="features">
-      <div class="feature">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="3" y="5" width="18" height="14" rx="2"/>
-          <path d="M3 9h18"/>
-          <circle cx="7" cy="14" r="1" fill="currentColor"/>
-        </svg>
-        <h4>Device Owner mode</h4>
-        <p>Real system-level kiosk lockdown via DevicePolicyManager. No accessibility hacks. Reboots survive, users can't escape.</p>
+    <div class="feat-tabs-wrap">
+      <!-- Tab controls -->
+      <div class="feat-tabs" role="tablist">
+        <button class="feat-tab active" data-tab="central" role="tab">
+          <span class="feat-tab-badge feat-tab-badge-central">Centralized</span>
+          <span class="feat-tab-sub">1 coinslot, multiple tablets</span>
+        </button>
+        <button class="feat-tab" data-tab="noncen" role="tab">
+          <span class="feat-tab-badge feat-tab-badge-noncen">Non-Centralized</span>
+          <span class="feat-tab-sub">1 coinslot per tablet</span>
+        </button>
       </div>
-      <div class="feature">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M12 7v5l3 2"/>
-        </svg>
-        <h4>Atomic pulse counting</h4>
-        <p>ESP32 firmware uses microsecond-debounced ISR with atomic snapshots. Coins counted right, every time, even on dirty power.</p>
+
+      <!-- Centralized panel -->
+      <div class="feat-panel active" id="panel-central">
+        <div class="feat-panel-intro">
+          <p>One coinslot drives your entire shop. Up to <strong>10–20 tablets</strong> share a single ESP32 unit — fewer devices to wire, fewer devices to maintain, and a noticeably lower power bill every month.</p>
+        </div>
+        <div class="features">
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="5" r="2"/><path d="M12 7v4"/>
+              <path d="M8 17a4 4 0 018 0"/><circle cx="5" cy="17" r="2"/><circle cx="19" cy="17" r="2"/>
+              <path d="M12 11l-7 4m14-4l-7 4"/>
+            </svg>
+            <h4>1 coinslot, up to 20 tablets</h4>
+            <p>One ESP32 coinslot unit services the whole shop. Less hardware to buy, less wiring to run, less to go wrong.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            <h4>Mas tipid sa kuryente</h4>
+            <p>Fewer powered coinslot units means a measurably lower electricity bill — especially relevant for shops running 15+ machines.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L3 7v5c0 5 4 9 9 10 5-1 9-5 9-10V7l-9-5z"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+            <h4>Device Owner kiosk lockdown</h4>
+            <p>Real system-level lockdown on every tablet. No accessibility hacks. Reboots survive, users can't escape the kiosk.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8m-4-4v4"/>
+            </svg>
+            <h4>Easy to maintain</h4>
+            <p>Centralised hardware means one point of maintenance. Fix or replace the coinslot once — all tablets benefit immediately.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 12a9 9 0 11-6.2-8.5"/>
+              <path d="M21 4v6h-6"/>
+            </svg>
+            <h4>OTA updates</h4>
+            <p>Push APK updates to every tablet from the dashboard. No USB cables, no store visits. All units on the latest build in minutes.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/>
+            </svg>
+            <h4>Hardware watchdog</h4>
+            <p>ESP32 v20d firmware with non-blocking WiFi reconnect, exponential backoff, and watchdog timer. Stable through brownouts.</p>
+          </div>
+        </div>
+        <div class="feat-panel-note feat-note-central">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+          Centralized is the recommended setup for shops with <strong>5 or more tablets</strong>. Higher upfront cost, but the savings in hardware and electricity pay for themselves.
+        </div>
       </div>
-      <div class="feature">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M12 2L3 7v5c0 5 4 9 9 10 5-1 9-5 9-10V7l-9-5z"/>
-          <path d="M9 12l2 2 4-4"/>
-        </svg>
-        <h4>License enforcement</h4>
-        <p>Trial users stay online-only. Activated devices get offline grace. Backend in Node.js + SQLite, dashboard in React.</p>
+
+      <!-- Non-Centralized panel -->
+      <div class="feat-panel" id="panel-noncen">
+        <div class="feat-panel-intro">
+          <p>Each tablet runs its own dedicated coinslot. The simplest possible setup — plug in, install, go. Perfect for operators starting small or running a few standalone machines.</p>
+        </div>
+        <div class="features">
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="5" width="18" height="14" rx="2"/>
+              <path d="M3 9h18"/><circle cx="7" cy="14" r="1" fill="currentColor"/>
+            </svg>
+            <h4>1 coinslot per tablet</h4>
+            <p>Each machine is fully self-contained. Simple wiring, simple setup — no network dependency between units.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+            </svg>
+            <h4>Mas barato nga license</h4>
+            <p>Lower per-unit license cost. Ideal for operators who want to start with one or two tablets and grow at their own pace.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L3 7v5c0 5 4 9 9 10 5-1 9-5 9-10V7l-9-5z"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+            <h4>Device Owner kiosk lockdown</h4>
+            <p>Same real system-level lockdown as Centralized. Reboots survive, the kiosk stays locked no matter what.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 7v5l3 2"/>
+            </svg>
+            <h4>Atomic pulse counting</h4>
+            <p>ESP32 firmware uses microsecond-debounced ISR with atomic snapshots. Coins counted correctly, even on dirty power.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v6m0 10v6m11-11h-6m-10 0H1"/>
+            </svg>
+            <h4>Floating admin panel</h4>
+            <p>PIN-gated bubble with full controls per unit. Triple-tap the timer to open — the operator's command center, always on screen.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/>
+            </svg>
+            <h4>Hardware watchdog</h4>
+            <p>Same ESP32 v20d firmware — non-blocking WiFi, watchdog timer, brownout-resilient. Rock-solid per unit.</p>
+          </div>
+        </div>
+        <div class="feat-panel-note feat-note-noncen">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+          Non-Centralized is ideal for <strong>1–4 tablets</strong> or operators who prefer a fully independent per-unit setup. Easy to expand one tablet at a time.
+        </div>
       </div>
-      <div class="feature">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 1v6m0 10v6m11-11h-6m-10 0H1"/>
-        </svg>
-        <h4>Floating admin panel</h4>
-        <p>Minimized bubble, expanded controls, fullscreen settings. PIN-gated. The operator's command center, on screen and on demand.</p>
+
+    </div>
+
+    <script>
+      (function() {
+        var tabs = document.querySelectorAll('.feat-tab');
+        var panels = document.querySelectorAll('.feat-panel');
+        tabs.forEach(function(tab) {
+          tab.addEventListener('click', function() {
+            var target = this.dataset.tab;
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            panels.forEach(function(p) { p.classList.remove('active'); });
+            this.classList.add('active');
+            document.getElementById('panel-' + target).classList.add('active');
+          });
+        });
+      })();
+    </script>
+  </div>
+</section>
+
+<!-- ============ DOWNLOADS ============ -->
+<section class="block" id="downloads">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-label">— 03 / Downloads</div>
+      <h2>Install PisoLock, <em>step by step.</em></h2>
+    </div>
+
+    <div class="downloads-layout">
+
+      <!-- Steps -->
+      <div class="dl-steps">
+
+        <div class="dl-step">
+          <div class="dl-step-num">01</div>
+          <div class="dl-step-body">
+            <h4>Enable Developer Options on the tablet</h4>
+            <p>Go to <strong>Settings → About tablet</strong> and tap <strong>Build number</strong> seven times until you see "You are now a developer." Then go to <strong>Settings → Developer Options</strong> and enable <strong>USB Debugging</strong>.</p>
+          </div>
+        </div>
+
+        <div class="dl-step">
+          <div class="dl-step-num">02</div>
+          <div class="dl-step-body">
+            <h4>Make sure no Google or Samsung account is signed in</h4>
+            <p>Device Owner mode requires a clean device. If any Google or Samsung account is active, <strong>sign out first</strong> or do a factory reset. This is a one-time requirement before the first install.</p>
+          </div>
+        </div>
+
+        <div class="dl-step">
+          <div class="dl-step-num">03</div>
+          <div class="dl-step-body">
+            <h4>Download the installer files</h4>
+            <p>Download both files below and place them in the <strong>same folder</strong> on your Windows PC. The installer will auto-download ADB tools if not already present.</p>
+            <!-- Installer + Uninstaller row -->
+            <div class="dl-files" style="margin-bottom: 24px;">
+              <a href="#" class="dl-btn">
+                <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M12 3v13m0 0l-4-4m4 4l4-4"/>
+                  <path d="M3 17v2a2 2 0 002 2h14a2 2 0 002-2v-2"/>
+                </svg>
+                <div class="dl-btn-text">
+                  <span class="dl-btn-label">PisoLock_Install.bat</span>
+                  <span class="dl-btn-sub">Windows Installer · v24.12</span>
+                </div>
+              </a>
+              <a href="#" class="dl-btn">
+                <svg class="dl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M12 3v13m0 0l-4-4m4 4l4-4"/>
+                  <path d="M3 17v2a2 2 0 002 2h14a2 2 0 002-2v-2"/>
+                </svg>
+                <div class="dl-btn-text">
+                  <span class="dl-btn-label">PisoLock_Uninstall.bat</span>
+                  <span class="dl-btn-sub">Windows Uninstaller · v24.12</span>
+                </div>
+              </a>
+            </div>
+
+            <!-- APK variant cards -->
+            <p style="font-size:12px; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-dim); margin-bottom: 14px;">Choose your APK variant:</p>
+            <div class="apk-variants">
+
+              <a href="#" class="apk-card apk-central">
+                <div class="apk-card-top">
+                  <span class="apk-badge apk-badge-central">Centralized</span>
+                  <svg class="apk-dl-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 3v13m0 0l-4-4m4 4l4-4"/>
+                    <path d="M3 17v2a2 2 0 002 2h14a2 2 0 002-2v-2"/>
+                  </svg>
+                </div>
+                <div class="apk-card-name">PisoLock APK</div>
+                <div class="apk-card-ver">v24.12 · Android Package</div>
+                <ul class="apk-card-feats">
+                  <li>1 coinslot → up to 10–20 tablets</li>
+                  <li>Mas tipid sa kuryente</li>
+                  <li>Easy to maintain</li>
+                  <li>Premium license</li>
+                </ul>
+                <div class="apk-card-cta">Download <span>→</span></div>
+              </a>
+
+              <a href="#" class="apk-card apk-noncen">
+                <div class="apk-card-top">
+                  <span class="apk-badge apk-badge-noncen">Non-Centralized</span>
+                  <svg class="apk-dl-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 3v13m0 0l-4-4m4 4l4-4"/>
+                    <path d="M3 17v2a2 2 0 002 2h14a2 2 0 002-2v-2"/>
+                  </svg>
+                </div>
+                <div class="apk-card-name">PisoLock APK</div>
+                <div class="apk-card-ver">v24.12 · Android Package</div>
+                <ul class="apk-card-feats">
+                  <li>1 coinslot per tablet</li>
+                  <li>Simple standalone setup</li>
+                  <li>Mas barato nga license</li>
+                  <li>No server needed</li>
+                </ul>
+                <div class="apk-card-cta">Download <span>→</span></div>
+              </a>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="dl-step">
+          <div class="dl-step-num">04</div>
+          <div class="dl-step-body">
+            <h4>Connect the tablet via USB and run the installer</h4>
+            <p>Plug the tablet into your PC using a <strong>data cable</strong> (not a charge-only cable). Double-click <code class="dl-code">PisoLock_Install.bat</code> and follow the on-screen prompts. When the tablet shows an <strong>"Allow USB Debugging"</strong> popup, tap <strong>Allow</strong>.</p>
+          </div>
+        </div>
+
+        <div class="dl-step">
+          <div class="dl-step-num">05</div>
+          <div class="dl-step-body">
+            <h4>Complete the Setup Wizard on the tablet</h4>
+            <p>Once PisoLock launches, finish the in-app Setup Wizard, set your <strong>Admin PIN</strong>, and configure your coin rate. Triple-tap the timer bubble anytime to open the Admin panel.</p>
+          </div>
+        </div>
+
       </div>
-      <div class="feature">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M21 12a9 9 0 11-6.2-8.5"/>
-          <path d="M21 4v6h-6"/>
-        </svg>
-        <h4>OTA updates</h4>
-        <p>Push APK updates from the dashboard. No USB cables, no factory visits. Every shop on the latest build, in minutes.</p>
+
+      <!-- Sidebar note -->
+      <div class="dl-sidebar">
+        <div class="dl-note">
+          <div class="dl-note-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+            </svg>
+            Requirements
+          </div>
+          <ul class="dl-req-list">
+            <li>Windows 10 / 11 PC</li>
+            <li>Samsung Galaxy Tab A9</li>
+            <li>USB data cable</li>
+            <li>No Google / Samsung account on tablet</li>
+            <li>USB Debugging enabled</li>
+            <li>Internet connection (first run only)</li>
+          </ul>
+        </div>
+        <div class="dl-note" style="margin-top: 16px;">
+          <div class="dl-note-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L3 7v5c0 5 4 9 9 10 5-1 9-5 9-10V7l-9-5z"/>
+            </svg>
+            Uninstalling
+          </div>
+          <p style="font-size:13px; color:var(--text-mute); line-height:1.6; margin-top:8px;">
+            To remove PisoLock, run <code class="dl-code">PisoLock_Uninstall.bat</code> and enter your Admin PIN when prompted. The tablet returns to normal Android.
+          </p>
+        </div>
       </div>
-      <div class="feature">
-        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M12 2v20M2 12h20"/>
-          <circle cx="12" cy="12" r="9"/>
-        </svg>
-        <h4>Hardware watchdog</h4>
-        <p>ESP32 v20d firmware: non-blocking WiFi reconnect with exponential backoff, hardware watchdog, stable through brownouts.</p>
-      </div>
+
     </div>
   </div>
 </section>
@@ -836,7 +1405,7 @@
 <section class="block" id="about">
   <div class="container">
     <div class="section-head">
-      <div class="section-label">— 03 / About</div>
+      <div class="section-label">— 04 / About</div>
       <h2>A small lab, <em>building for one market well.</em></h2>
     </div>
     <div style="max-width: 720px;">
